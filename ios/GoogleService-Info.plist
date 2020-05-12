@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>522014276405-ckhmkcbss5sbhdk1fc1is7akqiv25dqf.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.522014276405-ckhmkcbss5sbhdk1fc1is7akqiv25dqf</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBSeZjGyeHT0abtBgsGHIvAJ3_CoTD2WO4</string>
+	<key>GCM_SENDER_ID</key>
+	<string>522014276405</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>me.padamchopra.habito</string>
+	<key>PROJECT_ID</key>
+	<string>habito-4b1a2</string>
+	<key>STORAGE_BUCKET</key>
+	<string>habito-4b1a2.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:522014276405:ios:5ce743963d1dae2aa5aa7c</string>
+	<key>DATABASE_URL</key>
+	<string>https://habito-4b1a2.firebaseio.com</string>
+</dict>
+</plist>
