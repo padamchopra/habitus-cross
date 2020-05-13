@@ -1,9 +1,12 @@
+import 'package:easy_dialog/easy_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:habito/models/share.dart';
 import 'package:habito/pages/allHabits.dart';
 import 'package:habito/pages/profile.dart';
 import 'package:habito/pages/signup.dart';
 import 'package:habito/widgets/newCategoryModal.dart';
 import 'package:habito/widgets/text.dart';
+import 'package:share/share.dart';
 
 class Home extends StatefulWidget {
   final Function updateUserState;
@@ -16,6 +19,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int currentPage = 0;
+
   static PageController controller = PageController(
     initialPage: 0,
   );
@@ -97,7 +101,29 @@ class _HomeState extends State<Home> {
                     _buildAddButton(Icons.label_outline, "Category",
                         () => addNewCategory(context)),
                     //_buildAddButton(Icons.done_outline, "Progress", null),
-                    _buildAddButton(Icons.share, "Share", null),
+                    _buildAddButton(
+                        Icons.share,
+                        "Share",
+                        () => EasyDialog(height: 200, contentList: [
+                              RaisedButton(
+                                //TODO: Pass correct data into Progress
+                                padding: EdgeInsets.all(12.0),
+                                onPressed: () =>
+                                    share().sharePersonalProgress([5, 2, 6]),
+                                child: Text(
+                                  "Share your Progress",
+                                  style: TextStyle(fontSize: 24),
+                                ),
+                              ),
+                              RaisedButton(
+                                padding: EdgeInsets.all(12.0),
+                                onPressed: () => share().shareTheApp(),
+                                child: Text(
+                                  "Share the App",
+                                  style: TextStyle(fontSize: 24),
+                                ),
+                              ),
+                            ]).show(context)),
                   ],
                 ),
                 Expanded(
@@ -162,9 +188,6 @@ class _HomeState extends State<Home> {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(
-          radiusDivision: 1.5,
-        ),
         color: Color(0xff1F2024),
         child: Padding(
           padding: const EdgeInsets.only(
