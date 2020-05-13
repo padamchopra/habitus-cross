@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/Models/IconPack.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:habito/models/category.dart';
+import 'package:habito/models/habitoModel.dart';
 import 'package:habito/widgets/text.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class NewCategoryModal extends StatefulWidget {
   @override
@@ -187,27 +189,42 @@ class _NewCategoryModalState extends State<NewCategoryModal> {
               child: _myCategory.widget(),
             ),
             SizedBox(
-              height: 30,
+              height: 20,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                OutlineButton(
-                  onPressed: () {
-                    //TODO: save category
+                ScopedModelDescendant<HabitoModel>(
+                  builder:
+                      (BuildContext _context, Widget child, HabitoModel model) {
+                    return OutlineButton(
+                      onPressed: () {
+                        model.addNewCategory(_myCategory).then((value) {
+                          if (value) {
+                            print("saved and returned");
+                            model
+                                .neverSatisfied(context, "Saved successfully!",
+                                    "${_myCategory.categoryName} has been added to your categories.")
+                                .then((value) {
+                              Navigator.of(context).pop();
+                            });
+                          } else {
+                            model.neverSatisfied(context, "Try again",
+                                "Could not save this category.");
+                          }
+                        });
+                      },
+                      child: CustomText(
+                        "Add",
+                        color: Colors.black,
+                        textAlign: TextAlign.center,
+                        letterSpacing: 0.2,
+                        fontSize: 18,
+                      ),
+                    );
                   },
-                  child: CustomText(
-                    "Add",
-                    color: Colors.black,
-                    textAlign: TextAlign.center,
-                    letterSpacing: 0.2,
-                    fontSize: 18,
-                  ),
                 ),
               ],
-            ),
-            SizedBox(
-              height: 9,
             ),
           ],
         ),

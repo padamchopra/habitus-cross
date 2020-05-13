@@ -7,6 +7,9 @@ class MyCategory {
   List<MyHabit> _myHabits;
   int _color;
   IconData _icon;
+  String _documentId;
+  String _userId;
+
   final List<Color> colors = [
     Colors.blue,
     Colors.orange,
@@ -22,6 +25,8 @@ class MyCategory {
     this._color = 0;
     this._icon = Icons.label_outline;
     this._name = "";
+    this._documentId = "";
+    this._userId = "";
   }
 
   set categoryName(String name) {
@@ -34,6 +39,22 @@ class MyCategory {
 
   set categoryIcon(IconData icon) {
     this._icon = icon;
+  }
+
+  set documentId(String id) {
+    this._documentId = id;
+  }
+
+  set userId(String id) {
+    this._userId = id;
+  }
+
+  get userId {
+    return _userId;
+  }
+
+  get documentId {
+    return _documentId;
   }
 
   get categoryName {
@@ -83,4 +104,7 @@ class MyCategory {
       ),
     );
   }
+
+  Map<String, dynamic> toJson() =>
+      {"name": _name, "color": _color, "uid": _userId, "icon": _icon.codePoint};
 }
