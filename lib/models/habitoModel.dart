@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,11 +13,18 @@ class HabitoModel extends Model {
   FirebaseUser _user;
   Firestore _firestore;
   List<MyCategory> _myCategoriesList;
+  bool _categoriesLoaded;
 
   HabitoModel() {
+    _categoriesLoaded = false;
     _auth = FirebaseAuth.instance;
     _firestore = Firestore.instance;
     _myCategoriesList = [];
+    checkIfSignedIn().then((value) {
+      if (value) {
+        fetchCategories();
+      }
+    });
   }
 
   //Handle sign ins, outs, and ups
@@ -67,12 +73,50 @@ class HabitoModel extends Model {
       await documentReference.setData(myCategory.toJson());
       //now add category locally
       myCategory.documentId = documentReference.documentID;
-      _myCategoriesList.add(myCategory);
+      _myCategoriesList.insert(0, myCategory);
       notifyListeners();
       return true;
     }
-    //no user signed in
     return false;
+  }
+
+  //fetch all saved categories for current user
+  void fetchCategories() async {
+    if (_user != null) {
+      _categoriesLoaded = true;
+      _myCategoriesList.clear();
+      String userId = _user.uid;
+      QuerySnapshot querySnapshot = await _firestore
+          .collection("categories")
+          .where("uid", isEqualTo: userId)
+          .orderBy("createdAt", descending: true)
+          .getDocuments();
+      for (DocumentSnapshot documentSnapshot in querySnapshot.documents) {
+        Map<String, dynamic> data = documentSnapshot.data;
+        MyCategory currentCategory = new MyCategory();
+        currentCategory.categoryColor = data["color"];
+        currentCategory.categoryName = data["name"];
+        currentCategory.userId = userId;
+        currentCategory.categoryIconFromCodePoint = data["icon"];
+        currentCategory.documentId = documentSnapshot.documentID;
+        _myCategoriesList.add(currentCategory);
+        notifyListeners();
+      }
+    }
+  }
+
+  //fetch number of categories
+  int numberOfCategories() {
+    if (_categoriesLoaded) {
+      return _myCategoriesList.length;
+    } else {
+      fetchCategories();
+      return 0;
+    }
+  }
+
+  get myCategories {
+    return _myCategoriesList;
   }
 
   //warning

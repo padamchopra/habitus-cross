@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:habito/models/habit.dart';
 import 'package:habito/widgets/text.dart';
@@ -39,6 +40,10 @@ class MyCategory {
 
   set categoryIcon(IconData icon) {
     this._icon = icon;
+  }
+
+  set categoryIconFromCodePoint(int codePoint) {
+    this._icon = IconData(codePoint, fontFamily: "MaterialIcons");
   }
 
   set documentId(String id) {
@@ -105,6 +110,11 @@ class MyCategory {
     );
   }
 
-  Map<String, dynamic> toJson() =>
-      {"name": _name, "color": _color, "uid": _userId, "icon": _icon.codePoint};
+  Map<String, dynamic> toJson() => {
+        "name": _name,
+        "color": _color,
+        "uid": _userId,
+        "icon": _icon.codePoint,
+        "createdAt": FieldValue.serverTimestamp()
+      };
 }
