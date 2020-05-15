@@ -54,6 +54,10 @@ class MyCategory {
     this._userId = id;
   }
 
+  get numberOfHabits {
+    return _myHabits.length;
+  }
+
   get userId {
     return _userId;
   }
@@ -78,13 +82,36 @@ class MyCategory {
     return _icon;
   }
 
-  Widget widget() {
+  Widget widget({bool showNumberOfHabits}) {
+    Widget onTheRight = Container();
+    if (showNumberOfHabits != null && showNumberOfHabits) {
+      onTheRight = Expanded(
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: Container(
+            width: 36,
+            height: 36,
+            child: Align(
+              alignment: Alignment.center,
+              child: CustomText(
+                _myHabits.length.toString(),
+                fontSize: 18,
+              ),
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white10,
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
+        ),
+      );
+    }
     //Color(0xff1F2024)
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(
         horizontal: 18,
-        vertical: 30,
+        vertical: 24,
       ),
       decoration: BoxDecoration(
         color: Color(0xff1F2024),
@@ -105,6 +132,7 @@ class MyCategory {
             fontSize: 21,
             letterSpacing: 0.2,
           ),
+          onTheRight
         ],
       ),
     );

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:habito/models/universalValues.dart' as universalValue;
+import 'package:habito/models/universalValues.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:habito/widgets/habitTile.dart';
@@ -39,13 +39,13 @@ class _AllHabitsState extends State<AllHabits> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         SizedBox(
-          height: universalValue.topPaddingBeforeHeading,
+          height: UniversalValues.topPaddingBeforeHeading,
         ),
         Container(
-          margin: EdgeInsets.symmetric(horizontal: universalValue.headingHorizontalMargin),
+          margin: EdgeInsets.symmetric(horizontal: UniversalValues.headingHorizontalMargin),
           child: CustomText(
             "Habits",
-            fontSize: universalValue.headingFontSize,
+            fontSize: UniversalValues.headingFontSize,
             fontWeight: FontWeight.bold,
           ),
         ),

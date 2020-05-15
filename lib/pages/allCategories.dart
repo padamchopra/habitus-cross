@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/models/habitoModel.dart';
-import 'package:habito/models/universalValues.dart' as universalValue;
+import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/text.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -20,15 +20,15 @@ class _AllCategoriesState extends State<AllCategories> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         SizedBox(
-          height: universalValue.topPaddingBeforeHeading,
+          height: UniversalValues.topPaddingBeforeHeading,
         ),
         Container(
           margin: EdgeInsets.symmetric(
-            horizontal: universalValue.headingHorizontalMargin,
+            horizontal: UniversalValues.headingHorizontalMargin,
           ),
           child: CustomText(
             "Categories",
-            fontSize: universalValue.headingFontSize,
+            fontSize: UniversalValues.headingFontSize,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -63,7 +63,7 @@ class _AllCategoriesState extends State<AllCategories> {
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
                       margin: EdgeInsets.only(bottom: 18),
-                      child: _myCategories[index].widget(),
+                      child: _myCategories[index].widget(showNumberOfHabits: true),
                     );
                   },
                   staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
