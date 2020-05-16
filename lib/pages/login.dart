@@ -1,6 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:habito/models/habitoModel.dart';
+import 'package:habito/models/universalValues.dart';
 import 'package:habito/pages/signup.dart';
 import 'package:habito/widgets/background.dart';
 import 'package:habito/widgets/text.dart';
@@ -17,7 +18,7 @@ class Login extends StatelessWidget {
     String email, password;
     return Stack(
       children: <Widget>[
-        Background(Colors.black),
+        Background(HabitoColors.black),
         Align(
           alignment: Alignment.topCenter,
           child: Container(
@@ -25,7 +26,7 @@ class Login extends StatelessWidget {
                 EdgeInsets.only(top: MediaQuery.of(context).size.height / 4),
             child: CustomText(
               "Habito.",
-              color: Colors.white,
+              color: HabitoColors.white,
               fontSize: 57,
               fontWeight: FontWeight.w700,
             ),
@@ -54,8 +55,8 @@ class Login extends StatelessWidget {
                     onSaved: (_email) => email = _email,
                     autocorrect: false,
                     keyboardType: TextInputType.emailAddress,
-                    cursorColor: Colors.white,
-                    style: TextStyle(color: Colors.white, fontSize: 18),
+                    cursorColor: HabitoColors.white,
+                    style: TextStyle(color: HabitoColors.white, fontSize: 18),
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -64,17 +65,17 @@ class Login extends StatelessWidget {
                           style: BorderStyle.none,
                         ),
                       ),
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: TextStyle(color: HabitoColors.white),
                       filled: true,
                       prefixIcon: Icon(
                         Icons.alternate_email,
-                        color: Color(0xff636363),
+                        color: HabitoColors.placeholderGrey,
                       ),
-                      hintStyle: new TextStyle(color: Color(0xff636363)),
+                      hintStyle: new TextStyle(color: HabitoColors.placeholderGrey),
                       hintText: "Email",
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 24, vertical: 21),
-                      fillColor: Color(0xff2c2b2e),
+                      fillColor: HabitoColors.darkTextFieldBackground,
                     ),
                   ),
                   SizedBox(
@@ -85,9 +86,9 @@ class Login extends StatelessWidget {
                     textInputAction: TextInputAction.done,
                     autocorrect: false,
                     keyboardType: TextInputType.emailAddress,
-                    cursorColor: Colors.white,
+                    cursorColor: HabitoColors.white,
                     onSaved: (_password) => password = _password,
-                    style: TextStyle(color: Colors.white, fontSize: 18),
+                    style: TextStyle(color: HabitoColors.white, fontSize: 18),
                     obscureText: true,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
@@ -97,17 +98,17 @@ class Login extends StatelessWidget {
                           style: BorderStyle.none,
                         ),
                       ),
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: TextStyle(color: HabitoColors.white),
                       filled: true,
                       prefixIcon: Icon(
                         Icons.lock_outline,
-                        color: Color(0xff636363),
+                        color: HabitoColors.placeholderGrey,
                       ),
-                      hintStyle: new TextStyle(color: Color(0xff636363)),
+                      hintStyle: new TextStyle(color: HabitoColors.placeholderGrey),
                       hintText: "Password",
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 24, vertical: 21),
-                      fillColor: Color(0xff2c2b2e),
+                      fillColor: HabitoColors.darkTextFieldBackground,
                     ),
                   ),
                   SizedBox(
@@ -117,7 +118,7 @@ class Login extends StatelessWidget {
                     builder: (BuildContext context, Widget child,
                         HabitoModel model) {
                       return MaterialButton(
-                        color: Colors.blue,
+                        color: HabitoColors.perfectBlue,
                         onPressed: () async {
                           if (_formKey.currentState.validate()) {
                             _formKey.currentState.save();
@@ -135,7 +136,7 @@ class Login extends StatelessWidget {
                           width: MediaQuery.of(context).size.width,
                           child: CustomText(
                             "Login",
-                            color: Colors.white,
+                            color: HabitoColors.white,
                             textAlign: TextAlign.center,
                             fontSize: 21,
                           ),
@@ -170,7 +171,7 @@ class Login extends StatelessWidget {
                     child: CustomText(
                       "Sign Up",
                       fontSize: 18,
-                      color: Colors.blue,
+                      color: HabitoColors.perfectBlue,
                     ),
                   ),
                 ],

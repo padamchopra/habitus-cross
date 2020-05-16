@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:habito/models/habitoModel.dart';
+import 'package:habito/models/universalValues.dart';
 import 'package:habito/pages/home.dart';
 import 'package:habito/pages/login.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -45,16 +46,16 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         theme: ThemeData(
           fontFamily: "productsans",
-          primaryColor: Colors.black,
-          accentColor: Colors.white,
-          highlightColor: Colors.white,
-          cursorColor: Colors.white,
+          primaryColor: HabitoColors.black,
+          accentColor: HabitoColors.white,
+          highlightColor: HabitoColors.white,
+          cursorColor: HabitoColors.white,
           bottomSheetTheme:
-              BottomSheetThemeData(backgroundColor: Colors.transparent),
+              BottomSheetThemeData(backgroundColor: HabitoColors.transparent),
         ),
         home: Scaffold(
           resizeToAvoidBottomPadding: false,
-          backgroundColor: Color(0xfffafafa),
+          backgroundColor: HabitoColors.almostWhite,
           body: _whatToDisplay,
         ),
       ),

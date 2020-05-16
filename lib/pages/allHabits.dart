@@ -45,6 +45,7 @@ class _AllHabitsState extends State<AllHabits> {
           margin: EdgeInsets.symmetric(horizontal: UniversalValues.headingHorizontalMargin),
           child: CustomText(
             "Habits",
+            color: HabitoColors.white,
             fontSize: UniversalValues.headingFontSize,
             fontWeight: FontWeight.bold,
           ),
@@ -53,7 +54,7 @@ class _AllHabitsState extends State<AllHabits> {
           height: 20,
         ),
         Container(
-          color: Color(0x80636363),
+          color: HabitoColors.ruler,
           width: double.infinity,
           height: 1,
         ),

@@ -36,7 +36,7 @@ class _AllCategoriesState extends State<AllCategories> {
           height: 20,
         ),
         Container(
-          color: Color(0x80636363),
+          color: HabitoColors.ruler,
           width: double.infinity,
           height: 1,
         ),

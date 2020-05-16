@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/text.dart';
 
 class HabitTile extends StatelessWidget {
@@ -8,15 +9,7 @@ class HabitTile extends StatelessWidget {
   HabitTile(this.index, this.daysCompleted, {this.tileColor});
   final EdgeInsets rightTileMargin = EdgeInsets.fromLTRB(10, 9, 25, 9);
   final EdgeInsets leftTileMargin = EdgeInsets.fromLTRB(25, 9, 10, 9);
-  final List<Color> colors = [
-    Colors.orange,
-    Colors.deepOrange,
-    Colors.pink,
-    Colors.purple,
-    Colors.deepPurple,
-    Colors.indigo
-  ];
-
+  
   @override
   Widget build(BuildContext context) {
     double x = (MediaQuery.of(context).size.width / 2) - 35;
@@ -28,7 +21,7 @@ class HabitTile extends StatelessWidget {
     }
     return Container(
       decoration: BoxDecoration(
-        color: Colors.black,
+        color: HabitoColors.black,
       ),
       margin: index % 2 == 0 ? leftTileMargin : rightTileMargin,
       width: double.infinity,
@@ -37,7 +30,7 @@ class HabitTile extends StatelessWidget {
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
-                color: Color(0xff1F2024),
+                color: HabitoColors.midnight,
                 borderRadius: BorderRadius.circular(24),
               ),
             ),
@@ -58,7 +51,7 @@ class HabitTile extends StatelessWidget {
               ),
               decoration: BoxDecoration(
                 color:
-                    tileColor == null ? Colors.blue : tileColor,
+                    tileColor == null ? HabitoColors.perfectBlue : tileColor,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(21),
                   bottomLeft: Radius.circular(21),
@@ -86,7 +79,7 @@ class HabitTile extends StatelessWidget {
                   daysCompleted.toString() + " of 21 days done",
                   fontSize: 14,
                   letterSpacing: -0.3,
-                  color: Colors.white54,
+                  color: HabitoColors.captionWhite,
                 ),
                 SizedBox(
                   height: 12,

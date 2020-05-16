@@ -3,6 +3,7 @@ import 'package:flutter_iconpicker/Models/IconPack.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/models/habitoModel.dart';
+import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/text.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -39,7 +40,7 @@ class _NewCategoryModalState extends State<NewCategoryModal> {
           child: index == _myCategory.categoryColor
               ? Icon(
                   Icons.check,
-                  color: Colors.white,
+                  color: HabitoColors.white,
                 )
               : Container(),
         ),
@@ -54,7 +55,7 @@ class _NewCategoryModalState extends State<NewCategoryModal> {
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: HabitoColors.white,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -66,7 +67,7 @@ class _NewCategoryModalState extends State<NewCategoryModal> {
                   alignment: Alignment.topCenter,
                   child: CustomText(
                     "New Category",
-                    color: Colors.black,
+                    color: HabitoColors.black,
                     textAlign: TextAlign.center,
                     letterSpacing: 0.2,
                   ),
@@ -93,17 +94,17 @@ class _NewCategoryModalState extends State<NewCategoryModal> {
               textCapitalization: TextCapitalization.words,
               autofocus: true,
               keyboardType: TextInputType.text,
-              cursorColor: Colors.blue,
-              style: TextStyle(color: Colors.black, fontSize: 18),
+              cursorColor: HabitoColors.perfectBlue,
+              style: TextStyle(color: HabitoColors.black, fontSize: 18),
               decoration: InputDecoration(
                 border: InputBorder.none,
-                labelStyle: TextStyle(color: Colors.white),
+                labelStyle: TextStyle(color: HabitoColors.white),
                 filled: true,
-                hintStyle: new TextStyle(color: Color(0xff636363)),
+                hintStyle: new TextStyle(color: HabitoColors.placeholderGrey),
                 hintText: "Name",
                 contentPadding:
                     EdgeInsets.symmetric(horizontal: 10, vertical: 21),
-                fillColor: Colors.white,
+                fillColor: HabitoColors.white,
               ),
             ),
             Row(
@@ -113,7 +114,7 @@ class _NewCategoryModalState extends State<NewCategoryModal> {
                 ),
                 CustomText(
                   "Icon",
-                  color: Colors.black,
+                  color: HabitoColors.black,
                   fontSize: 18,
                   textAlign: TextAlign.start,
                 ),
@@ -122,7 +123,7 @@ class _NewCategoryModalState extends State<NewCategoryModal> {
                 ),
                 CustomText(
                   "->",
-                  color: Colors.black,
+                  color: HabitoColors.black,
                   fontSize: 18,
                   textAlign: TextAlign.start,
                 ),
@@ -144,7 +145,7 @@ class _NewCategoryModalState extends State<NewCategoryModal> {
                   child: Container(
                     padding: EdgeInsets.all(5),
                     decoration: BoxDecoration(
-                      color: Colors.black12,
+                      color: HabitoColors.backdropBlack,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(
@@ -163,12 +164,12 @@ class _NewCategoryModalState extends State<NewCategoryModal> {
               ),
               child: Row(
                 children: <Widget>[
-                  buildColorPickerBtn(Colors.orange, 1),
-                  buildColorPickerBtn(Colors.deepOrange, 2),
-                  buildColorPickerBtn(Colors.pink, 3),
-                  buildColorPickerBtn(Colors.purple, 4),
-                  buildColorPickerBtn(Colors.deepPurple, 5),
-                  buildColorPickerBtn(Colors.indigo, 6),
+                  buildColorPickerBtn(HabitoColors.categoryPaletteOne, 1),
+                  buildColorPickerBtn(HabitoColors.categoryPaletteTwo, 2),
+                  buildColorPickerBtn(HabitoColors.categoryPaletteThree, 3),
+                  buildColorPickerBtn(HabitoColors.categoryPaletteFour, 4),
+                  buildColorPickerBtn(HabitoColors.categoryPaletteFive, 5),
+                  buildColorPickerBtn(HabitoColors.categoryPaletteSix, 6),
                 ],
               ),
             ),
@@ -176,7 +177,7 @@ class _NewCategoryModalState extends State<NewCategoryModal> {
               padding: const EdgeInsets.only(left: 10, top: 15),
               child: CustomText(
                 "-- Preview --",
-                color: Colors.black54,
+                color: HabitoColors.placeholderGrey,
                 fontSize: 12,
                 textAlign: TextAlign.start,
               ),
@@ -216,7 +217,7 @@ class _NewCategoryModalState extends State<NewCategoryModal> {
                       },
                       child: CustomText(
                         "Add",
-                        color: Colors.black,
+                        color: HabitoColors.black,
                         textAlign: TextAlign.center,
                         letterSpacing: 0.2,
                         fontSize: 18,

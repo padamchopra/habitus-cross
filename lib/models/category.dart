@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:habito/models/habit.dart';
+import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/text.dart';
 
 class MyCategory {
@@ -12,13 +13,13 @@ class MyCategory {
   String _userId;
 
   final List<Color> colors = [
-    Colors.blue,
-    Colors.orange,
-    Colors.deepOrange,
-    Colors.pink,
-    Colors.purple,
-    Colors.deepPurple,
-    Colors.indigo
+    HabitoColors.perfectBlue,
+    HabitoColors.categoryPaletteOne,
+    HabitoColors.categoryPaletteTwo,
+    HabitoColors.categoryPaletteThree,
+    HabitoColors.categoryPaletteFour,
+    HabitoColors.categoryPaletteFive,
+    HabitoColors.categoryPaletteSix
   ];
 
   MyCategory() {
@@ -99,14 +100,13 @@ class MyCategory {
               ),
             ),
             decoration: BoxDecoration(
-              color: Colors.white10,
+              color: HabitoColors.labelBackground,
               borderRadius: BorderRadius.circular(20),
             ),
           ),
         ),
       );
     }
-    //Color(0xff1F2024)
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(
@@ -114,7 +114,7 @@ class MyCategory {
         vertical: 24,
       ),
       decoration: BoxDecoration(
-        color: Color(0xff1F2024),
+        color: HabitoColors.midnight,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(

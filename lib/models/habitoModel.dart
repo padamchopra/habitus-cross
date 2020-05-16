@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:habito/models/category.dart';
+import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/text.dart';
 import 'dart:async';
 import 'package:scoped_model/scoped_model.dart';
@@ -130,7 +131,7 @@ class HabitoModel extends Model {
           return CupertinoAlertDialog(
             title: CustomText(
               title,
-              color: Colors.black,
+              color: HabitoColors.black,
               textAlign: TextAlign.center,
               fontWeight: FontWeight.bold,
             ),
@@ -138,7 +139,7 @@ class HabitoModel extends Model {
               padding: const EdgeInsets.only(top: 10.0),
               child: CustomText(
                 description,
-                color: Colors.black,
+                color: HabitoColors.black,
                 textAlign: TextAlign.center,
                 fontSize: 14,
               ),
@@ -148,7 +149,7 @@ class HabitoModel extends Model {
                 isDefaultAction: true,
                 child: CustomText(
                   'OK',
-                  color: Colors.blue,
+                  color: HabitoColors.perfectBlue,
                   textAlign: TextAlign.center,
                 ),
                 onPressed: () {

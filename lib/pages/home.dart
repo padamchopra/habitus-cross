@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habito/models/universalValues.dart';
 import 'package:habito/pages/allCategories.dart';
 import 'package:habito/pages/allHabits.dart';
 import 'package:habito/pages/profile.dart';
@@ -36,7 +37,7 @@ class _HomeState extends State<Home> {
           padding: EdgeInsets.all(12),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(50),
-            color: Colors.blue.withAlpha(50),
+            color: HabitoColors.buttonBlueBackground,
           ),
           child: IconButton(
             //TODO: Link progress function
@@ -46,7 +47,7 @@ class _HomeState extends State<Home> {
             icon: Icon(
               symbol,
               size: 30,
-              color: Colors.blue,
+              color: HabitoColors.perfectBlue,
             ),
           ),
         ),
@@ -56,7 +57,7 @@ class _HomeState extends State<Home> {
         CustomText(
           name,
           fontSize: 15,
-          color: Colors.black,
+          color: HabitoColors.black,
           letterSpacing: 0.2,
         ),
       ],
@@ -83,7 +84,7 @@ class _HomeState extends State<Home> {
             height: 360,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: HabitoColors.white,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(42),
                 topRight: Radius.circular(42),
@@ -107,14 +108,14 @@ class _HomeState extends State<Home> {
                       padding: EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
-                        color: Colors.blue,
+                        color: HabitoColors.perfectBlue,
                       ),
                       child: IconButton(
                         onPressed: () => Navigator.of(context).pop(),
                         icon: Icon(
                           Icons.close,
                           size: 30,
-                          color: Colors.white,
+                          color: HabitoColors.white,
                         ),
                       ),
                     ),
@@ -130,7 +131,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
-      backgroundColor: Colors.black,
+      backgroundColor: HabitoColors.black,
       //Suggestion: If you want to make notch transparent
       //extendBody: true,
       body: PageView(
@@ -154,16 +155,16 @@ class _HomeState extends State<Home> {
         onPressed: () {
           showMyBottomModal(context);
         },
-        backgroundColor: Colors.white,
+        backgroundColor: HabitoColors.white,
         child: Icon(
           Icons.add,
-          color: Colors.blue,
+          color: HabitoColors.perfectBlue,
           size: 39,
         ),
       ),
       bottomNavigationBar: BottomAppBar(
         shape: CircularNotchedRectangle(),
-        color: Color(0xff1F2024),
+        color: HabitoColors.midnight,
         child: Padding(
           padding: const EdgeInsets.only(
             top: 10.0,
@@ -174,10 +175,10 @@ class _HomeState extends State<Home> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               IconButton(
-                color: Color(0xff636363),
+                color: HabitoColors.placeholderGrey,
                 icon: Icon(
                   Icons.home,
-                  color: currentPage == 0 ? Colors.blue : null,
+                  color: currentPage == 0 ? HabitoColors.perfectBlue : null,
                   size: 27,
                 ),
                 onPressed: () {
@@ -185,10 +186,10 @@ class _HomeState extends State<Home> {
                 },
               ),
               IconButton(
-                color: Color(0xff636363),
+                color: HabitoColors.placeholderGrey,
                 icon: Icon(
                   Icons.apps,
-                  color: currentPage == 1 ? Colors.blue : null,
+                  color: currentPage == 1 ? HabitoColors.perfectBlue : null,
                   size: 27,
                 ),
                 onPressed: () {
@@ -199,10 +200,10 @@ class _HomeState extends State<Home> {
                 width: 60,
               ),
               IconButton(
-                color: Color(0xff636363),
+                color: HabitoColors.placeholderGrey,
                 icon: Icon(
                   Icons.assignment_turned_in,
-                  color: currentPage == 2 ? Colors.blue : null,
+                  color: currentPage == 2 ? HabitoColors.perfectBlue : null,
                   size: 27,
                 ),
                 onPressed: () {
@@ -210,10 +211,10 @@ class _HomeState extends State<Home> {
                 },
               ),
               IconButton(
-                color: Color(0xff636363),
+                color: HabitoColors.placeholderGrey,
                 icon: Icon(
                   currentPage == 3 ? Icons.person : Icons.perm_identity,
-                  color: currentPage == 3 ? Colors.blue : null,
+                  color: currentPage == 3 ? HabitoColors.perfectBlue : null,
                   size: 27,
                 ),
                 onPressed: () {

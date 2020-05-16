@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habito/models/universalValues.dart';
 
 class CustomText extends StatelessWidget {
   final String content;
@@ -23,7 +24,7 @@ class CustomText extends StatelessWidget {
       style: TextStyle(
           fontFamily: 'ProductSans',
           fontWeight: fontWeight == null ? FontWeight.normal : fontWeight,
-          color: color == null ? Colors.white : color,
+          color: color == null ? HabitoColors.white : color,
           letterSpacing: letterSpacing == null ? 0 : letterSpacing,
           fontSize: fontSize == null ? 20 : fontSize,
           decoration:
