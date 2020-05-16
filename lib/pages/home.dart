@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habito/pages/allCategories.dart';
 import 'package:habito/pages/allHabits.dart';
 import 'package:habito/pages/profile.dart';
 import 'package:habito/pages/signup.dart';
@@ -96,7 +97,6 @@ class _HomeState extends State<Home> {
                     _buildAddButton(Icons.lightbulb_outline, "Habit", null),
                     _buildAddButton(Icons.label_outline, "Category",
                         () => addNewCategory(context)),
-                    //_buildAddButton(Icons.done_outline, "Progress", null),
                     _buildAddButton(Icons.share, "Share", null),
                   ],
                 ),
@@ -131,7 +131,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.black,
-      //TODO: If make notch transparent
+      //Suggestion: If you want to make notch transparent
       //extendBody: true,
       body: PageView(
         controller: controller,
@@ -144,7 +144,7 @@ class _HomeState extends State<Home> {
         //TODO: Change pages here
         children: <Widget>[
           AllHabits(),
-          Signup(),
+          AllCategories(),
           Signup(),
           Profile(widget.updateUserState),
         ],
@@ -162,9 +162,7 @@ class _HomeState extends State<Home> {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        shape: CircularNotchedRectangle(
-          radiusDivision: 1.5,
-        ),
+        shape: CircularNotchedRectangle(),
         color: Color(0xff1F2024),
         child: Padding(
           padding: const EdgeInsets.only(

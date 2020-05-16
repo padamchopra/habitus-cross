@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:habito/models/habit.dart';
 import 'package:habito/widgets/text.dart';
@@ -41,12 +42,20 @@ class MyCategory {
     this._icon = icon;
   }
 
+  set categoryIconFromCodePoint(int codePoint) {
+    this._icon = IconData(codePoint, fontFamily: "MaterialIcons");
+  }
+
   set documentId(String id) {
     this._documentId = id;
   }
 
   set userId(String id) {
     this._userId = id;
+  }
+
+  get numberOfHabits {
+    return _myHabits.length;
   }
 
   get userId {
@@ -73,13 +82,36 @@ class MyCategory {
     return _icon;
   }
 
-  Widget widget() {
+  Widget widget({bool showNumberOfHabits}) {
+    Widget onTheRight = Container();
+    if (showNumberOfHabits != null && showNumberOfHabits) {
+      onTheRight = Expanded(
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: Container(
+            width: 36,
+            height: 36,
+            child: Align(
+              alignment: Alignment.center,
+              child: CustomText(
+                _myHabits.length.toString(),
+                fontSize: 18,
+              ),
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white10,
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
+        ),
+      );
+    }
     //Color(0xff1F2024)
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(
         horizontal: 18,
-        vertical: 30,
+        vertical: 24,
       ),
       decoration: BoxDecoration(
         color: Color(0xff1F2024),
@@ -100,11 +132,17 @@ class MyCategory {
             fontSize: 21,
             letterSpacing: 0.2,
           ),
+          onTheRight
         ],
       ),
     );
   }
 
-  Map<String, dynamic> toJson() =>
-      {"name": _name, "color": _color, "uid": _userId, "icon": _icon.codePoint};
+  Map<String, dynamic> toJson() => {
+        "name": _name,
+        "color": _color,
+        "uid": _userId,
+        "icon": _icon.codePoint,
+        "createdAt": FieldValue.serverTimestamp()
+      };
 }
