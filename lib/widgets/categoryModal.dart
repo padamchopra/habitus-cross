@@ -7,14 +7,14 @@ import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/text.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-class NewCategoryModal extends StatefulWidget {
+class CategoryModal extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _NewCategoryModalState();
+    return _CategoryModalState();
   }
 }
 
-class _NewCategoryModalState extends State<NewCategoryModal> {
+class _CategoryModalState extends State<CategoryModal> {
   bool iconSet = false;
   MyCategory _myCategory = MyCategory();
 

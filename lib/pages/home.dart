@@ -4,7 +4,7 @@ import 'package:habito/pages/allCategories.dart';
 import 'package:habito/pages/allHabits.dart';
 import 'package:habito/pages/profile.dart';
 import 'package:habito/pages/signup.dart';
-import 'package:habito/widgets/newCategoryModal.dart';
+import 'package:habito/widgets/categoryModal.dart';
 import 'package:habito/widgets/text.dart';
 
 class Home extends StatefulWidget {
@@ -70,7 +70,7 @@ class _HomeState extends State<Home> {
       context: context,
       isScrollControlled: true,
       builder: (BuildContext _context) {
-        return NewCategoryModal();
+        return CategoryModal();
       },
     );
   }
