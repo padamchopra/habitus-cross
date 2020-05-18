@@ -30,6 +30,7 @@ class HabitoColors{
   static Color labelBackground = Colors.white10;
 
   static Color perfectBlue = Colors.blue;
+  static Color perfectRed = Colors.red;
 
   static Color categoryPaletteOne = Colors.orange;
   static Color categoryPaletteTwo = Colors.deepOrange;

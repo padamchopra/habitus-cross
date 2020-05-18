@@ -37,7 +37,7 @@ class _CategoryModalState extends State<CategoryModal> {
             ),
           ),
           height: 30,
-          child: index == _myCategory.categoryColor
+          child: index == _myCategory.categoryColorIndex
               ? Icon(
                   Icons.check,
                   color: HabitoColors.white,
@@ -94,6 +94,7 @@ class _CategoryModalState extends State<CategoryModal> {
               textCapitalization: TextCapitalization.words,
               autofocus: true,
               keyboardType: TextInputType.text,
+              maxLength: 15,
               cursorColor: HabitoColors.perfectBlue,
               style: TextStyle(color: HabitoColors.black, fontSize: 18),
               decoration: InputDecoration(
@@ -103,7 +104,7 @@ class _CategoryModalState extends State<CategoryModal> {
                 hintStyle: new TextStyle(color: HabitoColors.placeholderGrey),
                 hintText: "Name",
                 contentPadding:
-                    EdgeInsets.symmetric(horizontal: 10, vertical: 21),
+                    EdgeInsets.fromLTRB(10, 21, 10, 0),
                 fillColor: HabitoColors.white,
               ),
             ),

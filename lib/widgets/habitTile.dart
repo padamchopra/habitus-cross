@@ -1,29 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:habito/models/category.dart';
+import 'package:habito/models/habit.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/text.dart';
 
-class HabitTile extends StatelessWidget {
+class HabitTile extends StatefulWidget {
   final int index;
-  final Color tileColor;
-  final int daysCompleted;
-  HabitTile(this.index, this.daysCompleted, {this.tileColor});
+  final MyHabit myHabit;
+  final MyCategory myCategory;
+  HabitTile(
+    this.index,
+    this.myHabit,
+    this.myCategory
+  );
+  @override
+  State<StatefulWidget> createState() {
+    return _HabitTileState();
+  }
+}
+
+class _HabitTileState extends State<HabitTile>{
   final EdgeInsets rightTileMargin = EdgeInsets.fromLTRB(10, 9, 25, 9);
   final EdgeInsets leftTileMargin = EdgeInsets.fromLTRB(25, 9, 10, 9);
-  
+  int _daysCompleted = 0;
+
+  initState() {
+    super.initState();
+    new Future.delayed(Duration(milliseconds: 100)).then((_) {
+      setState(() {
+        _daysCompleted = 21;
+      });
+    });
+    new Future.delayed(Duration(milliseconds: 800)).then((_) {
+      setState(() {
+        _daysCompleted = widget.myHabit.daysCompleted;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double x = (MediaQuery.of(context).size.width / 2) - 35;
     double rightGap = x - 21;
-    if (daysCompleted == 0) {
+    if (_daysCompleted == 0) {
       rightGap = x;
     } else {
-      rightGap -= (daysCompleted / 21) * rightGap;
+      rightGap -= (_daysCompleted / 21) * rightGap;
     }
     return Container(
       decoration: BoxDecoration(
         color: HabitoColors.black,
       ),
-      margin: index % 2 == 0 ? leftTileMargin : rightTileMargin,
+      margin: widget.index % 2 == 0 ? leftTileMargin : rightTileMargin,
       width: double.infinity,
       child: Stack(
         children: <Widget>[
@@ -39,8 +67,7 @@ class HabitTile extends StatelessWidget {
             duration: Duration(
               milliseconds: 700,
             ),
-            curve: Curves
-                .fastOutSlowIn,
+            curve: Curves.fastOutSlowIn,
             left: 0,
             top: 0,
             bottom: 0,
@@ -50,15 +77,14 @@ class HabitTile extends StatelessWidget {
                 milliseconds: 700,
               ),
               decoration: BoxDecoration(
-                color:
-                    tileColor == null ? HabitoColors.perfectBlue : tileColor,
+                color: widget.myCategory.categoryColor,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(21),
                   bottomLeft: Radius.circular(21),
-                  topRight: Radius.circular(
-                      rightGap <= 21 ? (21 - rightGap) : 0),
-                  bottomRight: Radius.circular(
-                      rightGap <= 21 ? (21 - rightGap) : 0),
+                  topRight:
+                      Radius.circular(rightGap <= 21 ? (21 - rightGap) : 0),
+                  bottomRight:
+                      Radius.circular(rightGap <= 21 ? (21 - rightGap) : 0),
                 ),
               ),
             ),
@@ -68,15 +94,15 @@ class HabitTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                SizedBox(height: 24),
+                SizedBox(height: 18),
                 CustomText(
-                  "Cooking Class",
+                  widget.myHabit.title,
                   fontSize: 24,
                   letterSpacing: 0.2,
                 ),
-                SizedBox(height: 12),
+                SizedBox(height: 18),
                 CustomText(
-                  daysCompleted.toString() + " of 21 days done",
+                  widget.myHabit.daysCompleted.toString() + " of 21 days done",
                   fontSize: 14,
                   letterSpacing: -0.3,
                   color: HabitoColors.captionWhite,

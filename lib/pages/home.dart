@@ -5,6 +5,7 @@ import 'package:habito/pages/allHabits.dart';
 import 'package:habito/pages/profile.dart';
 import 'package:habito/pages/signup.dart';
 import 'package:habito/widgets/categoryModal.dart';
+import 'package:habito/widgets/habitModal.dart';
 import 'package:habito/widgets/text.dart';
 
 class Home extends StatefulWidget {
@@ -64,6 +65,17 @@ class _HomeState extends State<Home> {
     );
   }
 
+  void addNewHabit(BuildContext context) {
+    Navigator.of(context).pop();
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext _context) {
+        return HabitModal();
+      },
+    );
+  }
+
   void addNewCategory(BuildContext context) {
     Navigator.of(context).pop();
     showModalBottomSheet(
@@ -95,7 +107,7 @@ class _HomeState extends State<Home> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    _buildAddButton(Icons.lightbulb_outline, "Habit", null),
+                    _buildAddButton(Icons.lightbulb_outline, "Habit", () => addNewHabit(context)),
                     _buildAddButton(Icons.label_outline, "Category",
                         () => addNewCategory(context)),
                     _buildAddButton(Icons.share, "Share", null),

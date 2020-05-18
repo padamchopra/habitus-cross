@@ -1,16 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:habito/models/habit.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/text.dart';
 
 class MyCategory {
   String _name;
-  List<MyHabit> _myHabits;
+  List<String> _myHabits;
   int _color;
   IconData _icon;
   String _documentId;
   String _userId;
+  bool _deleted;
 
   final List<Color> colors = [
     HabitoColors.perfectBlue,
@@ -29,6 +29,7 @@ class MyCategory {
     this._name = "";
     this._documentId = "";
     this._userId = "";
+    this._deleted = false;
   }
 
   set categoryName(String name) {
@@ -75,16 +76,25 @@ class MyCategory {
     return _myHabits;
   }
 
-  get categoryColor {
+  get categoryColorIndex {
     return _color;
+  }
+
+  get categoryColor{
+    return colors[_color];
   }
 
   get categoryIcon {
     return _icon;
   }
 
+  void addHabitToList(String id){
+    _myHabits.insert(0, id);
+  }
+
   Widget widget({bool showNumberOfHabits}) {
     Widget onTheRight = Container();
+    double _rightPadding = 0;
     if (showNumberOfHabits != null && showNumberOfHabits) {
       onTheRight = Expanded(
         child: Align(
@@ -127,12 +137,40 @@ class MyCategory {
           SizedBox(
             width: 9,
           ),
-          CustomText(
-            _name,
-            fontSize: 21,
-            letterSpacing: 0.2,
+          Padding(
+            padding: EdgeInsets.only(right: _rightPadding),
+            child: CustomText(
+              _name,
+              fontSize: 21,
+              letterSpacing: 0.2,
+            ),
           ),
           onTheRight
+        ],
+      ),
+    );
+  }
+
+  Widget spinnerTile() {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        vertical: 6,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Icon(
+            _icon,
+            color: HabitoColors.black,
+          ),
+          SizedBox(
+            width: 6,
+          ),
+          CustomText(
+            _name,
+            color: HabitoColors.black,
+            fontSize: 18,
+          )
         ],
       ),
     );
@@ -143,6 +181,7 @@ class MyCategory {
         "color": _color,
         "uid": _userId,
         "icon": _icon.codePoint,
+        "deleted": _deleted,
         "createdAt": FieldValue.serverTimestamp()
       };
 }
