@@ -163,7 +163,7 @@ class HabitoModel extends Model {
   //fetch all saved habits for current user
   void fetchHabits() async {
     if (_user != null) {
-      _habitsLoaded = false;
+      _habitsLoaded = true;
       _myHabitsList.clear();
       String userId = _user.uid;
       QuerySnapshot querySnapshot = await _firestore
@@ -198,13 +198,12 @@ class HabitoModel extends Model {
 
   //fetch number of habits
   int numberOfHabits() {
-    /*if (_categoriesLoaded) {
-      return _myCategoriesList.length;
+    if (_habitsLoaded) {
+      return _myHabitsList.length;
     } else {
-      fetchCategories();
+      fetchHabits();
       return 0;
-    }*/
-    return _myHabitsList.length;
+    }
   }
 
   get myHabits {
