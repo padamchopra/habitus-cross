@@ -34,7 +34,7 @@ class HabitoModel extends Model {
     });
   }
 
-  //Handle sign ins, outs, and ups
+  //authentication region begins
   Future<bool> checkIfSignedIn() async {
     _user = await _auth.currentUser();
     if (_user == null) {
@@ -71,7 +71,9 @@ class HabitoModel extends Model {
     }
   }
 
-  //add new category to the firebase
+  //region ends
+
+  //categories region starts
   Future<bool> addNewCategory(MyCategory myCategory) async {
     if (_user != null) {
       myCategory.userId = _user.uid;
@@ -87,7 +89,6 @@ class HabitoModel extends Model {
     return false;
   }
 
-  //fetch all saved categories for current user
   void fetchCategories() async {
     if (_user != null) {
       _categoriesLoaded = true;
@@ -96,7 +97,7 @@ class HabitoModel extends Model {
       QuerySnapshot querySnapshot = await _firestore
           .collection("categories")
           .where("uid", isEqualTo: userId)
-          .orderBy("createdAt", descending: true)
+          .orderBy("createdAt", descending: false)
           .getDocuments();
       for (DocumentSnapshot documentSnapshot in querySnapshot.documents) {
         Map<String, dynamic> data = documentSnapshot.data;
@@ -127,7 +128,6 @@ class HabitoModel extends Model {
     }
   }
 
-  //fetch number of categories
   int numberOfCategories() {
     if (_categoriesLoaded) {
       return _myCategoriesList.length;
@@ -141,7 +141,9 @@ class HabitoModel extends Model {
     return _myCategoriesList;
   }
 
-  //add new habit to the firebase
+  //region ends
+
+  //Habit region starts
   Future<bool> addNewHabit(MyHabit myHabit) async {
     if (_user != null) {
       myHabit.userId = _user.uid;
@@ -160,7 +162,6 @@ class HabitoModel extends Model {
     return false;
   }
 
-  //fetch all saved habits for current user
   void fetchHabits() async {
     if (_user != null) {
       _habitsLoaded = true;
@@ -196,7 +197,6 @@ class HabitoModel extends Model {
     }
   }
 
-  //fetch number of habits
   int numberOfHabits() {
     if (_habitsLoaded) {
       return _myHabitsList.length;
@@ -209,7 +209,9 @@ class HabitoModel extends Model {
   get myHabits {
     return _myHabitsList;
   }
+  //region ends
 
+  //Habit Category intersection region starts
   void addHabitToCategory(
       String habitDocumentId, String categoryDocumentId) async {
     _myCategoriesList.forEach((category) {
@@ -219,6 +221,8 @@ class HabitoModel extends Model {
       }
     });
   }
+  
+  //region ends
 
   //warning
   Future<void> neverSatisfied(

@@ -8,34 +8,34 @@ class HabitTile extends StatefulWidget {
   final int index;
   final MyHabit myHabit;
   final MyCategory myCategory;
-  HabitTile(
-    this.index,
-    this.myHabit,
-    this.myCategory
-  );
+  HabitTile(this.index, this.myHabit, this.myCategory);
   @override
   State<StatefulWidget> createState() {
     return _HabitTileState();
   }
 }
 
-class _HabitTileState extends State<HabitTile>{
+class _HabitTileState extends State<HabitTile> {
   final EdgeInsets rightTileMargin = EdgeInsets.fromLTRB(10, 9, 25, 9);
   final EdgeInsets leftTileMargin = EdgeInsets.fromLTRB(25, 9, 10, 9);
   int _daysCompleted = 0;
 
   initState() {
     super.initState();
-    new Future.delayed(Duration(milliseconds: 100)).then((_) {
-      setState(() {
-        _daysCompleted = 21;
+    if (widget.myHabit.daysCompleted == 0) {
+      _daysCompleted = 0;
+    } else {
+      new Future.delayed(Duration(milliseconds: 100)).then((_) {
+        setState(() {
+          _daysCompleted = 21;
+        });
       });
-    });
-    new Future.delayed(Duration(milliseconds: 800)).then((_) {
-      setState(() {
-        _daysCompleted = widget.myHabit.daysCompleted;
+      new Future.delayed(Duration(milliseconds: 800)).then((_) {
+        setState(() {
+          _daysCompleted = widget.myHabit.daysCompleted;
+        });
       });
-    });
+    }
   }
 
   @override
