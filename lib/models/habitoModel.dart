@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:habito/models/category.dart';
+import 'package:habito/models/habit.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/text.dart';
 import 'dart:async';
@@ -14,21 +15,26 @@ class HabitoModel extends Model {
   FirebaseUser _user;
   Firestore _firestore;
   List<MyCategory> _myCategoriesList;
+  List<MyHabit> _myHabitsList;
   bool _categoriesLoaded;
+  bool _habitsLoaded;
 
   HabitoModel() {
     _categoriesLoaded = false;
+    _habitsLoaded = false;
     _auth = FirebaseAuth.instance;
     _firestore = Firestore.instance;
     _myCategoriesList = [];
+    _myHabitsList = [];
     checkIfSignedIn().then((value) {
       if (value) {
         fetchCategories();
+        fetchHabits();
       }
     });
   }
 
-  //Handle sign ins, outs, and ups
+  //authentication region begins
   Future<bool> checkIfSignedIn() async {
     _user = await _auth.currentUser();
     if (_user == null) {
@@ -65,7 +71,9 @@ class HabitoModel extends Model {
     }
   }
 
-  //add new category to the firebase
+  //region ends
+
+  //categories region starts
   Future<bool> addNewCategory(MyCategory myCategory) async {
     if (_user != null) {
       myCategory.userId = _user.uid;
@@ -81,7 +89,6 @@ class HabitoModel extends Model {
     return false;
   }
 
-  //fetch all saved categories for current user
   void fetchCategories() async {
     if (_user != null) {
       _categoriesLoaded = true;
@@ -90,7 +97,7 @@ class HabitoModel extends Model {
       QuerySnapshot querySnapshot = await _firestore
           .collection("categories")
           .where("uid", isEqualTo: userId)
-          .orderBy("createdAt", descending: true)
+          .orderBy("createdAt", descending: false)
           .getDocuments();
       for (DocumentSnapshot documentSnapshot in querySnapshot.documents) {
         Map<String, dynamic> data = documentSnapshot.data;
@@ -106,7 +113,21 @@ class HabitoModel extends Model {
     }
   }
 
-  //fetch number of categories
+  MyCategory findCategoryById(String id) {
+    if (id == "") {
+      return MyCategory();
+    }
+    if (_categoriesLoaded) {
+      return _myCategoriesList.firstWhere(
+        (element) => element.documentId == id,
+        orElse: () => MyCategory(),
+      );
+    } else {
+      fetchCategories();
+      return findCategoryById(id);
+    }
+  }
+
   int numberOfCategories() {
     if (_categoriesLoaded) {
       return _myCategoriesList.length;
@@ -119,6 +140,89 @@ class HabitoModel extends Model {
   get myCategories {
     return _myCategoriesList;
   }
+
+  //region ends
+
+  //Habit region starts
+  Future<bool> addNewHabit(MyHabit myHabit) async {
+    if (_user != null) {
+      myHabit.userId = _user.uid;
+      DocumentReference documentReference =
+          _firestore.collection("habits").document();
+      await documentReference.setData(myHabit.toJson());
+      //now add habit locally
+      myHabit.documentId = documentReference.documentID;
+      _myHabitsList.insert(0, myHabit);
+      notifyListeners();
+      if (myHabit.category != "") {
+        addHabitToCategory(myHabit.documentId, myHabit.category);
+      }
+      return true;
+    }
+    return false;
+  }
+
+  void fetchHabits() async {
+    if (_user != null) {
+      _habitsLoaded = true;
+      _myHabitsList.clear();
+      String userId = _user.uid;
+      QuerySnapshot querySnapshot = await _firestore
+          .collection("habits")
+          .where("uid", isEqualTo: userId)
+          .orderBy("createdAt", descending: false)
+          .getDocuments();
+      for (DocumentSnapshot documentSnapshot in querySnapshot.documents) {
+        Map<String, dynamic> data = documentSnapshot.data;
+        MyHabit currentHabit = new MyHabit();
+        currentHabit.title = data["name"];
+        currentHabit.description = data["notes"];
+        Timestamp createdAt = data["createdAt"];
+        print("created at $createdAt");
+        currentHabit.createdAt = createdAt.toDate();
+        currentHabit.isFinished = data["finished"];
+        if (currentHabit.isFinished) {
+          Timestamp finishedAt = data["finishedAt"];
+          currentHabit.finishedAt = finishedAt.toDate();
+        }
+        currentHabit.category = data["category"];
+        currentHabit.daysCompleted = data["numberOfDays"];
+        currentHabit.setUpdateTimesFromFirestore(data["updateTimes"]);
+        currentHabit.isDeleted = data["deleted"];
+        currentHabit.userId = data["uid"];
+        currentHabit.documentId = documentSnapshot.documentID;
+        _myHabitsList.add(currentHabit);
+        notifyListeners();
+      }
+    }
+  }
+
+  int numberOfHabits() {
+    if (_habitsLoaded) {
+      return _myHabitsList.length;
+    } else {
+      fetchHabits();
+      return 0;
+    }
+  }
+
+  get myHabits {
+    return _myHabitsList;
+  }
+  //region ends
+
+  //Habit Category intersection region starts
+  void addHabitToCategory(
+      String habitDocumentId, String categoryDocumentId) async {
+    _myCategoriesList.forEach((category) {
+      if (category.documentId == categoryDocumentId) {
+        category.addHabitToList(habitDocumentId);
+        notifyListeners();
+      }
+    });
+  }
+  
+  //region ends
 
   //warning
   Future<void> neverSatisfied(

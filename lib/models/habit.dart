@@ -1,4 +1,4 @@
-import 'package:habito/models/category.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MyHabit {
   String _title;
@@ -6,39 +6,104 @@ class MyHabit {
   DateTime _createdAt;
   bool _finished;
   DateTime _finishedAt;
-  MyCategory _category;
+  String _category;
   int _numberOfDays;
   List<DateTime> _updateTimes;
   bool _deleted;
+  String _userId;
+  String _documentId;
 
   MyHabit() {
-    this._createdAt = DateTime.now();
     this._finished = false;
-    this._finishedAt = _createdAt.add(Duration(days: 21));
-    this._category = MyCategory();
+    this._category = "";
     this._numberOfDays = 0;
     this._updateTimes = [];
+    this._deleted = false;
   }
 
-  set habitTitle(String title) {
+  set title(String title) {
     this._title = title;
   }
 
-  set habitDescription(String description) {
+  set documentId(String id) {
+    this._documentId = id;
+  }
+
+  set createdAt(DateTime date) {
+    this._createdAt = date;
+  }
+
+  set finishedAt(DateTime date) {
+    this._finishedAt = date;
+  }
+
+  set description(String description) {
     this._description = description;
   }
 
-  set habitFinished(bool finished) {
+  set isFinished(bool finished) {
     this._finished = finished;
     this._finishedAt = DateTime.now();
   }
 
-  set habitCategory(MyCategory category) {
+  set category(String category) {
     this._category = category;
   }
 
-  set habitDeleted(bool delete){
+  set isDeleted(bool delete) {
     this._deleted = delete;
+  }
+
+  set userId(String userId) {
+    this._userId = userId;
+  }
+
+  set daysCompleted(int days) {
+    this._numberOfDays = days;
+  }
+
+  set updateTimes(List<DateTime> updates) {
+    this._updateTimes = updates;
+  }
+
+  get title {
+    return _title;
+  }
+
+  get documentId {
+    return _documentId;
+  }
+
+  get description {
+    return _description;
+  }
+
+  get createdAt {
+    return _createdAt;
+  }
+
+  get isFinished {
+    return _finished;
+  }
+
+  get finishedAt {
+    return _finishedAt;
+  }
+
+  get category {
+    return _category;
+  }
+
+  get isDeleted {
+    return _deleted;
+  }
+
+  get userId {
+    return _userId;
+  }
+
+  get daysCompleted {
+    return _numberOfDays;
   }
 
   int markDoneForToday() {
@@ -52,11 +117,11 @@ class MyHabit {
       if (checkIfOnTrack()) {
         this._numberOfDays++;
         this._updateTimes.insert(0, now);
-        if(_numberOfDays>=21){
+        if (_numberOfDays >= 21) {
           this._finished = true;
           this._finishedAt = DateTime.now();
           return 3;
-        }else{
+        } else {
           return 0;
         }
       } else {
@@ -68,7 +133,8 @@ class MyHabit {
   }
 
   bool checkIfOnTrack() {
-    if(_updateTimes.length == 0 || (DateTime.now().day - _updateTimes[0].day)==1){
+    if (_updateTimes.length == 0 ||
+        (DateTime.now().day - _updateTimes[0].day) == 1) {
       return true;
     }
     return false;
@@ -81,27 +147,23 @@ class MyHabit {
     return false;
   }
 
-  get habitTitle{
-    return _title;
+  void setUpdateTimesFromFirestore(List<dynamic> updates) {
+    updates.forEach((element) {
+      Timestamp current = element;
+      this._updateTimes.add(current.toDate());
+    });
   }
 
-  get habitDescription{
-    return _description;
-  }
-
-  get habitFinished {
-    return _finished;
-  }
-
-  get habitFinishedAt {
-    return _finishedAt;
-  }
-
-  get habitCategory {
-    return _category;
-  }
-
-  get habitDeleted {
-    return _deleted;
-  }
+  Map<String, dynamic> toJson() => {
+        "name": _title,
+        "notes": _description,
+        "createdAt": FieldValue.serverTimestamp(),
+        "finished": _finished,
+        "finishedAt": FieldValue.serverTimestamp(),
+        "category": _category,
+        "numberOfDays": _numberOfDays,
+        "updateTimes": _updateTimes,
+        "deleted": _deleted,
+        "uid": _userId,
+      };
 }

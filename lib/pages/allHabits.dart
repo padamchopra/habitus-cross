@@ -1,10 +1,11 @@
-import 'dart:async';
-import 'dart:math';
+import 'package:habito/models/habit.dart';
+import 'package:habito/models/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:habito/widgets/habitTile.dart';
 import 'package:habito/widgets/text.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class AllHabits extends StatefulWidget {
   @override
@@ -14,25 +15,6 @@ class AllHabits extends StatefulWidget {
 }
 
 class _AllHabitsState extends State<AllHabits> {
-  List daysCompleted = [0,0,0,0,0,0,0,0,0,0];
-  initState() {
-    super.initState();
-    new Future.delayed(Duration(milliseconds: 100)).then((_) {
-      setState(() {
-        for (var i = 0; i < 10; i++) {
-          daysCompleted[i] = 21;
-        }
-      });
-    });
-    new Future.delayed(Duration(milliseconds: 800)).then((_) {
-      setState(() {
-        for (var i = 0; i < 10; i++) {
-          daysCompleted[i] = Random().nextInt(22);
-        }
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -42,7 +24,8 @@ class _AllHabitsState extends State<AllHabits> {
           height: UniversalValues.topPaddingBeforeHeading,
         ),
         Container(
-          margin: EdgeInsets.symmetric(horizontal: UniversalValues.headingHorizontalMargin),
+          margin: EdgeInsets.symmetric(
+              horizontal: UniversalValues.headingHorizontalMargin),
           child: CustomText(
             "Habits",
             color: HabitoColors.white,
@@ -59,14 +42,29 @@ class _AllHabitsState extends State<AllHabits> {
           height: 1,
         ),
         Expanded(
-          child: StaggeredGridView.countBuilder(
-            padding: EdgeInsets.only(top: 22.5),
-            crossAxisCount: 2,
-            itemCount: 10,
-            itemBuilder: (BuildContext context, int index) {
-              return HabitTile(index, daysCompleted[index]);
+          child: ScopedModelDescendant<HabitoModel>(
+            builder: (context, child, model) {
+              int numberOfHabits = model.numberOfHabits();
+                if (numberOfHabits == 0) {
+                  return Center(
+                    child: CustomText(
+                      "Start tracking a habit you want \nto develop by tapping +",
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                }
+              List<MyHabit> _myHabitsList = model.myHabits;
+              Map<int, MyHabit> _myHabits = _myHabitsList.asMap();
+              return StaggeredGridView.countBuilder(
+                padding: EdgeInsets.only(top: 22.5),
+                crossAxisCount: 2,
+                itemCount: numberOfHabits,
+                itemBuilder: (BuildContext context, int index) {
+                  return HabitTile(index, _myHabits[index], model.findCategoryById(_myHabits[index].category));
+                },
+                staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
+              );
             },
-            staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
           ),
         ),
       ],
