@@ -143,7 +143,7 @@ class HabitoModel extends Model {
 
   //region ends
 
-  //Habit region starts
+  //Habit collection region starts
   Future<bool> addNewHabit(MyHabit myHabit) async {
     if (_user != null) {
       myHabit.userId = _user.uid;
@@ -176,17 +176,14 @@ class HabitoModel extends Model {
         MyHabit currentHabit = new MyHabit();
         currentHabit.title = data["name"];
         currentHabit.description = data["notes"];
-        Timestamp createdAt = data["createdAt"];
-        print("created at $createdAt");
-        currentHabit.createdAt = createdAt.toDate();
+        currentHabit.createdAt = data["createdAt"];
         currentHabit.isFinished = data["finished"];
         if (currentHabit.isFinished) {
-          Timestamp finishedAt = data["finishedAt"];
-          currentHabit.finishedAt = finishedAt.toDate();
+          currentHabit.finishedAt = data["finishedAt"];
         }
         currentHabit.category = data["category"];
         currentHabit.daysCompleted = data["numberOfDays"];
-        currentHabit.setUpdateTimesFromFirestore(data["updateTimes"]);
+        currentHabit.updateTimes = data["updateTimes"];
         currentHabit.isDeleted = data["deleted"];
         currentHabit.userId = data["uid"];
         currentHabit.documentId = documentSnapshot.documentID;
@@ -209,6 +206,27 @@ class HabitoModel extends Model {
 
   get myHabits {
     return _myHabitsList;
+  }
+  //region ends
+
+  //habit updation region starts
+  int markDoneForToday(MyHabit myHabit) {
+    /// 0: success in updating
+    /// 1: already updated today
+    /// 2: more than 1 day in difference
+    /// 3: completed 21 days
+    /// 4: some other error 
+    int resultCode = 4;
+    _myHabitsList.forEach((habit) {
+      if (habit.documentId == myHabit.documentId) {
+        resultCode = habit.markAsDone();
+        if(resultCode!=4){
+          _firestore.collection("habits").document(habit.documentId).updateData(habit.toJson());
+        }
+      }
+    });
+    notifyListeners();
+    return resultCode;
   }
   //region ends
 
@@ -242,7 +260,6 @@ class HabitoModel extends Model {
       }
     });
   }
-
   //region ends
 
   //warning

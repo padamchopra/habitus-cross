@@ -3,12 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class MyHabit {
   String _title;
   String _description;
-  DateTime _createdAt;
+  Timestamp _createdAt;
   bool _finished;
-  DateTime _finishedAt;
+  Timestamp _finishedAt;
   String _category;
   int _numberOfDays;
-  List<DateTime> _updateTimes;
+  List<Timestamp> _updateTimes;
   bool _deleted;
   String _userId;
   String _documentId;
@@ -19,6 +19,7 @@ class MyHabit {
     this._numberOfDays = 0;
     this._updateTimes = [];
     this._deleted = false;
+    this._createdAt = Timestamp.now();
   }
 
   set title(String title) {
@@ -29,11 +30,11 @@ class MyHabit {
     this._documentId = id;
   }
 
-  set createdAt(DateTime date) {
+  set createdAt(Timestamp date) {
     this._createdAt = date;
   }
 
-  set finishedAt(DateTime date) {
+  set finishedAt(Timestamp date) {
     this._finishedAt = date;
   }
 
@@ -43,7 +44,7 @@ class MyHabit {
 
   set isFinished(bool finished) {
     this._finished = finished;
-    this._finishedAt = DateTime.now();
+    this._finishedAt = Timestamp.now();
   }
 
   set category(String category) {
@@ -62,8 +63,11 @@ class MyHabit {
     this._numberOfDays = days;
   }
 
-  set updateTimes(List<DateTime> updates) {
-    this._updateTimes = updates;
+  set updateTimes(List<dynamic> updates) {
+    updates.forEach((element) {
+      Timestamp timestamp = element;
+      _updateTimes.insert(0, timestamp);
+    });
   }
 
   get title {
@@ -106,58 +110,62 @@ class MyHabit {
     return _numberOfDays;
   }
 
-  int markDoneForToday() {
+  get updateTimes {
+    return _updateTimes;
+  }
+
+  int markAsDone() {
     /// 0: success in updating
     /// 1: already updated today
     /// 2: more than 1 day in difference
     /// 3: completed 21 days
-    if (!alreadyUpdated()) {
-      //not updated today
-      DateTime now = DateTime.now();
-      if (checkIfOnTrack()) {
-        this._numberOfDays++;
-        this._updateTimes.insert(0, now);
-        if (_numberOfDays >= 21) {
-          this._finished = true;
-          this._finishedAt = DateTime.now();
-          return 3;
-        } else {
-          return 0;
-        }
+    /// 4: some other error
+    if (_numberOfDays == 0) {
+      ++_numberOfDays;
+      _updateTimes.insert(0, Timestamp.now());
+      return 0;
+    }
+    Timestamp latest = _updateTimes.asMap()[0];
+    Timestamp today = Timestamp.now();
+    if (today.toDate().month == latest.toDate().month) {
+      if (today.toDate().day - latest.toDate().day > 1) {
+        _updateTimes.clear();
+        _numberOfDays = 0;
+        return 2;
+      } else if (today.toDate().day == latest.toDate().day) {
+        return 1;
       } else {
+        ++_numberOfDays;
+        _updateTimes.insert(0, Timestamp.now());
+        if (_numberOfDays == 21) {
+          _finished = true;
+          _finishedAt = Timestamp.now();
+          return 3;
+        }
+        return 0;
+      }
+    } else if (today.toDate().month - latest.toDate().month <= 1) {
+      if(latest.toDate().add(Duration(days: 1)).day == today.toDate().day){
+        ++_numberOfDays;
+        _updateTimes.insert(0, Timestamp.now());
+        if (_numberOfDays == 21) {
+          _finished = true;
+          _finishedAt = Timestamp.now();
+          return 3;
+        }
+        return 0;
+      }else{
         return 2;
       }
     } else {
-      return 1;
+      return 4;
     }
-  }
-
-  bool checkIfOnTrack() {
-    if (_updateTimes.length == 0 ||
-        (DateTime.now().day - _updateTimes[0].day) == 1) {
-      return true;
-    }
-    return false;
-  }
-
-  bool alreadyUpdated() {
-    if (_updateTimes.length == 0) return false;
-    DateTime lastUpdate = _updateTimes[0];
-    if (lastUpdate.day == DateTime.now().day) return true;
-    return false;
-  }
-
-  void setUpdateTimesFromFirestore(List<dynamic> updates) {
-    updates.forEach((element) {
-      Timestamp current = element;
-      this._updateTimes.add(current.toDate());
-    });
   }
 
   Map<String, dynamic> toJson() => {
         "name": _title,
         "notes": _description,
-        "createdAt": FieldValue.serverTimestamp(),
+        "createdAt": _createdAt,
         "finished": _finished,
         "finishedAt": FieldValue.serverTimestamp(),
         "category": _category,

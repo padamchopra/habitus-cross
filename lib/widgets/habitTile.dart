@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/models/habit.dart';
@@ -28,14 +26,15 @@ class _HabitTileState extends State<HabitTile> {
     if (widget.myHabit.daysCompleted == 0) {
       _daysCompleted = 0;
     } else {
+      _daysCompleted = widget.myHabit.daysCompleted;
       new Future.delayed(Duration(milliseconds: 0)).then((_) {
         setState(() {
-          _daysCompleted = 21;
+          widget.myHabit.daysCompleted = 21;
         });
       });
       new Future.delayed(Duration(milliseconds: 600)).then((_) {
         setState(() {
-          _daysCompleted = widget.myHabit.daysCompleted;
+          widget.myHabit.daysCompleted = _daysCompleted;
         });
       });
     }
@@ -45,10 +44,10 @@ class _HabitTileState extends State<HabitTile> {
   Widget build(BuildContext context) {
     double x = (MediaQuery.of(context).size.width / 2) - 35;
     double rightGap = x - 21;
-    if (_daysCompleted == 0) {
+    if (widget.myHabit.daysCompleted == 0) {
       rightGap = x;
     } else {
-      rightGap -= (_daysCompleted / 21) * rightGap;
+      rightGap -= (widget.myHabit.daysCompleted / 21) * rightGap;
     }
 
     return Container(
