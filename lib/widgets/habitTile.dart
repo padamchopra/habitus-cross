@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/models/habit.dart';
@@ -16,21 +18,22 @@ class HabitTile extends StatefulWidget {
 }
 
 class _HabitTileState extends State<HabitTile> {
-  final EdgeInsets rightTileMargin = EdgeInsets.fromLTRB(10, 9, 25, 9);
-  final EdgeInsets leftTileMargin = EdgeInsets.fromLTRB(25, 9, 10, 9);
-  int _daysCompleted = 0;
+  final EdgeInsets rightTileMargin = EdgeInsets.all(10);
+  final EdgeInsets leftTileMargin = EdgeInsets.all(10);
+  int _daysCompleted = 1;
+  Widget something = Container();
 
   initState() {
     super.initState();
     if (widget.myHabit.daysCompleted == 0) {
       _daysCompleted = 0;
     } else {
-      new Future.delayed(Duration(milliseconds: 100)).then((_) {
+      new Future.delayed(Duration(milliseconds: 0)).then((_) {
         setState(() {
           _daysCompleted = 21;
         });
       });
-      new Future.delayed(Duration(milliseconds: 800)).then((_) {
+      new Future.delayed(Duration(milliseconds: 600)).then((_) {
         setState(() {
           _daysCompleted = widget.myHabit.daysCompleted;
         });
@@ -47,6 +50,7 @@ class _HabitTileState extends State<HabitTile> {
     } else {
       rightGap -= (_daysCompleted / 21) * rightGap;
     }
+
     return Container(
       decoration: BoxDecoration(
         color: HabitoColors.black,

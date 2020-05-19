@@ -56,6 +56,10 @@ class MyCategory {
     this._userId = id;
   }
 
+  set habitsList(List<String> habits){
+    this._myHabits = habits;
+  }
+
   get numberOfHabits {
     return _myHabits.length;
   }

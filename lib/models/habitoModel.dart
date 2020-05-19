@@ -29,7 +29,6 @@ class HabitoModel extends Model {
     checkIfSignedIn().then((value) {
       if (value) {
         fetchCategories();
-        fetchHabits();
       }
     });
   }
@@ -91,7 +90,6 @@ class HabitoModel extends Model {
 
   void fetchCategories() async {
     if (_user != null) {
-      _categoriesLoaded = true;
       _myCategoriesList.clear();
       String userId = _user.uid;
       QuerySnapshot querySnapshot = await _firestore
@@ -110,6 +108,8 @@ class HabitoModel extends Model {
         _myCategoriesList.add(currentCategory);
         notifyListeners();
       }
+      _categoriesLoaded = true;
+      fetchHabits();
     }
   }
 
@@ -164,7 +164,6 @@ class HabitoModel extends Model {
 
   void fetchHabits() async {
     if (_user != null) {
-      _habitsLoaded = true;
       _myHabitsList.clear();
       String userId = _user.uid;
       QuerySnapshot querySnapshot = await _firestore
@@ -194,6 +193,8 @@ class HabitoModel extends Model {
         _myHabitsList.add(currentHabit);
         notifyListeners();
       }
+      _habitsLoaded = true;
+      associateHabitsAndCategories();
     }
   }
 
@@ -212,6 +213,26 @@ class HabitoModel extends Model {
   //region ends
 
   //Habit Category intersection region starts
+  void associateHabitsAndCategories() {
+    Map<String, List<String>> map = new Map();
+    for (MyHabit myHabit in _myHabitsList) {
+      if (myHabit.category != "") {
+        if (map.containsKey(myHabit.category)) {
+          map[myHabit.category].add(myHabit.documentId);
+        } else {
+          map[myHabit.category] = [];
+          map[myHabit.category].add(myHabit.documentId);
+        }
+      }
+    }
+    _myCategoriesList.forEach((category) {
+      if (map.containsKey(category.documentId)) {
+        category.habitsList = map[category.documentId];
+      }
+    });
+    notifyListeners();
+  }
+
   void addHabitToCategory(
       String habitDocumentId, String categoryDocumentId) async {
     _myCategoriesList.forEach((category) {
@@ -221,7 +242,7 @@ class HabitoModel extends Model {
       }
     });
   }
-  
+
   //region ends
 
   //warning
