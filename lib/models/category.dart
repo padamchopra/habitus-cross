@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:habito/models/universalValues.dart';
-import 'package:habito/widgets/text.dart';
+import 'package:habito/widgets/category/categorySpinnerTile.dart';
+import 'package:habito/widgets/category/categoryTile.dart';
 
 class MyCategory {
   String _name;
@@ -11,16 +12,6 @@ class MyCategory {
   String _documentId;
   String _userId;
   bool _deleted;
-
-  final List<Color> colors = [
-    HabitoColors.perfectBlue,
-    HabitoColors.categoryPaletteOne,
-    HabitoColors.categoryPaletteTwo,
-    HabitoColors.categoryPaletteThree,
-    HabitoColors.categoryPaletteFour,
-    HabitoColors.categoryPaletteFive,
-    HabitoColors.categoryPaletteSix
-  ];
 
   MyCategory() {
     this._myHabits = [];
@@ -56,6 +47,10 @@ class MyCategory {
     this._userId = id;
   }
 
+  set habitsList(List<String> habits) {
+    this._myHabits = habits;
+  }
+
   get numberOfHabits {
     return _myHabits.length;
   }
@@ -80,100 +75,30 @@ class MyCategory {
     return _color;
   }
 
-  get categoryColor{
-    return colors[_color];
+  get categoryColor {
+    return HabitoColors.standardColorsList[_color];
   }
 
   get categoryIcon {
     return _icon;
   }
 
-  void addHabitToList(String id){
+  void addHabitToList(String id) {
     _myHabits.insert(0, id);
   }
 
   Widget widget({bool showNumberOfHabits}) {
-    Widget onTheRight = Container();
-    double _rightPadding = 0;
-    if (showNumberOfHabits != null && showNumberOfHabits) {
-      onTheRight = Expanded(
-        child: Align(
-          alignment: Alignment.centerRight,
-          child: Container(
-            width: 36,
-            height: 36,
-            child: Align(
-              alignment: Alignment.center,
-              child: CustomText(
-                _myHabits.length.toString(),
-                fontSize: 18,
-              ),
-            ),
-            decoration: BoxDecoration(
-              color: HabitoColors.labelBackground,
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
-        ),
-      );
-    }
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(
-        horizontal: 18,
-        vertical: 24,
-      ),
-      decoration: BoxDecoration(
-        color: HabitoColors.midnight,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: <Widget>[
-          Icon(
-            _icon,
-            color: colors[_color],
-            size: 30,
-          ),
-          SizedBox(
-            width: 9,
-          ),
-          Padding(
-            padding: EdgeInsets.only(right: _rightPadding),
-            child: CustomText(
-              _name,
-              fontSize: 21,
-              letterSpacing: 0.2,
-            ),
-          ),
-          onTheRight
-        ],
-      ),
+    return CategoryTile(
+      showNumberOfHabits == null ? false : true,
+      _myHabits,
+      _icon,
+      _color,
+      _name,
     );
   }
 
   Widget spinnerTile() {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        vertical: 6,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Icon(
-            _icon,
-            color: HabitoColors.black,
-          ),
-          SizedBox(
-            width: 6,
-          ),
-          CustomText(
-            _name,
-            color: HabitoColors.black,
-            fontSize: 18,
-          )
-        ],
-      ),
-    );
+    return CategorySpinnerTile(_icon, _name);
   }
 
   Map<String, dynamic> toJson() => {

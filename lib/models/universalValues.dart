@@ -9,6 +9,13 @@ class UniversalValues{
   //font properties region start
   static double headingFontSize = 45;
   //region end
+
+  //habit options region starts
+  static var marginForHabitFirstOption = EdgeInsets.only(left: 0);
+  static var marginForHabitSecondOption = EdgeInsets.only(left: 42);
+  static var marginForHabitThirdOption = EdgeInsets.only(left: 84);
+  static var marginForParentOption = EdgeInsets.only(right: 42);
+  //region end
 }
 
 class HabitoColors{
@@ -38,4 +45,16 @@ class HabitoColors{
   static Color categoryPaletteFour = Colors.purple;
   static Color categoryPaletteFive = Colors.deepPurple;
   static Color categoryPaletteSix = Colors.indigo;
+  static List<Color> standardColorsList = [
+    perfectBlue,
+    categoryPaletteOne,
+    categoryPaletteTwo,
+    categoryPaletteThree,
+    categoryPaletteFour,
+    categoryPaletteFive,
+    categoryPaletteSix
+  ];
+
+  static Color habitOption = Colors.white;
+  static Color success = Colors.green;
 }

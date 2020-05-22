@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habito/models/enums.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/pages/allCategories.dart';
 import 'package:habito/pages/allHabits.dart';
@@ -71,7 +72,7 @@ class _HomeState extends State<Home> {
       context: context,
       isScrollControlled: true,
       builder: (BuildContext _context) {
-        return HabitModal();
+        return HabitModal(HabitModalMode.NEW);
       },
     );
   }
@@ -178,11 +179,7 @@ class _HomeState extends State<Home> {
         shape: CircularNotchedRectangle(),
         color: HabitoColors.midnight,
         child: Padding(
-          padding: const EdgeInsets.only(
-            top: 10.0,
-            left: 10,
-            right: 10,
-          ),
+          padding: const EdgeInsets.all(10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[

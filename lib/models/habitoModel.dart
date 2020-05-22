@@ -14,8 +14,8 @@ class HabitoModel extends Model {
   FirebaseAuth _auth;
   FirebaseUser _user;
   Firestore _firestore;
-  List<MyCategory> _myCategoriesList;
-  List<MyHabit> _myHabitsList;
+  List<MyCategory> myCategoriesList;
+  List<MyHabit> myHabitsList;
   bool _categoriesLoaded;
   bool _habitsLoaded;
 
@@ -24,12 +24,11 @@ class HabitoModel extends Model {
     _habitsLoaded = false;
     _auth = FirebaseAuth.instance;
     _firestore = Firestore.instance;
-    _myCategoriesList = [];
-    _myHabitsList = [];
+    myCategoriesList = [];
+    myHabitsList = [];
     checkIfSignedIn().then((value) {
       if (value) {
         fetchCategories();
-        fetchHabits();
       }
     });
   }
@@ -82,7 +81,7 @@ class HabitoModel extends Model {
       await documentReference.setData(myCategory.toJson());
       //now add category locally
       myCategory.documentId = documentReference.documentID;
-      _myCategoriesList.insert(0, myCategory);
+      myCategoriesList.insert(0, myCategory);
       notifyListeners();
       return true;
     }
@@ -91,8 +90,7 @@ class HabitoModel extends Model {
 
   void fetchCategories() async {
     if (_user != null) {
-      _categoriesLoaded = true;
-      _myCategoriesList.clear();
+      myCategoriesList.clear();
       String userId = _user.uid;
       QuerySnapshot querySnapshot = await _firestore
           .collection("categories")
@@ -107,9 +105,12 @@ class HabitoModel extends Model {
         currentCategory.userId = userId;
         currentCategory.categoryIconFromCodePoint = data["icon"];
         currentCategory.documentId = documentSnapshot.documentID;
-        _myCategoriesList.add(currentCategory);
+        myCategoriesList.add(currentCategory);
         notifyListeners();
       }
+      _categoriesLoaded = true;
+      myCategoriesList.toSet().toList();
+      fetchHabits();
     }
   }
 
@@ -118,7 +119,7 @@ class HabitoModel extends Model {
       return MyCategory();
     }
     if (_categoriesLoaded) {
-      return _myCategoriesList.firstWhere(
+      return myCategoriesList.firstWhere(
         (element) => element.documentId == id,
         orElse: () => MyCategory(),
       );
@@ -130,20 +131,14 @@ class HabitoModel extends Model {
 
   int numberOfCategories() {
     if (_categoriesLoaded) {
-      return _myCategoriesList.length;
+      return myCategoriesList.length;
     } else {
-      fetchCategories();
-      return 0;
+      return -1;
     }
   }
-
-  get myCategories {
-    return _myCategoriesList;
-  }
-
   //region ends
 
-  //Habit region starts
+  //Habit collection region starts
   Future<bool> addNewHabit(MyHabit myHabit) async {
     if (_user != null) {
       myHabit.userId = _user.uid;
@@ -152,7 +147,7 @@ class HabitoModel extends Model {
       await documentReference.setData(myHabit.toJson());
       //now add habit locally
       myHabit.documentId = documentReference.documentID;
-      _myHabitsList.insert(0, myHabit);
+      myHabitsList.insert(0, myHabit);
       notifyListeners();
       if (myHabit.category != "") {
         addHabitToCategory(myHabit.documentId, myHabit.category);
@@ -162,10 +157,29 @@ class HabitoModel extends Model {
     return false;
   }
 
+  Future<bool> updateHabit(MyHabit myHabit) async {
+    if (_user != null) {
+      myHabit.userId = _user.uid;
+      await _firestore
+          .collection("habits")
+          .document(myHabit.documentId)
+          .updateData(myHabit.updatedJson());
+      //now update habit locally
+      myHabitsList.forEach((element) {
+        if (element.documentId == myHabit.documentId) {
+          element = myHabit;
+          associateHabitsAndCategories();
+        }
+      });
+      notifyListeners();
+      return true;
+    }
+    return false;
+  }
+
   void fetchHabits() async {
     if (_user != null) {
-      _habitsLoaded = true;
-      _myHabitsList.clear();
+      myHabitsList.clear();
       String userId = _user.uid;
       QuerySnapshot querySnapshot = await _firestore
           .collection("habits")
@@ -177,51 +191,89 @@ class HabitoModel extends Model {
         MyHabit currentHabit = new MyHabit();
         currentHabit.title = data["name"];
         currentHabit.description = data["notes"];
-        Timestamp createdAt = data["createdAt"];
-        print("created at $createdAt");
-        currentHabit.createdAt = createdAt.toDate();
+        currentHabit.createdAt = data["createdAt"];
         currentHabit.isFinished = data["finished"];
         if (currentHabit.isFinished) {
-          Timestamp finishedAt = data["finishedAt"];
-          currentHabit.finishedAt = finishedAt.toDate();
+          currentHabit.finishedAt = data["finishedAt"];
         }
         currentHabit.category = data["category"];
         currentHabit.daysCompleted = data["numberOfDays"];
-        currentHabit.setUpdateTimesFromFirestore(data["updateTimes"]);
+        currentHabit.updateTimes = data["updateTimes"];
         currentHabit.isDeleted = data["deleted"];
         currentHabit.userId = data["uid"];
         currentHabit.documentId = documentSnapshot.documentID;
-        _myHabitsList.add(currentHabit);
+        myHabitsList.add(currentHabit);
         notifyListeners();
       }
+      _habitsLoaded = true;
+      myHabitsList.toSet().toList();
+      associateHabitsAndCategories();
     }
   }
 
   int numberOfHabits() {
     if (_habitsLoaded) {
-      return _myHabitsList.length;
+      return myHabitsList.length;
     } else {
-      fetchHabits();
-      return 0;
+      return -1;
     }
   }
+  //region ends
 
-  get myHabits {
-    return _myHabitsList;
+  //habit updation region starts
+  int markDoneForToday(MyHabit myHabit) {
+    /// 0: success in updating
+    /// 1: already updated today
+    /// 2: more than 1 day in difference
+    /// 3: completed 21 days
+    /// 4: some other error
+    int resultCode = 4;
+    myHabitsList.forEach((habit) {
+      if (habit.documentId == myHabit.documentId) {
+        resultCode = habit.markAsDone();
+        if (resultCode != 4) {
+          _firestore
+              .collection("habits")
+              .document(habit.documentId)
+              .updateData(habit.toJson());
+        }
+      }
+    });
+    notifyListeners();
+    return resultCode;
   }
   //region ends
 
   //Habit Category intersection region starts
+  void associateHabitsAndCategories() {
+    Map<String, List<String>> map = new Map();
+    for (MyHabit myHabit in myHabitsList) {
+      if (myHabit.category != "") {
+        if (map.containsKey(myHabit.category)) {
+          map[myHabit.category].add(myHabit.documentId);
+        } else {
+          map[myHabit.category] = [];
+          map[myHabit.category].add(myHabit.documentId);
+        }
+      }
+    }
+    myCategoriesList.forEach((category) {
+      if (map.containsKey(category.documentId)) {
+        category.habitsList = map[category.documentId];
+      }
+    });
+    notifyListeners();
+  }
+
   void addHabitToCategory(
       String habitDocumentId, String categoryDocumentId) async {
-    _myCategoriesList.forEach((category) {
+    myCategoriesList.forEach((category) {
       if (category.documentId == categoryDocumentId) {
         category.addHabitToList(habitDocumentId);
         notifyListeners();
       }
     });
   }
-  
   //region ends
 
   //warning
@@ -264,11 +316,29 @@ class HabitoModel extends Model {
           );
         } else {
           return AlertDialog(
-            title: CustomText('Try Again!'),
-            content: CustomText('Could not sign you up at the moment.'),
+            title: CustomText(
+              title,
+              color: HabitoColors.black,
+              textAlign: TextAlign.center,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+            content: CustomText(
+              description,
+              color: HabitoColors.black,
+              textAlign: TextAlign.center,
+              fontSize: 16,
+            ),
             actions: <Widget>[
               FlatButton(
-                child: CustomText('Okay'),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: double.infinity),
+                  child: CustomText(
+                    'OK',
+                    color: HabitoColors.perfectBlue,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },

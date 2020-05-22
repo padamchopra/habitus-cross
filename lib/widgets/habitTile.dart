@@ -16,23 +16,25 @@ class HabitTile extends StatefulWidget {
 }
 
 class _HabitTileState extends State<HabitTile> {
-  final EdgeInsets rightTileMargin = EdgeInsets.fromLTRB(10, 9, 25, 9);
-  final EdgeInsets leftTileMargin = EdgeInsets.fromLTRB(25, 9, 10, 9);
-  int _daysCompleted = 0;
+  final EdgeInsets rightTileMargin = EdgeInsets.all(10);
+  final EdgeInsets leftTileMargin = EdgeInsets.all(10);
+  int _daysCompleted = 1;
+  Widget something = Container();
 
   initState() {
     super.initState();
     if (widget.myHabit.daysCompleted == 0) {
       _daysCompleted = 0;
     } else {
-      new Future.delayed(Duration(milliseconds: 100)).then((_) {
+      _daysCompleted = widget.myHabit.daysCompleted;
+      new Future.delayed(Duration(milliseconds: 0)).then((_) {
         setState(() {
-          _daysCompleted = 21;
+          widget.myHabit.daysCompleted = 21;
         });
       });
-      new Future.delayed(Duration(milliseconds: 800)).then((_) {
+      new Future.delayed(Duration(milliseconds: 600)).then((_) {
         setState(() {
-          _daysCompleted = widget.myHabit.daysCompleted;
+          widget.myHabit.daysCompleted = _daysCompleted;
         });
       });
     }
@@ -42,11 +44,12 @@ class _HabitTileState extends State<HabitTile> {
   Widget build(BuildContext context) {
     double x = (MediaQuery.of(context).size.width / 2) - 35;
     double rightGap = x - 21;
-    if (_daysCompleted == 0) {
+    if (widget.myHabit.daysCompleted == 0) {
       rightGap = x;
     } else {
-      rightGap -= (_daysCompleted / 21) * rightGap;
+      rightGap -= (widget.myHabit.daysCompleted / 21) * rightGap;
     }
+
     return Container(
       decoration: BoxDecoration(
         color: HabitoColors.black,

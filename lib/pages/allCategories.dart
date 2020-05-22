@@ -46,6 +46,11 @@ class _AllCategoriesState extends State<AllCategories> {
             child: ScopedModelDescendant<HabitoModel>(
               builder: (context, child, model) {
                 int numberOfCategories = model.numberOfCategories();
+                if (numberOfCategories == -1) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
                 if (numberOfCategories == 0) {
                   return Center(
                     child: CustomText(
@@ -54,7 +59,7 @@ class _AllCategoriesState extends State<AllCategories> {
                     ),
                   );
                 }
-                List<MyCategory> _myCategoriesList = model.myCategories;
+                List<MyCategory> _myCategoriesList = model.myCategoriesList;
                 Map<int, MyCategory> _myCategories = _myCategoriesList.asMap();
                 return StaggeredGridView.countBuilder(
                   padding: EdgeInsets.only(top: 22.5),
@@ -63,7 +68,8 @@ class _AllCategoriesState extends State<AllCategories> {
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
                       margin: EdgeInsets.only(bottom: 18),
-                      child: _myCategories[index].widget(showNumberOfHabits: true),
+                      child:
+                          _myCategories[index].widget(showNumberOfHabits: true),
                     );
                   },
                   staggeredTileBuilder: (int index) => StaggeredTile.fit(1),

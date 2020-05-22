@@ -4,6 +4,7 @@ import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/models/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
+import 'package:habito/widgets/modal/modalHeader.dart';
 import 'package:habito/widgets/text.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -61,26 +62,7 @@ class _CategoryModalState extends State<CategoryModal> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Stack(
-              children: <Widget>[
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: CustomText(
-                    "New Category",
-                    color: HabitoColors.black,
-                    textAlign: TextAlign.center,
-                    letterSpacing: 0.2,
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: Icon(Icons.close),
-                  ),
-                )
-              ],
-            ),
+            ModalHeader("New Category", context),
             SizedBox(
               height: 30,
             ),
