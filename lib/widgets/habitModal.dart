@@ -49,6 +49,16 @@ class _HabitoModalState extends State<HabitModal> {
         actionButton = ActionButton(updateHabit, "Update");
       }
 
+      if (widget.mode == HabitModalMode.DUPLICATE) {
+        modalHeadText = "Duplicate Habit";
+        title = widget.myHabit.title;
+        title += title.length < 14 ? " (copy)" : "";
+        description = widget.myHabit.description;
+        categorySet = true;
+        _myCategory = widget.myCategory;
+        actionButton = ActionButton(addNewHabit, "Track");
+      }
+
       if (widget.mode == HabitModalMode.VIEW) {
         modalHeadText = "Habit Details";
         editingEnabled = false;
