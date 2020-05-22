@@ -162,6 +162,12 @@ class MyHabit {
     return 4;
   }
 
+  void resetProgress(){
+    _finished = false;
+    _numberOfDays = 0;
+    _updateTimes.clear();
+  }
+
   Map<String, dynamic> toJson() => {
         "name": _title,
         "notes": _description,

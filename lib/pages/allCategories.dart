@@ -61,9 +61,8 @@ class _AllCategoriesState extends State<AllCategories> {
                 }
                 List<MyCategory> _myCategoriesList = model.myCategoriesList;
                 Map<int, MyCategory> _myCategories = _myCategoriesList.asMap();
-                return StaggeredGridView.countBuilder(
+                return ListView.builder(
                   padding: EdgeInsets.only(top: 22.5),
-                  crossAxisCount: 1,
                   itemCount: numberOfCategories,
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
@@ -72,7 +71,6 @@ class _AllCategoriesState extends State<AllCategories> {
                           _myCategories[index].widget(showNumberOfHabits: true),
                     );
                   },
-                  staggeredTileBuilder: (int index) => StaggeredTile.fit(1),
                 );
               },
             ),

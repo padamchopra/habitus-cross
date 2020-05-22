@@ -73,8 +73,62 @@ class _HabitOptionsState extends State<HabitOptions> {
   }
 
   void viewMoreOptions(model) {
-    HabitMoreOptions.show(context, model);
+    HabitMoreOptions.show(context, model, decideMoreOptionFunction);
+  }
+
+  void decideMoreOptionFunction(
+      HabitSelecetedOption option, HabitoModel model) {
+    switch (option) {
+      case HabitSelecetedOption.DUPLICATE_AND_EDIT:
+        duplicateAndEdit();
+        break;
+      case HabitSelecetedOption.RESET_PROGRESS:
+        resetProgress(model);
+        break;
+      case HabitSelecetedOption.DELETE:
+        deleteHabit(model);
+        break;
+    }
+  }
+
+  void duplicateAndEdit() {
     closeOptions();
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext _context) {
+        return HabitModal(
+          HabitModalMode.DUPLICATE,
+          myHabit: widget.myHabit,
+          myCategory: widget.myCategory,
+        );
+      },
+    );
+  }
+
+  void resetProgress(HabitoModel model) {
+    closeOptions();
+    model.resetHabitProgress(widget.myHabit).then((value) {
+      if (value) {
+        model.neverSatisfied(context, "Reset",
+            "Progress was reset successfully. Good luck with this fresh start.");
+      } else {
+        model.neverSatisfied(
+            context, "Try Again", "Progress could not be reset.");
+      }
+    });
+  }
+
+  void deleteHabit(HabitoModel model) {
+    closeOptions();
+    model.deleteHabit(widget.myHabit).then((value) {
+      if (value) {
+        model.neverSatisfied(context, "Deleted",
+            "That's a bummer. Good luck with the remaining habits.");
+      } else {
+        model.neverSatisfied(context, "Try Again", "Habit Could not be reset.");
+      }
+    });
   }
 
   initState() {
