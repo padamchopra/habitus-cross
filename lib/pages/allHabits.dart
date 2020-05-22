@@ -1,9 +1,10 @@
+import 'package:habito/models/category.dart';
 import 'package:habito/models/habit.dart';
 import 'package:habito/models/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:habito/widgets/habitOptions.dart';
+import 'package:habito/widgets/habit/options/habitOptions.dart';
 import 'package:habito/widgets/habitTile.dart';
 import 'package:habito/widgets/text.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -56,6 +57,11 @@ class _AllHabitsState extends State<AllHabits> {
             child: ScopedModelDescendant<HabitoModel>(
               builder: (context, child, model) {
                 int numberOfHabits = model.numberOfHabits();
+                if (numberOfHabits == -1) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
                 if (numberOfHabits == 0) {
                   return Center(
                     child: CustomText(
@@ -64,28 +70,31 @@ class _AllHabitsState extends State<AllHabits> {
                     ),
                   );
                 }
-                List<MyHabit> _myHabitsList = model.myHabits;
-                Map<int, MyHabit> _myHabits = _myHabitsList.asMap();
+                List<MyHabit> _myHabits = model.myHabitsList;
                 return StaggeredGridView.countBuilder(
                   addRepaintBoundaries: true,
                   padding: EdgeInsets.only(top: 22.5),
                   crossAxisCount: 2,
                   itemCount: numberOfHabits,
                   itemBuilder: (BuildContext context, int index) {
+                    MyCategory _myCategory =
+                        model.findCategoryById(_myHabits[index].category);
                     return Stack(
                       children: <Widget>[
                         GestureDetector(
                           onTapDown: (tapDetails) {
                             setState(() {
-                              tileClicked[index] = tileClicked.containsKey(index)
+                              bool result = tileClicked.containsKey(index)
                                   ? !tileClicked[index]
                                   : true;
+                              tileClicked.clear();
+                              tileClicked[index] = result;
                             });
                           },
                           child: HabitTile(
                             index,
                             _myHabits[index],
-                            model.findCategoryById(_myHabits[index].category),
+                            _myCategory,
                           ),
                         ),
                         (tileClicked.containsKey(index) && tileClicked[index])
@@ -93,6 +102,7 @@ class _AllHabitsState extends State<AllHabits> {
                                 child: HabitOptions(
                                   index,
                                   _myHabits[index],
+                                  _myCategory,
                                   toggleTileClick,
                                 ),
                                 alignment: Alignment.topCenter)

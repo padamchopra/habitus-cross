@@ -119,20 +119,20 @@ class MyHabit {
     /// 1: already updated today
     /// 2: more than 1 day in difference
     /// 3: completed 21 days
-    /// 4: some other error
+    /// 4: other error
     if (_numberOfDays == 0) {
       ++_numberOfDays;
       _updateTimes.insert(0, Timestamp.now());
       return 0;
     }
-    Timestamp latest = _updateTimes.asMap()[0];
-    Timestamp today = Timestamp.now();
-    if (today.toDate().month == latest.toDate().month) {
-      if (today.toDate().day - latest.toDate().day > 1) {
+    DateTime latest = _updateTimes[0].toDate();
+    DateTime today = DateTime.now();
+    if (today.month == latest.month) {
+      if (today.day - latest.day > 1) {
         _updateTimes.clear();
         _numberOfDays = 0;
         return 2;
-      } else if (today.toDate().day == latest.toDate().day) {
+      } else if (today.day == latest.day) {
         return 1;
       } else {
         ++_numberOfDays;
@@ -144,8 +144,8 @@ class MyHabit {
         }
         return 0;
       }
-    } else if (today.toDate().month - latest.toDate().month <= 1) {
-      if(latest.toDate().add(Duration(days: 1)).day == today.toDate().day){
+    } else if (today.month - latest.month <= 1) {
+      if (latest.add(Duration(days: 1)).day == today.day) {
         ++_numberOfDays;
         _updateTimes.insert(0, Timestamp.now());
         if (_numberOfDays == 21) {
@@ -154,12 +154,12 @@ class MyHabit {
           return 3;
         }
         return 0;
-      }else{
-        return 2;
       }
-    } else {
-      return 4;
+      _updateTimes.clear();
+      _numberOfDays = 0;
+      return 2;
     }
+    return 4;
   }
 
   Map<String, dynamic> toJson() => {
@@ -167,11 +167,17 @@ class MyHabit {
         "notes": _description,
         "createdAt": _createdAt,
         "finished": _finished,
-        "finishedAt": FieldValue.serverTimestamp(),
+        "finishedAt": _finishedAt,
         "category": _category,
         "numberOfDays": _numberOfDays,
         "updateTimes": _updateTimes,
         "deleted": _deleted,
         "uid": _userId,
+      };
+
+  Map<String, dynamic> updatedJson() => {
+        "name": _title,
+        "notes": _description,
+        "category": _category,
       };
 }
