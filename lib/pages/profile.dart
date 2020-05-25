@@ -4,6 +4,7 @@ import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/generalInfo.dart';
 import 'package:habito/widgets/text.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:store_redirect/store_redirect.dart';
 
 class Profile extends StatelessWidget {
   final Function updateUserState;
@@ -70,7 +71,7 @@ class Profile extends StatelessWidget {
                     width: double.infinity,
                     child: FlatButton(
                       color: HabitoColors.midnight,
-                      onPressed: model.signOut,
+                      onPressed: () => StoreRedirect.redirect(),
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: CustomText("Review"),

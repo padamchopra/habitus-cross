@@ -19,7 +19,7 @@ class HabitoModel extends Model {
   List<MyHabit> myHabitsCompletedList;
   bool _categoriesLoaded;
   bool _habitsLoaded;
-  Function playConfetti = (){};
+  Function playConfetti = () {};
 
   HabitoModel() {
     _categoriesLoaded = false;
@@ -471,7 +471,7 @@ class HabitoModel extends Model {
   //region ends
 
   //profile region starts
-  get userEmail{
+  get userEmail {
     return _user.email;
   }
   //region ends
@@ -516,35 +516,34 @@ class HabitoModel extends Model {
           );
         } else {
           return AlertDialog(
-            title: CustomText(
-              title,
-              color: HabitoColors.black,
-              textAlign: TextAlign.center,
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
-            content: CustomText(
-              description,
-              color: HabitoColors.black,
-              textAlign: TextAlign.center,
-              fontSize: 16,
-            ),
-            actions: <Widget>[
-              FlatButton(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: double.infinity),
-                  child: CustomText(
-                    'OK',
-                    color: HabitoColors.perfectBlue,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+              title: CustomText(
+                title,
+                color: HabitoColors.black,
+                textAlign: TextAlign.center,
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
               ),
-            ],
-          );
+              content: CustomText(
+                description,
+                color: HabitoColors.black,
+                textAlign: TextAlign.center,
+                fontSize: 20,
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: CustomText(
+                      'OK',
+                      color: HabitoColors.perfectBlue,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ]);
         }
       },
     );

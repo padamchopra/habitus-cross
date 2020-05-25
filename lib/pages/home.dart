@@ -131,7 +131,7 @@ class _HomeState extends State<Home> {
                         () => addNewHabit(context)),
                     _buildAddButton(Icons.label_outline, "Category",
                         () => addNewCategory(context)),
-                    _buildAddButton(Icons.share, "Share", null),
+                    _buildAddButton(Icons.import_export, "Export", () => widget.model.neverSatisfied(context, "Coming Soon!", "New features coming soon! Write a review from profile to request something.")),
                   ],
                 ),
                 Expanded(

@@ -308,6 +308,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.9.3"
+  store_redirect:
+    dependency: "direct main"
+    description:
+      name: store_redirect
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   stream_channel:
     dependency: transitive
     description:
