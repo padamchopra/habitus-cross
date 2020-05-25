@@ -16,8 +16,10 @@ class HabitoModel extends Model {
   Firestore _firestore;
   List<MyCategory> myCategoriesList;
   List<MyHabit> myHabitsList;
+  List<MyHabit> myHabitsCompletedList;
   bool _categoriesLoaded;
   bool _habitsLoaded;
+  Function playConfetti = (){};
 
   HabitoModel() {
     _categoriesLoaded = false;
@@ -26,6 +28,7 @@ class HabitoModel extends Model {
     _firestore = Firestore.instance;
     myCategoriesList = [];
     myHabitsList = [];
+    myHabitsCompletedList = [];
     checkIfSignedIn().then((value) {
       if (value) {
         fetchCategories();
@@ -72,7 +75,18 @@ class HabitoModel extends Model {
 
   //region ends
 
-  //categories region starts
+  //categories collection region starts
+  bool categoriesListReplace(MyCategory myCategory) {
+    bool toReturn = false;
+    myCategoriesList.forEach((element) {
+      if (element.documentId == myCategory.documentId) {
+        element = myCategory;
+        toReturn = true;
+      }
+    });
+    return toReturn;
+  }
+
   Future<bool> addNewCategory(MyCategory myCategory) async {
     if (_user != null) {
       myCategory.userId = _user.uid;
@@ -88,6 +102,51 @@ class HabitoModel extends Model {
     return false;
   }
 
+  Future<bool> updateCategory(MyCategory myCategory) async {
+    if (_user != null) {
+      myCategory.userId = _user.uid;
+      await _firestore
+          .collection("categories")
+          .document(myCategory.documentId)
+          .updateData(myCategory.toJson());
+      //now update habit locally
+      if (categoriesListReplace(myCategory)) associateHabitsAndCategories();
+      notifyListeners();
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> deleteCategory(MyCategory myCategory) async {
+    bool toReturn = false;
+    List<MyHabit> myAssociatedHabits = [];
+    myCategoriesList.forEach((category) {
+      if (category.documentId == myCategory.documentId) {
+        myAssociatedHabits = category.habitsList;
+        category.deleted = true;
+        try {
+          _firestore
+              .collection("categories")
+              .document(category.documentId)
+              .updateData(category.toJson());
+          toReturn = true;
+        } catch (_) {
+          toReturn = false;
+        }
+      }
+    });
+    if (toReturn) {
+      myCategoriesList.remove(myCategory);
+      myAssociatedHabits.forEach((element) {
+        element.category = "";
+        updateHabit(element, refreshAssociations: true);
+      });
+      associateHabitsAndCategories();
+      notifyListeners();
+    }
+    return toReturn;
+  }
+
   void fetchCategories() async {
     if (_user != null) {
       myCategoriesList.clear();
@@ -95,6 +154,7 @@ class HabitoModel extends Model {
       QuerySnapshot querySnapshot = await _firestore
           .collection("categories")
           .where("uid", isEqualTo: userId)
+          .where("deleted", isEqualTo: false)
           .orderBy("createdAt", descending: false)
           .getDocuments();
       for (DocumentSnapshot documentSnapshot in querySnapshot.documents) {
@@ -105,6 +165,7 @@ class HabitoModel extends Model {
         currentCategory.userId = userId;
         currentCategory.categoryIconFromCodePoint = data["icon"];
         currentCategory.documentId = documentSnapshot.documentID;
+        currentCategory.createdAt = data["createdAt"];
         myCategoriesList.add(currentCategory);
         notifyListeners();
       }
@@ -140,21 +201,40 @@ class HabitoModel extends Model {
 
   //Habit collection region starts
   void habitsListAdd(MyHabit myHabit) {
-    myHabitsList.insert(0, myHabit);
+    if (myHabit.isFinished) {
+      myHabitsCompletedList.insert(0, myHabit);
+    } else {
+      myHabitsList.insert(0, myHabit);
+    }
   }
 
   void habitsListAddAtEnd(MyHabit myHabit) {
-    myHabitsList.add(myHabit);
+    if (myHabit.isFinished) {
+      myHabitsCompletedList.add(myHabit);
+    } else {
+      myHabitsList.add(myHabit);
+    }
   }
 
   bool habitsListReplace(MyHabit myHabit) {
-    myHabitsList.forEach((element) {
-      if (element.documentId == myHabit.documentId) {
-        element = myHabit;
-        return true;
-      }
-    });
-    return false;
+    bool toReturn = false;
+    if (myHabit.isFinished) {
+      myHabitsCompletedList.forEach((element) {
+        if (element.documentId == myHabit.documentId) {
+          element = myHabit;
+          toReturn = true;
+        }
+      });
+    } else {
+      myHabitsList.forEach((element) {
+        if (element.documentId == myHabit.documentId) {
+          element = myHabit;
+          toReturn = true;
+        }
+      });
+    }
+
+    return toReturn;
   }
 
   Future<bool> addNewHabit(MyHabit myHabit) async {
@@ -168,14 +248,14 @@ class HabitoModel extends Model {
       habitsListAdd(myHabit);
       notifyListeners();
       if (myHabit.category != "") {
-        addHabitToCategory(myHabit.documentId, myHabit.category);
+        addHabitToCategory(myHabit, myHabit.category);
       }
       return true;
     }
     return false;
   }
 
-  Future<bool> updateHabit(MyHabit myHabit) async {
+  Future<bool> updateHabit(MyHabit myHabit, {bool refreshAssociations}) async {
     if (_user != null) {
       myHabit.userId = _user.uid;
       await _firestore
@@ -183,7 +263,8 @@ class HabitoModel extends Model {
           .document(myHabit.documentId)
           .updateData(myHabit.updatedJson());
       //now update habit locally
-      if (habitsListReplace(myHabit)) associateHabitsAndCategories();
+      if (refreshAssociations != null && habitsListReplace(myHabit))
+        associateHabitsAndCategories();
       notifyListeners();
       return true;
     }
@@ -192,20 +273,40 @@ class HabitoModel extends Model {
 
   Future<bool> resetHabitProgress(MyHabit myHabit) async {
     bool toReturn = false;
-    myHabitsList.forEach((habit) {
-      if (habit.documentId == myHabit.documentId) {
-        habit.resetProgress();
-        try {
-          _firestore
-              .collection("habits")
-              .document(habit.documentId)
-              .updateData(habit.toJson());
-          toReturn = true;
-        } catch (_) {
-          toReturn = false;
+    if (myHabit.isFinished) {
+      myHabitsCompletedList.forEach((habit) {
+        if (habit.documentId == myHabit.documentId) {
+          myHabit.resetProgress();
+          habit.resetProgress();
+          try {
+            _firestore
+                .collection("habits")
+                .document(myHabit.documentId)
+                .updateData(myHabit.toJson());
+            habitsListAdd(myHabit);
+            toReturn = true;
+          } catch (_) {
+            toReturn = false;
+          }
         }
-      }
-    });
+      });
+      myHabitsCompletedList.remove(myHabit);
+    } else {
+      myHabitsList.forEach((habit) {
+        if (habit.documentId == myHabit.documentId) {
+          habit.resetProgress();
+          try {
+            _firestore
+                .collection("habits")
+                .document(habit.documentId)
+                .updateData(habit.toJson());
+            toReturn = true;
+          } catch (_) {
+            toReturn = false;
+          }
+        }
+      });
+    }
     if (toReturn) {
       associateHabitsAndCategories();
       notifyListeners();
@@ -215,22 +316,43 @@ class HabitoModel extends Model {
 
   Future<bool> deleteHabit(MyHabit myHabit) async {
     bool toReturn = false;
-    myHabitsList.forEach((habit) {
-      if (habit.documentId == myHabit.documentId) {
-        habit.isDeleted = true;
-        try {
-          _firestore
-              .collection("habits")
-              .document(habit.documentId)
-              .updateData(habit.toJson());
-          toReturn = true;
-        } catch (_) {
-          toReturn = false;
+    if (myHabit.isFinished) {
+      myHabitsCompletedList.forEach((habit) {
+        if (habit.documentId == myHabit.documentId) {
+          habit.isDeleted = true;
+          try {
+            _firestore
+                .collection("habits")
+                .document(habit.documentId)
+                .updateData(habit.toJson());
+            toReturn = true;
+          } catch (_) {
+            toReturn = false;
+          }
         }
-      }
-    });
+      });
+    } else {
+      myHabitsList.forEach((habit) {
+        if (habit.documentId == myHabit.documentId) {
+          habit.isDeleted = true;
+          try {
+            _firestore
+                .collection("habits")
+                .document(habit.documentId)
+                .updateData(habit.toJson());
+            toReturn = true;
+          } catch (_) {
+            toReturn = false;
+          }
+        }
+      });
+    }
     if (toReturn) {
-      myHabitsList.remove(myHabit);
+      if (myHabit.isFinished) {
+        myHabitsCompletedList.remove(myHabit);
+      } else {
+        myHabitsList.remove(myHabit);
+      }
       associateHabitsAndCategories();
       notifyListeners();
     }
@@ -278,6 +400,14 @@ class HabitoModel extends Model {
       return -1;
     }
   }
+
+  int numberOfCompletedHabits() {
+    if (_habitsLoaded) {
+      return myHabitsCompletedList.length;
+    } else {
+      return -1;
+    }
+  }
   //region ends
 
   //habit updation region starts
@@ -299,21 +429,26 @@ class HabitoModel extends Model {
         }
       }
     });
+    if (resultCode == 3) {
+      myHabitsList.remove(myHabit);
+      habitsListAdd(myHabit);
+    }
     notifyListeners();
+    print("about to return $resultCode");
     return resultCode;
   }
   //region ends
 
   //Habit Category intersection region starts
   void associateHabitsAndCategories() {
-    Map<String, List<String>> map = new Map();
+    Map<String, List<MyHabit>> map = new Map();
     for (MyHabit myHabit in myHabitsList) {
       if (myHabit.category != "") {
         if (map.containsKey(myHabit.category)) {
-          map[myHabit.category].add(myHabit.documentId);
+          map[myHabit.category].add(myHabit);
         } else {
           map[myHabit.category] = [];
-          map[myHabit.category].add(myHabit.documentId);
+          map[myHabit.category].add(myHabit);
         }
       }
     }
@@ -325,21 +460,26 @@ class HabitoModel extends Model {
     notifyListeners();
   }
 
-  void addHabitToCategory(
-      String habitDocumentId, String categoryDocumentId) async {
+  void addHabitToCategory(MyHabit habit, String categoryDocumentId) async {
     myCategoriesList.forEach((category) {
       if (category.documentId == categoryDocumentId) {
-        category.addHabitToList(habitDocumentId);
+        category.addHabitToList(habit);
         notifyListeners();
       }
     });
   }
   //region ends
 
+  //profile region starts
+  get userEmail{
+    return _user.email;
+  }
+  //region ends
+
   //warning
   Future<void> neverSatisfied(
       BuildContext context, String title, String description) async {
-    return showDialog<void>(
+    return showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {

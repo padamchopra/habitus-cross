@@ -1,14 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:habito/models/habit.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/category/categorySpinnerTile.dart';
 import 'package:habito/widgets/category/categoryTile.dart';
 
 class MyCategory {
   String _name;
-  List<String> _myHabits;
+  List<MyHabit> _myHabits;
   int _color;
   IconData _icon;
+  Timestamp _createdAt;
   String _documentId;
   String _userId;
   bool _deleted;
@@ -20,6 +22,7 @@ class MyCategory {
     this._name = "";
     this._documentId = "";
     this._userId = "";
+    this._createdAt = Timestamp.now();
     this._deleted = false;
   }
 
@@ -34,6 +37,10 @@ class MyCategory {
   set categoryIcon(IconData icon) {
     this._icon = icon;
   }
+  
+  set createdAt(Timestamp createdAt){
+    this._createdAt = createdAt;
+  }
 
   set categoryIconFromCodePoint(int codePoint) {
     this._icon = IconData(codePoint, fontFamily: "MaterialIcons");
@@ -47,8 +54,16 @@ class MyCategory {
     this._userId = id;
   }
 
-  set habitsList(List<String> habits) {
+  set deleted(bool deleted){
+    this._deleted = deleted;
+  }
+
+  set habitsList(List<MyHabit> habits) {
     this._myHabits = habits;
+  }
+
+  get habitsList {
+    return this._myHabits;
   }
 
   get numberOfHabits {
@@ -83,14 +98,14 @@ class MyCategory {
     return _icon;
   }
 
-  void addHabitToList(String id) {
-    _myHabits.insert(0, id);
+  void addHabitToList(MyHabit myHabit) {
+    _myHabits.insert(0, myHabit);
   }
 
   Widget widget({bool showNumberOfHabits}) {
     return CategoryTile(
       showNumberOfHabits == null ? false : true,
-      _myHabits,
+      _myHabits.length,
       _icon,
       _color,
       _name,
@@ -107,6 +122,6 @@ class MyCategory {
         "uid": _userId,
         "icon": _icon.codePoint,
         "deleted": _deleted,
-        "createdAt": FieldValue.serverTimestamp()
+        "createdAt": _createdAt
       };
 }

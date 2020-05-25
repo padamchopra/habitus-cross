@@ -1,17 +1,20 @@
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:habito/models/enums.dart';
+import 'package:habito/models/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/pages/allCategories.dart';
 import 'package:habito/pages/allHabits.dart';
 import 'package:habito/pages/profile.dart';
-import 'package:habito/pages/signup.dart';
-import 'package:habito/widgets/categoryModal.dart';
-import 'package:habito/widgets/habitModal.dart';
+import 'package:habito/widgets/category/categoryModal.dart';
+import 'package:habito/widgets/habit/habitModal.dart';
 import 'package:habito/widgets/text.dart';
+import 'dart:math' as math;
 
 class Home extends StatefulWidget {
   final Function updateUserState;
-  Home(this.updateUserState);
+  final HabitoModel model;
+  Home(this.updateUserState, this.model);
   @override
   State<StatefulWidget> createState() {
     return _HomeState();
@@ -23,6 +26,22 @@ class _HomeState extends State<Home> {
   static PageController controller = PageController(
     initialPage: 0,
   );
+  ConfettiController _confettiController;
+
+  void startConfetti() {
+    _confettiController.play();
+  }
+
+  void initState() {
+    _confettiController = ConfettiController(duration: Duration(milliseconds: 100));
+    widget.model.playConfetti = startConfetti;
+    super.initState();
+  }
+
+  void dispose() {
+    _confettiController.dispose();
+    super.dispose();
+  }
 
   void changeScreen(int pageNo) {
     setState(() {
@@ -83,7 +102,7 @@ class _HomeState extends State<Home> {
       context: context,
       isScrollControlled: true,
       builder: (BuildContext _context) {
-        return CategoryModal();
+        return CategoryModal(CategoryModalMode.NEW);
       },
     );
   }
@@ -108,7 +127,8 @@ class _HomeState extends State<Home> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    _buildAddButton(Icons.lightbulb_outline, "Habit", () => addNewHabit(context)),
+                    _buildAddButton(Icons.lightbulb_outline, "Habit",
+                        () => addNewHabit(context)),
                     _buildAddButton(Icons.label_outline, "Category",
                         () => addNewCategory(context)),
                     _buildAddButton(Icons.share, "Share", null),
@@ -147,20 +167,44 @@ class _HomeState extends State<Home> {
       backgroundColor: HabitoColors.black,
       //Suggestion: If you want to make notch transparent
       //extendBody: true,
-      body: PageView(
-        controller: controller,
-        onPageChanged: (int pageNo) {
-          setState(() {
-            currentPage = pageNo;
-          });
-        },
-        scrollDirection: Axis.horizontal,
-        //TODO: Change pages here
+      body: Stack(
         children: <Widget>[
-          AllHabits(),
-          AllCategories(),
-          Signup(),
-          Profile(widget.updateUserState),
+          PageView(
+            controller: controller,
+            onPageChanged: (int pageNo) {
+              setState(() {
+                currentPage = pageNo;
+              });
+            },
+            scrollDirection: Axis.horizontal,
+            //TODO: Change pages here
+            children: <Widget>[
+              AllHabits(false),
+              AllCategories(),
+              AllHabits(true),
+              Profile(widget.updateUserState),
+            ],
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height,
+            width: double.infinity,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: ConfettiWidget(
+                confettiController: _confettiController,
+                blastDirection: - math.pi / 2,
+                blastDirectionality: BlastDirectionality.explosive,
+                colors: HabitoColors.standardColorsList,
+                emissionFrequency: 1,
+                numberOfParticles: 40,
+                particleDrag: 0.04,
+                shouldLoop: false,
+                maxBlastForce: 80,
+                minBlastForce: 5,
+                gravity: 0.1,
+              ),
+            ),
+          )
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

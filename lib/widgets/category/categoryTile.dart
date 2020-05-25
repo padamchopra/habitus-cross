@@ -4,13 +4,13 @@ import 'package:habito/widgets/text.dart';
 
 class CategoryTile extends StatelessWidget {
   final bool showNumberOfHabits;
-  final List<String> myHabits;
+  final int numberOfHabits;
   final IconData icon;
   final int color;
   final String name;
   CategoryTile(
     this.showNumberOfHabits,
-    this.myHabits,
+    this.numberOfHabits,
     this.icon,
     this.color,
     this.name,
@@ -30,7 +30,7 @@ class CategoryTile extends StatelessWidget {
             child: Align(
               alignment: Alignment.center,
               child: CustomText(
-                myHabits.length.toString(),
+                numberOfHabits.toString(),
                 fontSize: 18,
               ),
             ),

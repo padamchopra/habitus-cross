@@ -5,10 +5,9 @@ import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/text.dart';
 
 class HabitTile extends StatefulWidget {
-  final int index;
   final MyHabit myHabit;
   final MyCategory myCategory;
-  HabitTile(this.index, this.myHabit, this.myCategory);
+  HabitTile(this.myHabit, this.myCategory);
   @override
   State<StatefulWidget> createState() {
     return _HabitTileState();
@@ -16,8 +15,6 @@ class HabitTile extends StatefulWidget {
 }
 
 class _HabitTileState extends State<HabitTile> {
-  final EdgeInsets rightTileMargin = EdgeInsets.all(10);
-  final EdgeInsets leftTileMargin = EdgeInsets.all(10);
   int _daysCompleted = 1;
   Widget something = Container();
 
@@ -54,7 +51,7 @@ class _HabitTileState extends State<HabitTile> {
       decoration: BoxDecoration(
         color: HabitoColors.black,
       ),
-      margin: widget.index % 2 == 0 ? leftTileMargin : rightTileMargin,
+      margin: EdgeInsets.all(10),
       width: double.infinity,
       child: Stack(
         children: <Widget>[

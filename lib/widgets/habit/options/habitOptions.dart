@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:habito/models/category.dart';
@@ -5,9 +7,9 @@ import 'package:habito/models/enums.dart';
 import 'package:habito/models/habit.dart';
 import 'package:habito/models/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
+import 'package:habito/widgets/habit/habitModal.dart';
 import 'package:habito/widgets/habit/options/habitMoreOptions.dart';
 import 'package:habito/widgets/habit/options/optionCircle.dart';
-import 'package:habito/widgets/habitModal.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class HabitOptions extends StatefulWidget {
@@ -15,7 +17,9 @@ class HabitOptions extends StatefulWidget {
   final MyHabit myHabit;
   final MyCategory myCategory;
   final Function toggle;
-  HabitOptions(this.index, this.myHabit, this.myCategory, this.toggle);
+  final bool showOnlyCompleted;
+  HabitOptions(this.index, this.myHabit, this.myCategory, this.toggle,
+      this.showOnlyCompleted);
 
   @override
   State<StatefulWidget> createState() {
@@ -34,9 +38,14 @@ class _HabitOptionsState extends State<HabitOptions> {
     widget.toggle(widget.index);
   }
 
-  void markHabitDone(HabitoModel model) {
+  void markHabitDone(HabitoModel model) async {
+    if (widget.showOnlyCompleted) {
+      model.neverSatisfied(context, "Already tracked.",
+          "This habit has already been completed. Try resetting the progress if you want to go at it again.");
+      return;
+    }
     int resultCode = model.markDoneForToday(widget.myHabit);
-    if (resultCode == 0 || resultCode == 3) {
+    if (resultCode == 0) {
       setState(() {
         doneButtonColor = HabitoColors.success;
         doneButtonIconColor = HabitoColors.white;
@@ -48,8 +57,10 @@ class _HabitOptionsState extends State<HabitOptions> {
       model.neverSatisfied(context, "Woops",
           "Looks like you missed a day or more. Progress has been reset.");
     } else if (resultCode == 3) {
-      model.neverSatisfied(context, "Congrats",
-          "You've successfully managed to keep up for 21 days. Tracking for this habit is now complete.");
+      model.playConfetti();
+      /*await new Future.delayed(const Duration(seconds: 4));
+      model.neverSatisfied(context, "Congratulations",
+          "You have successfully formed ${model.myHabitsCompletedList.length} habits thrugh Habito!");*/
     } else {
       model.neverSatisfied(
           context, "Try Again", "Could not update your progress.");
@@ -126,7 +137,8 @@ class _HabitOptionsState extends State<HabitOptions> {
         model.neverSatisfied(context, "Deleted",
             "That's a bummer. Good luck with the remaining habits.");
       } else {
-        model.neverSatisfied(context, "Try Again", "Habit Could not be reset.");
+        model.neverSatisfied(
+            context, "Try Again", "Habit could not be deleted.");
       }
     });
   }

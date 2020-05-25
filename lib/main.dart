@@ -24,7 +24,7 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       model.checkIfSignedIn().then((value) {
         setState(() {
-          _whatToDisplay = value ? Home(updateUserState) : Login(updateUserState);
+          _whatToDisplay = value ? Home(updateUserState, model) : Login(updateUserState);
         });
       }).catchError((_) {
         setState(() {

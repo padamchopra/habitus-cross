@@ -15,6 +15,7 @@ dependencies:
   cloud_firestore: ^0.13.5
   email_validator: ^1.0.0
   scoped_model: ^1.0.1
+  confetti: ^0.5.2
 
 dev_dependencies:
   flutter_test:

@@ -1,4 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:habito/models/category.dart';
+import 'package:habito/widgets/habit/habitTile.dart';
+import 'package:habito/widgets/habit/habitTileUnderCategory.dart';
 
 class MyHabit {
   String _title;
@@ -66,7 +70,7 @@ class MyHabit {
   set updateTimes(List<dynamic> updates) {
     updates.forEach((element) {
       Timestamp timestamp = element;
-      _updateTimes.insert(0, timestamp);
+      _updateTimes.add(timestamp);
     });
   }
 
@@ -162,10 +166,18 @@ class MyHabit {
     return 4;
   }
 
-  void resetProgress(){
+  void resetProgress() {
     _finished = false;
     _numberOfDays = 0;
     _updateTimes.clear();
+  }
+
+  Widget widget(MyCategory myCategory) {
+    return HabitTile(this, myCategory);
+  }
+
+  Widget underCategoryWidget(MyCategory myCategory) {
+    return HabitTileUnderCategory(this, myCategory);
   }
 
   Map<String, dynamic> toJson() => {

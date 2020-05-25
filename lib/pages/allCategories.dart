@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:habito/models/category.dart';
+import 'package:habito/models/enums.dart';
 import 'package:habito/models/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
+import 'package:habito/widgets/category/categoryModal.dart';
+import 'package:habito/widgets/category/categoryMoreOptions.dart';
 import 'package:habito/widgets/text.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -14,6 +16,49 @@ class AllCategories extends StatefulWidget {
 }
 
 class _AllCategoriesState extends State<AllCategories> {
+  MyCategory _selectedCategory = MyCategory();
+
+  void moreOptionSwitch(CategorySelectedOption option, HabitoModel model) {
+    switch (option) {
+      case CategorySelectedOption.VIEW_HABITS:
+        break;
+      case CategorySelectedOption.EDIT:
+        openCategoryModal(CategoryModalMode.EDIT);
+        break;
+      case CategorySelectedOption.DUPLICATE_AND_EDIT:
+        openCategoryModal(CategoryModalMode.DUPLICATE);
+        break;
+      case CategorySelectedOption.DELETE:
+        deleteCategory(model);
+        break;
+    }
+  }
+
+  void openCategoryModal(option) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext _context) {
+        return CategoryModal(
+          option,
+          myCategory: _selectedCategory,
+        );
+      },
+    );
+  }
+
+  void deleteCategory(HabitoModel model) {
+    model.deleteCategory(_selectedCategory).then((value) {
+      if (value) {
+        model.neverSatisfied(context, "Deleted",
+            "This category has been deleted and child habits unlinked.");
+      } else {
+        model.neverSatisfied(
+            context, "Try Again", "Category could not be deleted.");
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -59,16 +104,25 @@ class _AllCategoriesState extends State<AllCategories> {
                     ),
                   );
                 }
-                List<MyCategory> _myCategoriesList = model.myCategoriesList;
-                Map<int, MyCategory> _myCategories = _myCategoriesList.asMap();
+                List<MyCategory> _myCategories = model.myCategoriesList;
                 return ListView.builder(
                   padding: EdgeInsets.only(top: 22.5),
                   itemCount: numberOfCategories,
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
                       margin: EdgeInsets.only(bottom: 18),
-                      child:
-                          _myCategories[index].widget(showNumberOfHabits: true),
+                      child: GestureDetector(
+                        onTap: () {
+                          _selectedCategory = _myCategories[index];
+                          CategoryMoreOptions.show(
+                            context,
+                            model,
+                            moreOptionSwitch,
+                          );
+                        },
+                        child: _myCategories[index]
+                            .widget(showNumberOfHabits: true),
+                      ),
                     );
                   },
                 );
