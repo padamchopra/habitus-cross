@@ -98,7 +98,11 @@ class _HabitoModalState extends State<HabitModal> {
     });
   }
 
-  void editMyHabit(_) {
+  void editMyHabit(HabitoModel model) {
+    if(widget.myHabit.isFinished){
+      model.neverSatisfied(context, "Error", "Cannot edit habit as it has already been completed");
+      return;
+    }
     setState(() {
       modalHeadText = "Edit Habit";
       editingEnabled = true;
