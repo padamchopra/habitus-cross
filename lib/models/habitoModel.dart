@@ -56,6 +56,7 @@ class HabitoModel extends Model {
       _user = (await _auth.signInWithEmailAndPassword(
               email: email, password: password))
           .user;
+      fetchCategories();
       return true;
     } on Exception catch (_) {
       return false;
