@@ -11,6 +11,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter/material.dart';
 
 class HabitoModel extends Model {
+  bool devTesting = false;
   FirebaseAuth _auth;
   FirebaseUser _user;
   Firestore _firestore;
@@ -24,11 +25,13 @@ class HabitoModel extends Model {
   HabitoModel() {
     _categoriesLoaded = false;
     _habitsLoaded = false;
-    _auth = FirebaseAuth.instance;
-    _firestore = Firestore.instance;
     myCategoriesList = [];
     myHabitsList = [];
     myHabitsCompletedList = [];
+    if (!devTesting) {
+      _auth = FirebaseAuth.instance;
+      _firestore = Firestore.instance;
+    }
     checkIfSignedIn().then((value) {
       if (value) {
         fetchCategories();
@@ -38,6 +41,7 @@ class HabitoModel extends Model {
 
   //authentication region begins
   Future<bool> checkIfSignedIn() async {
+    if (devTesting) return true;
     _user = await _auth.currentUser();
     if (_user == null) {
       return false;
@@ -47,11 +51,16 @@ class HabitoModel extends Model {
   }
 
   Future<bool> signOut() async {
+    if (devTesting) return true;
     await _auth.signOut();
     return true;
   }
 
   Future<bool> signIn(String email, String password) async {
+    if (devTesting) {
+      fetchCategories();
+      return true;
+    }
     try {
       _user = (await _auth.signInWithEmailAndPassword(
               email: email, password: password))
@@ -64,6 +73,7 @@ class HabitoModel extends Model {
   }
 
   Future<bool> signUp(String email, String password) async {
+    if (devTesting) return true;
     _user = (await _auth.createUserWithEmailAndPassword(
             email: email, password: password))
         .user;
@@ -149,6 +159,15 @@ class HabitoModel extends Model {
   }
 
   void fetchCategories() async {
+    if (devTesting) {
+      //myCategoriesList.add(value);
+      notifyListeners();
+      _categoriesLoaded = true;
+      myCategoriesList.toSet().toList();
+      fetchHabits();
+      return;
+    }
+
     if (_user != null) {
       myCategoriesList.clear();
       String userId = _user.uid;
