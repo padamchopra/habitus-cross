@@ -38,7 +38,7 @@ class _CategoryModalState extends State<CategoryModal> {
         actionButton = ActionButton(addNewCategory, "Add");
 
       if (widget.mode == CategoryModalMode.EDIT) {
-        modalHeadText = "Edit Habit";
+        modalHeadText = "Edit Category";
         actionButton = ActionButton(updateCategory, "Update");
         iconSet = true;
         _myCategory = widget.myCategory;
@@ -112,7 +112,7 @@ class _CategoryModalState extends State<CategoryModal> {
   void editMyCategory(_) {
     setState(() {
       editingEnabled = true;
-      modalHeadText = "Edit Habit";
+      modalHeadText = "Edit Category";
       actionButton = ActionButton(updateCategory, "Update");
     });
   }
