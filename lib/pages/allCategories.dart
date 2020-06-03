@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habito/models/analytics.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/models/enums.dart';
 import 'package:habito/models/habitoModel.dart';
@@ -18,17 +19,26 @@ class AllCategories extends StatefulWidget {
 class _AllCategoriesState extends State<AllCategories> {
   MyCategory _selectedCategory = MyCategory();
 
+  void initState(){
+    super.initState();
+    Analytics.sendAnalyticsEvent(Analytics.categoriesOpened);
+  }
+
   void moreOptionSwitch(CategorySelectedOption option, HabitoModel model) {
     switch (option) {
       case CategorySelectedOption.VIEW_HABITS:
+        Analytics.sendAnalyticsEvent(Analytics.categoryOptionToViewHabits);
         break;
       case CategorySelectedOption.EDIT:
+      Analytics.sendAnalyticsEvent(Analytics.categoryOptionToEdit);
         openCategoryModal(CategoryModalMode.EDIT);
         break;
       case CategorySelectedOption.DUPLICATE_AND_EDIT:
+      Analytics.sendAnalyticsEvent(Analytics.categoryOptionToDuplicate);
         openCategoryModal(CategoryModalMode.DUPLICATE);
         break;
       case CategorySelectedOption.DELETE:
+        Analytics.sendAnalyticsEvent(Analytics.categoryOptionToDelete);
         deleteCategory(model);
         break;
     }

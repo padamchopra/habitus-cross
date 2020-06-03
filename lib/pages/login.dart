@@ -1,5 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:habito/models/analytics.dart';
 import 'package:habito/models/enums.dart';
 import 'package:habito/models/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
@@ -14,9 +15,12 @@ class Login extends StatelessWidget {
   final _focusNode2 = FocusNode();
   final Function updateUserState;
   Login(this.updateUserState);
+
   @override
   Widget build(BuildContext context) {
     String email, password, tempEmail;
+    Analytics.sendAnalyticsEvent(Analytics.loginOpened);
+
     return Stack(
       children: <Widget>[
         Background(HabitoColors.black),
@@ -135,12 +139,18 @@ class Login extends StatelessWidget {
                                 HabitoAuth signedInResult =
                                     await model.signIn(email, password);
                                 if (signedInResult == HabitoAuth.SUCCESS) {
+                                  Analytics.sendAnalyticsEvent(
+                                      Analytics.authLoginSuccess);
                                   updateUserState();
                                 } else if (signedInResult ==
                                     HabitoAuth.VERIFICATION_REQUIRED) {
+                                  Analytics.sendAnalyticsEvent(
+                                      Analytics.authVerifyNeeded);
                                   model.neverSatisfied(context, "Verify",
                                       "Please verify your email to proceed.");
                                 } else {
+                                  Analytics.sendAnalyticsEvent(
+                                      Analytics.authLoginFailure);
                                   model.neverSatisfied(
                                       context,
                                       "Incorrect Login",
@@ -169,6 +179,7 @@ class Login extends StatelessWidget {
                                 model
                                     .requestPasswordReset(tempEmail)
                                     .then((value) {
+                                      Analytics.sendAnalyticsEvent(Analytics.authPasswordReset);
                                   model.neverSatisfied(context, "Check Email",
                                       "Please check your email to reset your password.");
                                 });

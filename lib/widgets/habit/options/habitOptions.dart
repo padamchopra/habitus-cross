@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:habito/models/analytics.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/models/enums.dart';
 import 'package:habito/models/habit.dart';
@@ -37,6 +38,7 @@ class _HabitOptionsState extends State<HabitOptions> {
   }
 
   void markHabitDone(HabitoModel model) async {
+    Analytics.sendAnalyticsEvent(Analytics.habitOptionToMarkDone);
     if (widget.showOnlyCompleted) {
       model.neverSatisfied(context, "Already tracked.",
           "This habit has already been completed. Try resetting the progress if you want to go at it again.");
@@ -67,6 +69,7 @@ class _HabitOptionsState extends State<HabitOptions> {
   }
 
   void viewHabitDetails() {
+    Analytics.sendAnalyticsEvent(Analytics.habitOptionToView);
     closeOptions();
     showModalBottomSheet(
       context: context,
@@ -82,6 +85,7 @@ class _HabitOptionsState extends State<HabitOptions> {
   }
 
   void viewMoreOptions(model) {
+    Analytics.sendAnalyticsEvent(Analytics.habitOptionToView);
     HabitMoreOptions.show(context, model, decideMoreOptionFunction);
   }
 
@@ -89,12 +93,15 @@ class _HabitOptionsState extends State<HabitOptions> {
       HabitSelecetedOption option, HabitoModel model) {
     switch (option) {
       case HabitSelecetedOption.DUPLICATE_AND_EDIT:
+        Analytics.sendAnalyticsEvent(Analytics.habitOptionToDuplicate);
         duplicateAndEdit();
         break;
       case HabitSelecetedOption.RESET_PROGRESS:
+        Analytics.sendAnalyticsEvent(Analytics.habitOptionToResetProgress);
         resetProgress(model);
         break;
       case HabitSelecetedOption.DELETE:
+        Analytics.sendAnalyticsEvent(Analytics.habitOptionToDelete);
         deleteHabit(model);
         break;
     }

@@ -18,6 +18,7 @@ dependencies:
   scoped_model: ^1.0.1
   confetti: ^0.5.2
   store_redirect: ^1.0.2
+  firebase_analytics: ^5.0.14
 
 dev_dependencies:
   flutter_test:
