@@ -1,3 +1,9 @@
+enum HabitoAuth{
+  SUCCESS,
+  FAIL,
+  VERIFICATION_REQUIRED
+}
+
 enum HabitModalMode{
   NEW,
   VIEW,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habito/models/enums.dart';
 import 'package:habito/models/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/pages/home.dart';
@@ -24,7 +25,9 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       model.checkIfSignedIn().then((value) {
         setState(() {
-          _whatToDisplay = value ? Home(updateUserState, model) : Login(updateUserState);
+          _whatToDisplay = value == HabitoAuth.SUCCESS
+              ? Home(updateUserState, model)
+              : Login(updateUserState);
         });
       }).catchError((_) {
         setState(() {
@@ -33,6 +36,7 @@ class _MyAppState extends State<MyApp> {
       });
     });
   }
+
   @override
   void initState() {
     super.initState();

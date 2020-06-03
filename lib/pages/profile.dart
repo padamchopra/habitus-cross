@@ -85,6 +85,7 @@ class Profile extends StatelessWidget {
                       color: HabitoColors.midnight,
                       onPressed: () async {
                         await model.signOut();
+                        await model.neverSatisfied(context, "Signing Out", "Thanks for using Habito!");
                         updateUserState();
                       },
                       child: Padding(

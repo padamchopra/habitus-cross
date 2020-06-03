@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/models/devTesting.dart';
+import 'package:habito/models/enums.dart';
 import 'package:habito/models/habit.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/text.dart';
@@ -12,7 +13,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter/material.dart';
 
 class HabitoModel extends Model {
-  bool devTesting = true;
+  bool devTesting = false;
   FirebaseAuth _auth;
   FirebaseUser _user;
   Firestore _firestore;
@@ -34,57 +35,68 @@ class HabitoModel extends Model {
       _firestore = Firestore.instance;
     }
     checkIfSignedIn().then((value) {
-      if (value) {
+      if (value == HabitoAuth.SUCCESS) {
         fetchCategories();
       }
     });
   }
 
   //authentication region begins
-  Future<bool> checkIfSignedIn() async {
-    if (devTesting) return true;
+  Future<HabitoAuth> checkIfSignedIn() async {
+    if (devTesting) return HabitoAuth.SUCCESS;
     _user = await _auth.currentUser();
-    if (_user == null) {
-      return false;
+    if (_user != null) {
+      if (_user.isEmailVerified) {
+        return HabitoAuth.SUCCESS;
+      }
+      return HabitoAuth.VERIFICATION_REQUIRED;
     } else {
-      return true;
+      return HabitoAuth.FAIL;
     }
   }
 
-  Future<bool> signOut() async {
-    if (devTesting) return true;
+  Future<HabitoAuth> signOut() async {
+    if (devTesting) return HabitoAuth.SUCCESS;
     await _auth.signOut();
-    return true;
+    return HabitoAuth.SUCCESS;
   }
 
-  Future<bool> signIn(String email, String password) async {
+  Future<HabitoAuth> signIn(String email, String password) async {
     if (devTesting) {
       fetchCategories();
-      return true;
+      return HabitoAuth.SUCCESS;
     }
     try {
       _user = (await _auth.signInWithEmailAndPassword(
               email: email, password: password))
           .user;
-      fetchCategories();
-      return true;
+      if (_user.isEmailVerified) {
+        fetchCategories();
+        return HabitoAuth.SUCCESS;
+      }
+      await _user.sendEmailVerification();
+      return HabitoAuth.VERIFICATION_REQUIRED;
     } on Exception catch (_) {
-      return false;
+      return HabitoAuth.FAIL;
     }
   }
 
-  Future<bool> signUp(String email, String password) async {
-    if (devTesting) return true;
+  Future<HabitoAuth> signUp(String email, String password) async {
+    if (devTesting) return HabitoAuth.SUCCESS;
     _user = (await _auth.createUserWithEmailAndPassword(
             email: email, password: password))
         .user;
     if (_user != null) {
-      return true;
+      await _user.sendEmailVerification();
+      return HabitoAuth.SUCCESS;
     } else {
-      return false;
+      return HabitoAuth.FAIL;
     }
   }
 
+  Future<void> requestPasswordReset(String email) async {
+    await _auth.sendPasswordResetEmail(email: email);
+  }
   //region ends
 
   //categories collection region starts
@@ -551,7 +563,7 @@ class HabitoModel extends Model {
 
   //profile region starts
   get userEmail {
-    if(devTesting){
+    if (devTesting) {
       return "user@test.com";
     }
     return _user.email;

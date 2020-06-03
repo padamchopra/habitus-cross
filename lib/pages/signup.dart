@@ -1,6 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:habito/models/enums.dart';
 import 'package:habito/models/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/background.dart';
@@ -69,7 +70,8 @@ class Signup extends StatelessWidget {
                           Icons.alternate_email,
                           color: HabitoColors.placeholderGrey,
                         ),
-                        hintStyle: new TextStyle(color: HabitoColors.placeholderGrey),
+                        hintStyle:
+                            new TextStyle(color: HabitoColors.placeholderGrey),
                         hintText: "Email",
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 24, vertical: 21),
@@ -111,7 +113,8 @@ class Signup extends StatelessWidget {
                           Icons.lock_outline,
                           color: HabitoColors.placeholderGrey,
                         ),
-                        hintStyle: new TextStyle(color: HabitoColors.placeholderGrey),
+                        hintStyle:
+                            new TextStyle(color: HabitoColors.placeholderGrey),
                         hintText: "Password",
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 24, vertical: 21),
@@ -133,25 +136,25 @@ class Signup extends StatelessWidget {
                           ? null
                           : "Passwords do not match",
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            width: 0,
-                            style: BorderStyle.none,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide(
+                              width: 0,
+                              style: BorderStyle.none,
+                            ),
                           ),
-                        ),
-                        labelStyle: TextStyle(color: HabitoColors.white),
-                        filled: true,
-                        prefixIcon: Icon(
-                          Icons.lock_outline,
-                          color: HabitoColors.placeholderGrey,
-                        ),
-                        hintStyle: new TextStyle(color: HabitoColors.placeholderGrey),
-                        hintText: "Confirm password",
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 24, vertical: 21),
-                        fillColor: HabitoColors.darkTextFieldBackground
-                      ),
+                          labelStyle: TextStyle(color: HabitoColors.white),
+                          filled: true,
+                          prefixIcon: Icon(
+                            Icons.lock_outline,
+                            color: HabitoColors.placeholderGrey,
+                          ),
+                          hintStyle: new TextStyle(
+                              color: HabitoColors.placeholderGrey),
+                          hintText: "Confirm password",
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 21),
+                          fillColor: HabitoColors.darkTextFieldBackground),
                     ),
                     SizedBox(
                       height: 30,
@@ -165,9 +168,14 @@ class Signup extends StatelessWidget {
                             if (_formKey.currentState.validate()) {
                               _formKey.currentState.save();
                               model.signUp(email, password).then((value) {
-                                if (value) {
-                                  model.signOut().whenComplete(
-                                      () => Navigator.of(context).pop());
+                                if (value == HabitoAuth.SUCCESS) {
+                                  model
+                                      .neverSatisfied(context, "Verify",
+                                          "We've sent you a verification email to the id you provided.")
+                                      .then((_) {
+                                    model.signOut().whenComplete(
+                                        () => Navigator.of(context).pop());
+                                  });
                                 } else {
                                   model.neverSatisfied(context, "Try Again",
                                       "We could not sign you up at the moment. Sorry for the trouble.");

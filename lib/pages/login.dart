@@ -1,5 +1,6 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:habito/models/enums.dart';
 import 'package:habito/models/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/pages/signup.dart';
@@ -15,7 +16,7 @@ class Login extends StatelessWidget {
   Login(this.updateUserState);
   @override
   Widget build(BuildContext context) {
-    String email, password;
+    String email, password, tempEmail;
     return Stack(
       children: <Widget>[
         Background(HabitoColors.black),
@@ -49,9 +50,14 @@ class Login extends StatelessWidget {
                     textInputAction: TextInputAction.next,
                     onEditingComplete: () =>
                         FocusScope.of(context).requestFocus(_focusNode2),
-                    validator: (_email) => EmailValidator.validate(_email)
-                        ? null
-                        : "Invalid email",
+                    validator: (_email) {
+                      if (EmailValidator.validate(_email)) {
+                        tempEmail = _email;
+                        return null;
+                      } else {
+                        return "Invalid email";
+                      }
+                    },
                     onSaved: (_email) => email = _email,
                     autocorrect: false,
                     keyboardType: TextInputType.emailAddress,
@@ -71,7 +77,8 @@ class Login extends StatelessWidget {
                         Icons.alternate_email,
                         color: HabitoColors.placeholderGrey,
                       ),
-                      hintStyle: new TextStyle(color: HabitoColors.placeholderGrey),
+                      hintStyle:
+                          new TextStyle(color: HabitoColors.placeholderGrey),
                       hintText: "Email",
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 24, vertical: 21),
@@ -104,7 +111,8 @@ class Login extends StatelessWidget {
                         Icons.lock_outline,
                         color: HabitoColors.placeholderGrey,
                       ),
-                      hintStyle: new TextStyle(color: HabitoColors.placeholderGrey),
+                      hintStyle:
+                          new TextStyle(color: HabitoColors.placeholderGrey),
                       hintText: "Password",
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 24, vertical: 21),
@@ -117,30 +125,65 @@ class Login extends StatelessWidget {
                   ScopedModelDescendant<HabitoModel>(
                     builder: (BuildContext context, Widget child,
                         HabitoModel model) {
-                      return MaterialButton(
-                        color: HabitoColors.perfectBlue,
-                        onPressed: () async {
-                          if (_formKey.currentState.validate()) {
-                            _formKey.currentState.save();
-                            bool signedIn = await model.signIn(email, password);
-                            if (signedIn) {
-                              updateUserState();
-                            } else {
-                              model.neverSatisfied(context, "Incorrect Login", "Please re-check your details and try again.");
-                            }
-                          }
-                        },
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 24, vertical: 18),
-                          width: MediaQuery.of(context).size.width,
-                          child: CustomText(
-                            "Login",
-                            color: HabitoColors.white,
-                            textAlign: TextAlign.center,
-                            fontSize: 21,
+                      return Column(
+                        children: [
+                          MaterialButton(
+                            color: HabitoColors.perfectBlue,
+                            onPressed: () async {
+                              if (_formKey.currentState.validate()) {
+                                _formKey.currentState.save();
+                                HabitoAuth signedInResult =
+                                    await model.signIn(email, password);
+                                if (signedInResult == HabitoAuth.SUCCESS) {
+                                  updateUserState();
+                                } else if (signedInResult ==
+                                    HabitoAuth.VERIFICATION_REQUIRED) {
+                                  model.neverSatisfied(context, "Verify",
+                                      "Please verify your email to proceed.");
+                                } else {
+                                  model.neverSatisfied(
+                                      context,
+                                      "Incorrect Login",
+                                      "Please re-check your details and try again.");
+                                }
+                              }
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 24, vertical: 18),
+                              width: MediaQuery.of(context).size.width,
+                              child: CustomText(
+                                "Login",
+                                color: HabitoColors.white,
+                                textAlign: TextAlign.center,
+                                fontSize: 21,
+                              ),
+                            ),
                           ),
-                        ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              if (_formKey.currentState.validate()) {
+                                model
+                                    .requestPasswordReset(tempEmail)
+                                    .then((value) {
+                                  model.neverSatisfied(context, "Check Email",
+                                      "Please check your email to reset your password.");
+                                });
+                              }
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CustomText(
+                                "Forgot Password?",
+                                color: HabitoColors.placeholderGrey,
+                                fontSize: 15,
+                              ),
+                            ),
+                          )
+                        ],
                       );
                     },
                   ),
