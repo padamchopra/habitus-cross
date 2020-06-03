@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:habito/models/enums.dart';
 import 'package:habito/models/habitoModel.dart';
@@ -18,6 +19,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   HabitoModel model = HabitoModel();
   Widget _whatToDisplay = CircularProgressIndicator();
 
@@ -41,6 +43,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     updateUserState();
+    _firebaseMessaging.requestNotificationPermissions();
   }
 
   @override

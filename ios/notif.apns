@@ -1,0 +1,8 @@
+{
+    "Simulator Target Bundle": "me.padamchopra.habito",
+    "aps": {
+        "alert": "This is a simulated notification!",
+        "badge": 1,
+        "sound": "default"
+    }
+}

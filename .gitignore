@@ -44,3 +44,4 @@ app.*.map.json
 android/key.properties
 android/app/google-services.json
 ios/GoogleService-Info.plist
+ios/AuthKey_UY2BLHW5VY.p8
