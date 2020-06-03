@@ -1,6 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:habito/models/analytics.dart';
 import 'package:habito/models/enums.dart';
 import 'package:habito/models/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
@@ -17,6 +18,7 @@ class Signup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String email, password;
+    Analytics.sendAnalyticsEvent(Analytics.signUpOpened);
 
     return Scaffold(
       resizeToAvoidBottomPadding: false,
@@ -169,6 +171,7 @@ class Signup extends StatelessWidget {
                               _formKey.currentState.save();
                               model.signUp(email, password).then((value) {
                                 if (value == HabitoAuth.SUCCESS) {
+                                  Analytics.sendAnalyticsEvent(Analytics.authSignUpSuccess);
                                   model
                                       .neverSatisfied(context, "Verify",
                                           "We've sent you a verification email to the id you provided.")
@@ -177,6 +180,7 @@ class Signup extends StatelessWidget {
                                         () => Navigator.of(context).pop());
                                   });
                                 } else {
+                                  Analytics.sendAnalyticsEvent(Analytics.authSignUpFailure);
                                   model.neverSatisfied(context, "Try Again",
                                       "We could not sign you up at the moment. Sorry for the trouble.");
                                   Navigator.of(context).pop();

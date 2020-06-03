@@ -1,3 +1,4 @@
+import 'package:habito/models/analytics.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/models/habit.dart';
 import 'package:habito/models/habitoModel.dart';
@@ -20,10 +21,16 @@ class AllHabits extends StatefulWidget {
 class _AllHabitsState extends State<AllHabits> {
   Map<int, bool> tileClicked = new Map();
 
+  void initState(){
+    super.initState();
+    Analytics.sendAnalyticsEvent(Analytics.habitsOpened);
+  }
+
   void toggleTileClick(int index) {
     setState(() {
       tileClicked[index] = !tileClicked[index];
     });
+    Analytics.sendAnalyticsEvent(Analytics.habitOptionsToggled);
   }
 
   @override

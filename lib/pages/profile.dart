@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habito/models/analytics.dart';
 import 'package:habito/models/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/generalInfo.dart';
@@ -12,6 +13,7 @@ class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Analytics.sendAnalyticsEvent(Analytics.profileOpened);
     return ScopedModelDescendant<HabitoModel>(
       builder: (BuildContext context, Widget child, HabitoModel model) {
         return Column(
@@ -71,7 +73,10 @@ class Profile extends StatelessWidget {
                     width: double.infinity,
                     child: FlatButton(
                       color: HabitoColors.midnight,
-                      onPressed: () => StoreRedirect.redirect(),
+                      onPressed: () {
+                        Analytics.sendAnalyticsEvent(Analytics.storeReviewOpened);
+                        StoreRedirect.redirect();
+                      },
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: CustomText("Review"),
@@ -84,8 +89,10 @@ class Profile extends StatelessWidget {
                     child: FlatButton(
                       color: HabitoColors.midnight,
                       onPressed: () async {
+                        Analytics.sendAnalyticsEvent(Analytics.authSignOut);
                         await model.signOut();
-                        await model.neverSatisfied(context, "Signing Out", "Thanks for using Habito!");
+                        await model.neverSatisfied(
+                            context, "Signing Out", "Thanks for using Habito!");
                         updateUserState();
                       },
                       child: Padding(

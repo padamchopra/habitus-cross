@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:habito/models/analytics.dart';
 import 'package:habito/models/enums.dart';
 import 'package:habito/models/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
@@ -44,6 +45,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     updateUserState();
     _firebaseMessaging.requestNotificationPermissions();
+    Analytics.sendAnalyticsEvent(Analytics.appOpened);
   }
 
   @override

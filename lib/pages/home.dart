@@ -1,5 +1,6 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
+import 'package:habito/models/analytics.dart';
 import 'package:habito/models/enums.dart';
 import 'package:habito/models/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
@@ -36,6 +37,7 @@ class _HomeState extends State<Home> {
     _confettiController = ConfettiController(duration: Duration(milliseconds: 100));
     widget.model.playConfetti = startConfetti;
     super.initState();
+    Analytics.sendAnalyticsEvent(Analytics.homeOpened);
   }
 
   void dispose() {
@@ -87,6 +89,7 @@ class _HomeState extends State<Home> {
 
   void addNewHabit(BuildContext context) {
     Navigator.of(context).pop();
+    Analytics.sendAnalyticsEvent(Analytics.addNewHabit);
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -98,6 +101,7 @@ class _HomeState extends State<Home> {
 
   void addNewCategory(BuildContext context) {
     Navigator.of(context).pop();
+    Analytics.sendAnalyticsEvent(Analytics.addNewCategory);
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -108,6 +112,7 @@ class _HomeState extends State<Home> {
   }
 
   void showMyBottomModal(BuildContext context) {
+    Analytics.sendAnalyticsEvent(Analytics.addNewModalClicked);
     showModalBottomSheet(
         context: context,
         builder: (BuildContext _context) {
