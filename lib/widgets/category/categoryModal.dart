@@ -139,7 +139,7 @@ class _CategoryModalState extends State<CategoryModal> {
           child: index == _myCategory.categoryColorIndex
               ? Icon(
                   Icons.check,
-                  color: HabitoColors.white,
+                  color: MyColors.white,
                 )
               : Container(),
         ),
@@ -154,7 +154,7 @@ class _CategoryModalState extends State<CategoryModal> {
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
         decoration: BoxDecoration(
-          color: HabitoColors.white,
+          color: MyColors.white,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -184,12 +184,12 @@ class _CategoryModalState extends State<CategoryModal> {
               ),
               child: Row(
                 children: <Widget>[
-                  buildColorPickerBtn(HabitoColors.categoryPaletteOne, 1),
-                  buildColorPickerBtn(HabitoColors.categoryPaletteTwo, 2),
-                  buildColorPickerBtn(HabitoColors.categoryPaletteThree, 3),
-                  buildColorPickerBtn(HabitoColors.categoryPaletteFour, 4),
-                  buildColorPickerBtn(HabitoColors.categoryPaletteFive, 5),
-                  buildColorPickerBtn(HabitoColors.categoryPaletteSix, 6),
+                  buildColorPickerBtn(MyColors.categoryPaletteOne, 1),
+                  buildColorPickerBtn(MyColors.categoryPaletteTwo, 2),
+                  buildColorPickerBtn(MyColors.categoryPaletteThree, 3),
+                  buildColorPickerBtn(MyColors.categoryPaletteFour, 4),
+                  buildColorPickerBtn(MyColors.categoryPaletteFive, 5),
+                  buildColorPickerBtn(MyColors.categoryPaletteSix, 6),
                 ],
               ),
             ),
@@ -197,7 +197,7 @@ class _CategoryModalState extends State<CategoryModal> {
               padding: const EdgeInsets.only(left: 10, top: 15),
               child: CustomText(
                 "-- Preview --",
-                color: HabitoColors.placeholderGrey,
+                color: MyColors.placeholderGrey,
                 fontSize: 12,
                 textAlign: TextAlign.start,
               ),

@@ -13,7 +13,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter/material.dart';
 
 class HabitoModel extends Model {
-  bool devTesting = false;
+  bool devTesting = true;
   FirebaseAuth _auth;
   FirebaseUser _user;
   Firestore _firestore;
@@ -581,7 +581,7 @@ class HabitoModel extends Model {
           return CupertinoAlertDialog(
             title: CustomText(
               title,
-              color: HabitoColors.black,
+              color: MyColors.black,
               textAlign: TextAlign.center,
               fontWeight: FontWeight.bold,
             ),
@@ -589,7 +589,7 @@ class HabitoModel extends Model {
               padding: const EdgeInsets.only(top: 10.0),
               child: CustomText(
                 description,
-                color: HabitoColors.black,
+                color: MyColors.black,
                 textAlign: TextAlign.center,
                 fontSize: 14,
               ),
@@ -599,7 +599,7 @@ class HabitoModel extends Model {
                 isDefaultAction: true,
                 child: CustomText(
                   'OK',
-                  color: HabitoColors.perfectBlue,
+                  color: MyColors.perfectBlue,
                   textAlign: TextAlign.center,
                 ),
                 onPressed: () {
@@ -612,14 +612,14 @@ class HabitoModel extends Model {
           return AlertDialog(
               title: CustomText(
                 title,
-                color: HabitoColors.black,
+                color: MyColors.black,
                 textAlign: TextAlign.center,
                 fontWeight: FontWeight.bold,
                 fontSize: 24,
               ),
               content: CustomText(
                 description,
-                color: HabitoColors.black,
+                color: MyColors.black,
                 textAlign: TextAlign.center,
                 fontSize: 20,
               ),
@@ -629,7 +629,7 @@ class HabitoModel extends Model {
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: CustomText(
                       'OK',
-                      color: HabitoColors.perfectBlue,
+                      color: MyColors.perfectBlue,
                       textAlign: TextAlign.center,
                     ),
                   ),

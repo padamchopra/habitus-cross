@@ -20,7 +20,7 @@ class ActionButton extends StatelessWidget {
               onPressed: () => onTap(model),
               child: CustomText(
                 text,
-                color: HabitoColors.black,
+                color: MyColors.black,
                 textAlign: TextAlign.center,
                 letterSpacing: 0.2,
                 fontSize: 18,

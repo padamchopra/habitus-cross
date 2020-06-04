@@ -18,14 +18,14 @@ class CategorySpinnerTile extends StatelessWidget {
         children: <Widget>[
           Icon(
             icon,
-            color: HabitoColors.black,
+            color: MyColors.black,
           ),
           SizedBox(
             width: 6,
           ),
           CustomText(
             name,
-            color: HabitoColors.black,
+            color: MyColors.black,
             fontSize: 18,
           )
         ],

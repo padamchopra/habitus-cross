@@ -55,16 +55,16 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         theme: ThemeData(
           fontFamily: "productsans",
-          primaryColor: HabitoColors.black,
-          accentColor: HabitoColors.white,
-          highlightColor: HabitoColors.white,
-          cursorColor: HabitoColors.white,
+          primaryColor: MyColors.black,
+          accentColor: MyColors.white,
+          highlightColor: MyColors.white,
+          cursorColor: MyColors.white,
           bottomSheetTheme:
-              BottomSheetThemeData(backgroundColor: HabitoColors.transparent),
+              BottomSheetThemeData(backgroundColor: MyColors.transparent),
         ),
         home: Scaffold(
           resizeToAvoidBottomPadding: false,
-          backgroundColor: HabitoColors.almostWhite,
+          backgroundColor: MyColors.almostWhite,
           body: _whatToDisplay,
         ),
       ),

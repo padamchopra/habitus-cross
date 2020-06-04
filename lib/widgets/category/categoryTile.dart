@@ -35,43 +35,46 @@ class CategoryTile extends StatelessWidget {
               ),
             ),
             decoration: BoxDecoration(
-              color: HabitoColors.labelBackground,
+              color: MyColors.labelBackground,
               borderRadius: BorderRadius.circular(20),
             ),
           ),
         ),
       );
     }
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(
-        horizontal: 18,
-        vertical: 24,
-      ),
-      decoration: BoxDecoration(
-        color: HabitoColors.midnight,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: <Widget>[
-          Icon(
-            icon,
-            color: HabitoColors.standardColorsList[color],
-            size: 30,
-          ),
-          SizedBox(
-            width: 9,
-          ),
-          Padding(
-            padding: EdgeInsets.only(right: _rightPadding),
-            child: CustomText(
-              name,
-              fontSize: 21,
-              letterSpacing: 0.2,
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(25, 18, 25, 0),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(
+          horizontal: 18,
+          vertical: 24,
+        ),
+        decoration: BoxDecoration(
+          color: MyColors.midnight,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: <Widget>[
+            Icon(
+              icon,
+              color: MyColors.standardColorsList[color],
+              size: 30,
             ),
-          ),
-          onTheRight
-        ],
+            SizedBox(
+              width: 9,
+            ),
+            Padding(
+              padding: EdgeInsets.only(right: _rightPadding),
+              child: CustomText(
+                name,
+                fontSize: 21,
+                letterSpacing: 0.2,
+              ),
+            ),
+            onTheRight
+          ],
+        ),
       ),
     );
   }

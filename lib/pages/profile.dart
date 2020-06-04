@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:habito/models/analytics.dart';
 import 'package:habito/models/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
+import 'package:habito/widgets/general/pageHeading.dart';
 import 'package:habito/widgets/generalInfo.dart';
 import 'package:habito/widgets/text.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -19,27 +20,7 @@ class Profile extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(
-              height: UniversalValues.topPaddingBeforeHeading,
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(
-                  horizontal: UniversalValues.headingHorizontalMargin),
-              child: CustomText(
-                "Profile",
-                color: HabitoColors.white,
-                fontSize: UniversalValues.headingFontSize,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              color: HabitoColors.ruler,
-              width: double.infinity,
-              height: 1,
-            ),
+            const PageHeading("Profile"),
             Expanded(
               child: ListView(
                 padding: EdgeInsets.all(25),
@@ -72,7 +53,7 @@ class Profile extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     child: FlatButton(
-                      color: HabitoColors.midnight,
+                      color: MyColors.midnight,
                       onPressed: () {
                         Analytics.sendAnalyticsEvent(Analytics.storeReviewOpened);
                         StoreRedirect.redirect();
@@ -87,7 +68,7 @@ class Profile extends StatelessWidget {
                   Container(
                     width: double.infinity,
                     child: FlatButton(
-                      color: HabitoColors.midnight,
+                      color: MyColors.midnight,
                       onPressed: () async {
                         Analytics.sendAnalyticsEvent(Analytics.authSignOut);
                         await model.signOut();

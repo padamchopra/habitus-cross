@@ -18,10 +18,10 @@ class OptionCircle extends StatelessWidget {
         width: 36,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50),
-          color: HabitoColors.habitOption,
+          color: MyColors.habitOption,
           boxShadow: [
             BoxShadow(
-              color: HabitoColors.backdropBlack,
+              color: MyColors.backdropBlack,
               spreadRadius: 6,
               blurRadius: 6,
             )
@@ -29,7 +29,7 @@ class OptionCircle extends StatelessWidget {
         ),
         child: Icon(
           icon,
-          color: HabitoColors.placeholderGrey,
+          color: MyColors.placeholderGrey,
           size: 18,
         ),
       ),

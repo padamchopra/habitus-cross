@@ -15,14 +15,14 @@ class CategoryRow extends StatelessWidget {
         SizedBox(width: 10),
         CustomText(
           "Category",
-          color: HabitoColors.black,
+          color: MyColors.black,
           fontSize: 18,
           textAlign: TextAlign.start,
         ),
         SizedBox(width: 10),
         CustomText(
           "->",
-          color: HabitoColors.black,
+          color: MyColors.black,
           fontSize: 18,
           textAlign: TextAlign.start,
         ),
@@ -34,13 +34,13 @@ class CategoryRow extends StatelessWidget {
             decoration: BoxDecoration(
               color: color != null
                   ? color
-                  : HabitoColors.backdropBlack,
+                  : MyColors.backdropBlack,
               borderRadius: BorderRadius.circular(10),
             ),
             child: icon != null 
                 ? Icon(
                     icon,
-                    color: HabitoColors.white,
+                    color: MyColors.white,
                   )
                 : Icon(
                     Icons.arrow_drop_down,

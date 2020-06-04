@@ -3,8 +3,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 class Analytics {
   static FirebaseAnalytics _firebaseAnalytics = FirebaseAnalytics();
 
-  static Future<void> sendAnalyticsEvent(String eventName,
-      {Map<String, dynamic> paramaters}) async {
+  static Future<void> sendAnalyticsEvent(String eventName) async {
     print("Analytics Event: $eventName");
     switch (eventName) {
       case appOpened:
@@ -17,10 +16,7 @@ class Analytics {
         await _firebaseAnalytics.logSignUp(signUpMethod: 'Email and Password');
         break;
       default:
-        await _firebaseAnalytics.logEvent(
-          name: eventName,
-          parameters: paramaters,
-        );
+        await _firebaseAnalytics.logEvent(name: eventName);
         break;
     }
   }
@@ -46,6 +42,8 @@ class Analytics {
   static const String addNewHabit = "Add: Habit";
   static const String addNewCategory = "Add: Category";
 
+  static const String habitCompleted = "Habit: Complete";
+
   static const String categoryOptionToViewHabits =
       "Category Option: View Habits";
   static const String categoryOptionToEdit = "Category Option: Edit";
@@ -57,7 +55,6 @@ class Analytics {
   static const String habitOptionToView = "Habit Option: View";
   static const String habitOptionToMoreOptions = "Habit Option: More Options";
   static const String habitOptionToDuplicate = "Habit Option: Duplicate";
-  static const String habitOptionToResetProgress =
-      "Habit Option: Reset Progress";
+  static const String habitOptionToResetProgress = "Habit Option: Reset";
   static const String habitOptionToDelete = "Habit Option: Delete";
 }

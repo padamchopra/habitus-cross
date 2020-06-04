@@ -18,21 +18,21 @@ class NotesTextField extends StatelessWidget {
       autofocus: true,
       textInputAction: TextInputAction.newline,
       keyboardType: TextInputType.multiline,
-      cursorColor: HabitoColors.perfectBlue,
+      cursorColor: MyColors.perfectBlue,
       maxLines: null,
-      style: TextStyle(color: HabitoColors.black, fontSize: 18),
+      style: TextStyle(color: MyColors.black, fontSize: 18),
       decoration: InputDecoration(
         border: InputBorder.none,
-        labelStyle: TextStyle(color: HabitoColors.white),
+        labelStyle: TextStyle(color: MyColors.white),
         filled: true,
-        hintStyle: new TextStyle(color: HabitoColors.placeholderGrey),
+        hintStyle: new TextStyle(color: MyColors.placeholderGrey),
         hintText: "Notes",
         prefixIcon: Icon(
           Icons.chat_bubble_outline,
-          color: HabitoColors.placeholderGrey,
+          color: MyColors.placeholderGrey,
         ),
         contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 21),
-        fillColor: HabitoColors.white,
+        fillColor: MyColors.white,
       ),
     );
   }

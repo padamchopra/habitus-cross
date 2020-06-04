@@ -14,7 +14,7 @@ class ModalHeader extends StatelessWidget {
           alignment: Alignment.topCenter,
           child: CustomText(
             title,
-            color: HabitoColors.black,
+            color: MyColors.black,
             textAlign: TextAlign.center,
             letterSpacing: 0.2,
           ),

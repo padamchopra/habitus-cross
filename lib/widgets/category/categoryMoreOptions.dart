@@ -48,7 +48,7 @@ class CategoryMoreOptions {
               child: Text(
                 "Delete",
                 style: TextStyle(
-                  color: HabitoColors.perfectRed,
+                  color: MyColors.perfectRed,
                 ),
               ),
             ),

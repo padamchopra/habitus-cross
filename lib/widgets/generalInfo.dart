@@ -13,7 +13,7 @@ class GeneralInfo extends StatelessWidget {
       children: <Widget>[
         CustomText(
           label,
-          color: HabitoColors.captionWhite,
+          color: MyColors.captionWhite,
           fontSize: 15,
         ),
         SizedBox(

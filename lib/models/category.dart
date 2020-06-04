@@ -91,7 +91,7 @@ class MyCategory {
   }
 
   get categoryColor {
-    return HabitoColors.standardColorsList[_color];
+    return MyColors.standardColorsList[_color];
   }
 
   get categoryIcon {

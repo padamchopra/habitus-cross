@@ -149,7 +149,7 @@ class _HabitoModalState extends State<HabitModal> {
                 _selectedIndex = 0;
               }
               return Container(
-                color: HabitoColors.white,
+                color: MyColors.white,
                 height: 217,
                 child: Column(
                   children: <Widget>[
@@ -167,7 +167,7 @@ class _HabitoModalState extends State<HabitModal> {
                             padding: const EdgeInsets.all(12.0),
                             child: CustomText(
                               "Unassign",
-                              color: HabitoColors.perfectRed,
+                              color: MyColors.perfectRed,
                               fontSize: 18,
                             ),
                           ),
@@ -184,7 +184,7 @@ class _HabitoModalState extends State<HabitModal> {
                             padding: const EdgeInsets.all(12.0),
                             child: CustomText(
                               "Done",
-                              color: HabitoColors.perfectBlue,
+                              color: MyColors.perfectBlue,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
@@ -195,7 +195,7 @@ class _HabitoModalState extends State<HabitModal> {
                     Container(
                       width: double.infinity,
                       height: 0.6,
-                      color: HabitoColors.ruler,
+                      color: MyColors.ruler,
                     ),
                     Expanded(
                       child: CupertinoPicker.builder(
@@ -224,7 +224,7 @@ class _HabitoModalState extends State<HabitModal> {
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
         decoration: BoxDecoration(
-          color: HabitoColors.white,
+          color: MyColors.white,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,

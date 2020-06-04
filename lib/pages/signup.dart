@@ -22,10 +22,10 @@ class Signup extends StatelessWidget {
 
     return Scaffold(
       resizeToAvoidBottomPadding: false,
-      backgroundColor: HabitoColors.almostWhite,
+      backgroundColor: MyColors.almostWhite,
       body: Stack(
         children: <Widget>[
-          Background(HabitoColors.black),
+          Background(MyColors.black),
           Align(
             alignment: Alignment.center,
             child: Container(
@@ -37,7 +37,7 @@ class Signup extends StatelessWidget {
                   children: <Widget>[
                     CustomText(
                       "Join habito.",
-                      color: HabitoColors.white,
+                      color: MyColors.white,
                       fontSize: 57,
                       letterSpacing: -2.4,
                       fontWeight: FontWeight.w700,
@@ -51,8 +51,8 @@ class Signup extends StatelessWidget {
                           FocusScope.of(context).requestFocus(_focusNode2),
                       autocorrect: false,
                       keyboardType: TextInputType.emailAddress,
-                      cursorColor: HabitoColors.white,
-                      style: TextStyle(color: HabitoColors.white, fontSize: 18),
+                      cursorColor: MyColors.white,
+                      style: TextStyle(color: MyColors.white, fontSize: 18),
                       textInputAction: TextInputAction.next,
                       validator: (_email) => EmailValidator.validate(_email)
                           ? null
@@ -66,18 +66,18 @@ class Signup extends StatelessWidget {
                             style: BorderStyle.none,
                           ),
                         ),
-                        labelStyle: TextStyle(color: HabitoColors.white),
+                        labelStyle: TextStyle(color: MyColors.white),
                         filled: true,
                         prefixIcon: Icon(
                           Icons.alternate_email,
-                          color: HabitoColors.placeholderGrey,
+                          color: MyColors.placeholderGrey,
                         ),
                         hintStyle:
-                            new TextStyle(color: HabitoColors.placeholderGrey),
+                            new TextStyle(color: MyColors.placeholderGrey),
                         hintText: "Email",
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 24, vertical: 21),
-                        fillColor: HabitoColors.darkTextFieldBackground,
+                        fillColor: MyColors.darkTextFieldBackground,
                       ),
                     ),
                     SizedBox(
@@ -89,8 +89,8 @@ class Signup extends StatelessWidget {
                           FocusScope.of(context).requestFocus(_focusNode3),
                       autocorrect: false,
                       keyboardType: TextInputType.emailAddress,
-                      cursorColor: HabitoColors.white,
-                      style: TextStyle(color: HabitoColors.white, fontSize: 18),
+                      cursorColor: MyColors.white,
+                      style: TextStyle(color: MyColors.white, fontSize: 18),
                       obscureText: true,
                       textInputAction: TextInputAction.next,
                       validator: (_password) {
@@ -109,18 +109,18 @@ class Signup extends StatelessWidget {
                             style: BorderStyle.none,
                           ),
                         ),
-                        labelStyle: TextStyle(color: HabitoColors.white),
+                        labelStyle: TextStyle(color: MyColors.white),
                         filled: true,
                         prefixIcon: Icon(
                           Icons.lock_outline,
-                          color: HabitoColors.placeholderGrey,
+                          color: MyColors.placeholderGrey,
                         ),
                         hintStyle:
-                            new TextStyle(color: HabitoColors.placeholderGrey),
+                            new TextStyle(color: MyColors.placeholderGrey),
                         hintText: "Password",
                         contentPadding:
                             EdgeInsets.symmetric(horizontal: 24, vertical: 21),
-                        fillColor: HabitoColors.darkTextFieldBackground,
+                        fillColor: MyColors.darkTextFieldBackground,
                       ),
                     ),
                     SizedBox(
@@ -130,10 +130,10 @@ class Signup extends StatelessWidget {
                       focusNode: _focusNode3,
                       autocorrect: false,
                       keyboardType: TextInputType.emailAddress,
-                      cursorColor: HabitoColors.white,
+                      cursorColor: MyColors.white,
                       obscureText: true,
                       textInputAction: TextInputAction.done,
-                      style: TextStyle(color: HabitoColors.white, fontSize: 18),
+                      style: TextStyle(color: MyColors.white, fontSize: 18),
                       validator: (_password) => password == _password
                           ? null
                           : "Passwords do not match",
@@ -145,18 +145,18 @@ class Signup extends StatelessWidget {
                               style: BorderStyle.none,
                             ),
                           ),
-                          labelStyle: TextStyle(color: HabitoColors.white),
+                          labelStyle: TextStyle(color: MyColors.white),
                           filled: true,
                           prefixIcon: Icon(
                             Icons.lock_outline,
-                            color: HabitoColors.placeholderGrey,
+                            color: MyColors.placeholderGrey,
                           ),
                           hintStyle: new TextStyle(
-                              color: HabitoColors.placeholderGrey),
+                              color: MyColors.placeholderGrey),
                           hintText: "Confirm password",
                           contentPadding: EdgeInsets.symmetric(
                               horizontal: 24, vertical: 21),
-                          fillColor: HabitoColors.darkTextFieldBackground),
+                          fillColor: MyColors.darkTextFieldBackground),
                     ),
                     SizedBox(
                       height: 30,
@@ -165,7 +165,7 @@ class Signup extends StatelessWidget {
                       builder: (BuildContext context, Widget child,
                           HabitoModel model) {
                         return MaterialButton(
-                          color: HabitoColors.perfectBlue,
+                          color: MyColors.perfectBlue,
                           onPressed: () {
                             if (_formKey.currentState.validate()) {
                               _formKey.currentState.save();
@@ -194,7 +194,7 @@ class Signup extends StatelessWidget {
                             width: MediaQuery.of(context).size.width,
                             child: CustomText(
                               "Sign Up",
-                              color: HabitoColors.white,
+                              color: MyColors.white,
                               textAlign: TextAlign.center,
                               fontSize: 21,
                             ),
@@ -228,7 +228,7 @@ class Signup extends StatelessWidget {
                       child: CustomText(
                         "Log In",
                         fontSize: 18,
-                        color: HabitoColors.perfectBlue,
+                        color: MyColors.perfectBlue,
                       ),
                     ),
                   ],

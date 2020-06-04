@@ -30,8 +30,8 @@ class _HabitOptionsState extends State<HabitOptions> {
   EdgeInsets doneButtonMargin = UniversalValues.marginForHabitSecondOption;
   EdgeInsets moreButtonMargin = UniversalValues.marginForHabitSecondOption;
   EdgeInsets parentMargin = UniversalValues.marginForParentOption;
-  Color doneButtonColor = HabitoColors.habitOption;
-  Color doneButtonIconColor = HabitoColors.placeholderGrey;
+  Color doneButtonColor = MyColors.habitOption;
+  Color doneButtonIconColor = MyColors.placeholderGrey;
 
   void closeOptions() {
     widget.toggle(widget.index);
@@ -47,8 +47,8 @@ class _HabitOptionsState extends State<HabitOptions> {
     int resultCode = model.markDoneForToday(widget.myHabit);
     if (resultCode == 0) {
       setState(() {
-        doneButtonColor = HabitoColors.success;
-        doneButtonIconColor = HabitoColors.white;
+        doneButtonColor = MyColors.success;
+        doneButtonIconColor = MyColors.white;
       });
     } else if (resultCode == 1) {
       model.neverSatisfied(context, "Slow down",
@@ -153,8 +153,8 @@ class _HabitOptionsState extends State<HabitOptions> {
     List<Timestamp> updateTimes = widget.myHabit.updateTimes;
     if (updateTimes.length > 0 &&
         updateTimes.asMap()[0].toDate().day == DateTime.now().day) {
-      doneButtonColor = HabitoColors.success;
-      doneButtonIconColor = HabitoColors.white;
+      doneButtonColor = MyColors.success;
+      doneButtonIconColor = MyColors.white;
     }
     new Future.delayed(Duration(milliseconds: 10)).then((_) {
       setState(() {

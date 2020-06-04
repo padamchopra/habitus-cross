@@ -49,7 +49,7 @@ class _HabitTileState extends State<HabitTile> {
 
     return Container(
       decoration: BoxDecoration(
-        color: HabitoColors.black,
+        color: MyColors.black,
       ),
       margin: EdgeInsets.all(10),
       width: double.infinity,
@@ -58,7 +58,7 @@ class _HabitTileState extends State<HabitTile> {
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
-                color: HabitoColors.midnight,
+                color: MyColors.midnight,
                 borderRadius: BorderRadius.circular(24),
               ),
             ),
@@ -105,7 +105,7 @@ class _HabitTileState extends State<HabitTile> {
                   widget.myHabit.daysCompleted.toString() + " of 21 days done",
                   fontSize: 14,
                   letterSpacing: -0.3,
-                  color: HabitoColors.captionWhite,
+                  color: MyColors.captionWhite,
                 ),
                 SizedBox(
                   height: 12,

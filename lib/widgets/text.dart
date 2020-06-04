@@ -24,7 +24,7 @@ class CustomText extends StatelessWidget {
       style: TextStyle(
           fontFamily: 'ProductSans',
           fontWeight: fontWeight == null ? FontWeight.normal : fontWeight,
-          color: color == null ? HabitoColors.white : color,
+          color: color == null ? MyColors.white : color,
           letterSpacing: letterSpacing == null ? 0 : letterSpacing,
           fontSize: fontSize == null ? 20 : fontSize,
           decoration:

@@ -5,6 +5,7 @@ import 'package:habito/models/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:habito/widgets/general/pageHeading.dart';
 import 'package:habito/widgets/habit/options/habitOptions.dart';
 import 'package:habito/widgets/text.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -21,7 +22,7 @@ class AllHabits extends StatefulWidget {
 class _AllHabitsState extends State<AllHabits> {
   Map<int, bool> tileClicked = new Map();
 
-  void initState(){
+  void initState() {
     super.initState();
     Analytics.sendAnalyticsEvent(Analytics.habitsOpened);
   }
@@ -38,50 +39,38 @@ class _AllHabitsState extends State<AllHabits> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        SizedBox(
-          height: UniversalValues.topPaddingBeforeHeading,
-        ),
-        Container(
-          margin: EdgeInsets.symmetric(
-              horizontal: UniversalValues.headingHorizontalMargin),
-          child: CustomText(
-            widget.showOnlyCompleted ? "Tracked" : "Habits",
-            color: HabitoColors.white,
-            fontSize: UniversalValues.headingFontSize,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        Container(
-          color: HabitoColors.ruler,
-          width: double.infinity,
-          height: 1,
-        ),
+        widget.showOnlyCompleted
+            ? const PageHeading("Tracked")
+            : const PageHeading("Habits"),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: ScopedModelDescendant<HabitoModel>(
               builder: (context, child, model) {
-                int numberOfHabits = widget.showOnlyCompleted ? model.numberOfCompletedHabits() : model.numberOfHabits();
+                int numberOfHabits = widget.showOnlyCompleted
+                    ? model.numberOfCompletedHabits()
+                    : model.numberOfHabits();
                 if (numberOfHabits == -1) {
                   return Center(
-                    child: CircularProgressIndicator(),
+                    child: const CircularProgressIndicator(),
                   );
                 }
                 if (numberOfHabits == 0) {
                   return Center(
                     child: CustomText(
-                      widget.showOnlyCompleted ? "No habits have been completed yet." : "Start tracking a habit you want \nto develop by tapping +",
+                      widget.showOnlyCompleted
+                          ? "No habits have been completed yet."
+                          : "Start tracking a habit you want \nto develop by tapping +",
                       textAlign: TextAlign.center,
                     ),
                   );
                 }
-                List<MyHabit> _myHabits = widget.showOnlyCompleted ? model.myHabitsCompletedList : model.myHabitsList;
+                List<MyHabit> _myHabits = widget.showOnlyCompleted
+                    ? model.myHabitsCompletedList
+                    : model.myHabitsList;
                 return StaggeredGridView.countBuilder(
                   addRepaintBoundaries: true,
-                  padding: EdgeInsets.only(top: 22.5),
+                  padding: MySpaces.listViewTopPadding,
                   crossAxisCount: 2,
                   itemCount: numberOfHabits,
                   itemBuilder: (BuildContext context, int index) {
@@ -104,12 +93,11 @@ class _AllHabitsState extends State<AllHabits> {
                         (tileClicked.containsKey(index) && tileClicked[index])
                             ? Align(
                                 child: HabitOptions(
-                                  index,
-                                  _myHabits[index],
-                                  _myCategory,
-                                  toggleTileClick,
-                                  widget.showOnlyCompleted
-                                ),
+                                    index,
+                                    _myHabits[index],
+                                    _myCategory,
+                                    toggleTileClick,
+                                    widget.showOnlyCompleted),
                                 alignment: Alignment.topCenter)
                             : Container(),
                       ],

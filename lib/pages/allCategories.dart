@@ -6,6 +6,7 @@ import 'package:habito/models/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/category/categoryModal.dart';
 import 'package:habito/widgets/category/categoryMoreOptions.dart';
+import 'package:habito/widgets/general/pageHeading.dart';
 import 'package:habito/widgets/text.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -19,7 +20,7 @@ class AllCategories extends StatefulWidget {
 class _AllCategoriesState extends State<AllCategories> {
   MyCategory _selectedCategory = MyCategory();
 
-  void initState(){
+  void initState() {
     super.initState();
     Analytics.sendAnalyticsEvent(Analytics.categoriesOpened);
   }
@@ -30,11 +31,11 @@ class _AllCategoriesState extends State<AllCategories> {
         Analytics.sendAnalyticsEvent(Analytics.categoryOptionToViewHabits);
         break;
       case CategorySelectedOption.EDIT:
-      Analytics.sendAnalyticsEvent(Analytics.categoryOptionToEdit);
+        Analytics.sendAnalyticsEvent(Analytics.categoryOptionToEdit);
         openCategoryModal(CategoryModalMode.EDIT);
         break;
       case CategorySelectedOption.DUPLICATE_AND_EDIT:
-      Analytics.sendAnalyticsEvent(Analytics.categoryOptionToDuplicate);
+        Analytics.sendAnalyticsEvent(Analytics.categoryOptionToDuplicate);
         openCategoryModal(CategoryModalMode.DUPLICATE);
         break;
       case CategorySelectedOption.DELETE:
@@ -59,13 +60,11 @@ class _AllCategoriesState extends State<AllCategories> {
 
   void deleteCategory(HabitoModel model) {
     model.deleteCategory(_selectedCategory).then((value) {
-      if (value) {
-        model.neverSatisfied(context, "Deleted",
-            "This category has been deleted and child habits unlinked.");
-      } else {
-        model.neverSatisfied(
-            context, "Try Again", "Category could not be deleted.");
-      }
+      model.neverSatisfied(
+        context,
+        MyStrings.deleteCategoryHeading[value ? 0 : 1],
+        MyStrings.deleteCategoryBody[value ? 0 : 1],
+      );
     });
   }
 
@@ -74,70 +73,45 @@ class _AllCategoriesState extends State<AllCategories> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        SizedBox(
-          height: UniversalValues.topPaddingBeforeHeading,
-        ),
-        Container(
-          margin: EdgeInsets.symmetric(
-            horizontal: UniversalValues.headingHorizontalMargin,
-          ),
-          child: CustomText(
-            "Categories",
-            fontSize: UniversalValues.headingFontSize,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        Container(
-          color: HabitoColors.ruler,
-          width: double.infinity,
-          height: 1,
-        ),
+        const PageHeading("Categories"),
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0),
-            child: ScopedModelDescendant<HabitoModel>(
-              builder: (context, child, model) {
-                int numberOfCategories = model.numberOfCategories();
-                if (numberOfCategories == -1) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                if (numberOfCategories == 0) {
-                  return Center(
-                    child: CustomText(
-                      "No categories yet.\nCreate one now by tapping +",
-                      textAlign: TextAlign.center,
-                    ),
-                  );
-                }
-                List<MyCategory> _myCategories = model.myCategoriesList;
-                return ListView.builder(
-                  padding: EdgeInsets.only(top: 22.5),
-                  itemCount: numberOfCategories,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      margin: EdgeInsets.only(bottom: 18),
-                      child: GestureDetector(
-                        onTap: () {
-                          _selectedCategory = _myCategories[index];
-                          CategoryMoreOptions.show(
-                            context,
-                            model,
-                            moreOptionSwitch,
-                          );
-                        },
-                        child: _myCategories[index]
-                            .widget(showNumberOfHabits: true),
-                      ),
-                    );
-                  },
+          child: ScopedModelDescendant<HabitoModel>(
+            builder: (context, child, model) {
+              int numberOfCategories = model.numberOfCategories();
+              if (numberOfCategories == -1) {
+                return Center(
+                  child: const CircularProgressIndicator(),
                 );
-              },
-            ),
+              }
+              if (numberOfCategories == 0) {
+                return Center(
+                  child: CustomText(
+                    "No categories yet.\nCreate one now by tapping +",
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              }
+
+              List<MyCategory> _myCategories = model.myCategoriesList;
+              return ListView.builder(
+                padding: MySpaces.listViewTopPadding,
+                itemCount: numberOfCategories,
+                itemBuilder: (BuildContext context, int index) {
+                  return GestureDetector(
+                    onTap: () {
+                      _selectedCategory = _myCategories[index];
+                      CategoryMoreOptions.show(
+                        context,
+                        model,
+                        moreOptionSwitch,
+                      );
+                    },
+                    child:
+                        _myCategories[index].widget(showNumberOfHabits: true),
+                  );
+                },
+              );
+            },
           ),
         ),
       ],

@@ -16,7 +16,7 @@ class IconRow extends StatelessWidget {
         ),
         CustomText(
           "Icon",
-          color: HabitoColors.black,
+          color: MyColors.black,
           fontSize: 18,
           textAlign: TextAlign.start,
         ),
@@ -25,7 +25,7 @@ class IconRow extends StatelessWidget {
         ),
         CustomText(
           "->",
-          color: HabitoColors.black,
+          color: MyColors.black,
           fontSize: 18,
           textAlign: TextAlign.start,
         ),
@@ -37,7 +37,7 @@ class IconRow extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.all(5),
             decoration: BoxDecoration(
-              color: HabitoColors.backdropBlack,
+              color: MyColors.backdropBlack,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(

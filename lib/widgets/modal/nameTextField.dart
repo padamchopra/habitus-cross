@@ -16,17 +16,17 @@ class NameTextField extends StatelessWidget {
       textCapitalization: TextCapitalization.words,
       autofocus: true,
       keyboardType: TextInputType.text,
-      cursorColor: HabitoColors.perfectBlue,
+      cursorColor: MyColors.perfectBlue,
       maxLength: 20,
-      style: TextStyle(color: HabitoColors.black, fontSize: 18),
+      style: TextStyle(color: MyColors.black, fontSize: 18),
       decoration: InputDecoration(
         border: InputBorder.none,
-        labelStyle: TextStyle(color: HabitoColors.white),
+        labelStyle: TextStyle(color: MyColors.white),
         filled: true,
-        hintStyle: new TextStyle(color: HabitoColors.placeholderGrey),
+        hintStyle: new TextStyle(color: MyColors.placeholderGrey),
         hintText: "Name",
         contentPadding: EdgeInsets.fromLTRB(10, 21, 10, 0),
-        fillColor: HabitoColors.white,
+        fillColor: MyColors.white,
       ),
     );
   }
