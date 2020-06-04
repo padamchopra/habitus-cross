@@ -31,7 +31,6 @@ class _AllHabitsState extends State<AllHabits> {
     setState(() {
       tileClicked[index] = !tileClicked[index];
     });
-    Analytics.sendAnalyticsEvent(Analytics.habitOptionsToggled);
   }
 
   @override
@@ -86,6 +85,10 @@ class _AllHabitsState extends State<AllHabits> {
                                   : true;
                               tileClicked.clear();
                               tileClicked[index] = result;
+                              if (result) {
+                                Analytics.sendAnalyticsEvent(
+                                    Analytics.habitOptionsToggled);
+                              }
                             });
                           },
                           child: _myHabits[index].widget(_myCategory),
