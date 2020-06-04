@@ -20,7 +20,7 @@ class UniversalValues {
 
 class MySpaces {
   static const EdgeInsets listViewTopPadding = EdgeInsets.only(top: 9);
-  static const double topPaddingBeforeHeading = 99;
+  static const double topPaddingBeforeHeading = 66;
 }
 
 class MyColors {

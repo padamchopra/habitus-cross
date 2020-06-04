@@ -118,12 +118,22 @@ class MyHabit {
     return _updateTimes;
   }
 
-  int markAsDone() {
+  int markAsDone(bool override) {
     /// 0: success in updating
     /// 1: already updated today
     /// 2: more than 1 day in difference
     /// 3: completed 21 days
     /// 4: other error
+    if (override) {
+      ++_numberOfDays;
+      _updateTimes.insert(0, Timestamp.now());
+      if (_numberOfDays == 21) {
+        _finished = true;
+        _finishedAt = Timestamp.now();
+        return 3;
+      }
+      return 0;
+    }
     if (_numberOfDays == 0) {
       ++_numberOfDays;
       _updateTimes.insert(0, Timestamp.now());

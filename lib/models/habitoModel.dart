@@ -13,7 +13,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter/material.dart';
 
 class HabitoModel extends Model {
-  bool devTesting = true;
+  bool devTesting = DevTesting.testing && !DevTesting.showSignIn;
   FirebaseAuth _auth;
   FirebaseUser _user;
   Firestore _firestore;
@@ -62,7 +62,8 @@ class HabitoModel extends Model {
   }
 
   Future<HabitoAuth> signIn(String email, String password) async {
-    if (devTesting) {
+    if (DevTesting.testing) {
+      devTesting = true;
       fetchCategories();
       return HabitoAuth.SUCCESS;
     }
@@ -115,6 +116,7 @@ class HabitoModel extends Model {
     if (devTesting) {
       myCategory.documentId = "categoryId${myCategoriesList.length + 1}";
       myCategoriesList.insert(0, myCategory);
+      notifyListeners();
       return true;
     }
     if (_user != null) {
@@ -187,12 +189,7 @@ class HabitoModel extends Model {
 
   void fetchCategories() async {
     if (devTesting) {
-      //add categories as you like
-      myCategoriesList
-          .add(DevTesting.category(1, "Perfect category", Icons.add, 0, 1));
-      myCategoriesList.add(DevTesting.category(
-          0, "No icon category", Icons.label_outline, 1, 20));
-      myCategoriesList.add(DevTesting.category(2, "", Icons.event_note, 2, 20));
+      myCategoriesList.addAll(DevTesting.getInitialCategories());
       notifyListeners();
       _categoriesLoaded = true;
       myCategoriesList.toSet().toList();
@@ -438,14 +435,8 @@ class HabitoModel extends Model {
 
   void fetchHabits() async {
     if (devTesting) {
-      habitsListAddAtEnd(DevTesting.habit(
-          "TH1", "Example of a perfect habit", 15, 0, false, 0));
-      habitsListAddAtEnd(
-          DevTesting.habit("TH2", "No Category", 10, -1, false, 1));
-      habitsListAddAtEnd(
-          DevTesting.habit("TH3", "Almost Complete", 20, 2, false, 2));
-      habitsListAddAtEnd(
-          DevTesting.habit("TH4", "Completed Habit", 21, 1, false, 3));
+      DevTesting.getInitialHabits()
+          .forEach((element) => habitsListAddAtEnd(element));
       notifyListeners();
       _habitsLoaded = true;
       associateHabitsAndCategories();
@@ -511,7 +502,7 @@ class HabitoModel extends Model {
     int resultCode = 4;
     myHabitsList.forEach((habit) {
       if (habit.documentId == myHabit.documentId) {
-        resultCode = habit.markAsDone();
+        resultCode = habit.markAsDone(devTesting);
         if (resultCode != 4 && !devTesting) {
           _firestore
               .collection("habits")
@@ -564,7 +555,7 @@ class HabitoModel extends Model {
   //profile region starts
   get userEmail {
     if (devTesting) {
-      return "user@test.com";
+      return DevTesting.userEmail;
     }
     return _user.email;
   }

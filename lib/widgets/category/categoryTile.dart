@@ -8,13 +8,9 @@ class CategoryTile extends StatelessWidget {
   final IconData icon;
   final int color;
   final String name;
-  CategoryTile(
-    this.showNumberOfHabits,
-    this.numberOfHabits,
-    this.icon,
-    this.color,
-    this.name,
-  );
+  final bool overridePadding;
+  CategoryTile(this.showNumberOfHabits, this.numberOfHabits, this.icon,
+      this.color, this.name, this.overridePadding);
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +39,9 @@ class CategoryTile extends StatelessWidget {
       );
     }
     return Padding(
-      padding: const EdgeInsets.fromLTRB(25, 18, 25, 0),
+      padding: overridePadding
+          ? const EdgeInsets.all(0)
+          : EdgeInsets.fromLTRB(25, 18, 25, 0),
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.symmetric(

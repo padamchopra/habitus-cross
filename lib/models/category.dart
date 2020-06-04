@@ -102,13 +102,14 @@ class MyCategory {
     _myHabits.insert(0, myHabit);
   }
 
-  Widget widget({bool showNumberOfHabits}) {
+  Widget widget({bool showNumberOfHabits, bool overridePadding}) {
     return CategoryTile(
       showNumberOfHabits == null ? false : true,
       _myHabits.length,
       _icon,
       _color,
       _name,
+      overridePadding == null ? false : overridePadding,
     );
   }
 

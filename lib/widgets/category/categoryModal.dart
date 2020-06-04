@@ -207,7 +207,7 @@ class _CategoryModalState extends State<CategoryModal> {
                 horizontal: 10,
                 vertical: 3,
               ),
-              child: _myCategory.widget(),
+              child: _myCategory.widget(overridePadding: true),
             ),
             SizedBox(
               height: 20,

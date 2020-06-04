@@ -4,14 +4,17 @@ import 'package:habito/models/category.dart';
 import 'package:habito/models/habit.dart';
 
 class DevTesting {
+  static bool testing = true;
+  static bool showSignIn = true;
   static String userId = "Tester";
+  static String userEmail = "user@habito.test";
 
   static MyCategory category(
       int color, String name, IconData icon, int documentId, int daysAgo) {
     MyCategory currentCategory = new MyCategory();
     currentCategory.categoryColor = color;
     currentCategory.categoryName = name;
-    currentCategory.userId = "testuser";
+    currentCategory.userId = userId;
     currentCategory.categoryIcon = icon;
     currentCategory.documentId = "categoryId$documentId";
     currentCategory.createdAt =
@@ -40,5 +43,22 @@ class DevTesting {
     currentHabit.userId = userId;
     currentHabit.documentId = "habitId$habitId";
     return currentHabit;
+  }
+
+  static List<MyHabit> getInitialHabits() {
+    return [
+      habit("Pushups", "As many as you can.", 18, 0, false, 0),
+      habit("Drink More Water", "At regular intervals.", 12, 1, false, 1),
+      habit("Practice French", "Duolingo", 0, -1, false, 2),
+      habit("CoD", "", 0, -1, false, 3),
+      habit("Reduce Screentime", "Only 2-3 hours a day", 21, -1, false, 4)
+    ];
+  }
+
+  static List<MyCategory> getInitialCategories() {
+    return [
+      category(3, "Fitness", Icons.fitness_center, 0, 1),
+      category(1, "Health", Icons.healing, 1, 1)
+    ];
   }
 }
