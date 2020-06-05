@@ -4,8 +4,8 @@ import 'package:habito/models/category.dart';
 import 'package:habito/models/habit.dart';
 
 class DevTesting {
-  static bool testing = true;
-  static bool showSignIn = true;
+  static bool testing = false;
+  static bool showSignIn = false;
   static String userId = "Tester";
   static String userEmail = "user@habito.test";
 
