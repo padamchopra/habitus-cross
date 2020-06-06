@@ -53,6 +53,7 @@ class _MyAppState extends State<MyApp> {
     return ScopedModel(
       model: model,
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           fontFamily: "productsans",
           primaryColor: MyColors.black,
