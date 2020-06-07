@@ -9,7 +9,7 @@ class CustomText extends StatelessWidget {
   final double fontSize;
   final TextDecoration textDecoration;
   final double letterSpacing;
-  CustomText(this.content,
+  const CustomText(this.content,
       {this.fontWeight,
       this.textAlign,
       this.color,

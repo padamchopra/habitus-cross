@@ -151,8 +151,8 @@ class Signup extends StatelessWidget {
                             Icons.lock_outline,
                             color: MyColors.placeholderGrey,
                           ),
-                          hintStyle: new TextStyle(
-                              color: MyColors.placeholderGrey),
+                          hintStyle:
+                              new TextStyle(color: MyColors.placeholderGrey),
                           hintText: "Confirm password",
                           contentPadding: EdgeInsets.symmetric(
                               horizontal: 24, vertical: 21),
@@ -171,18 +171,26 @@ class Signup extends StatelessWidget {
                               _formKey.currentState.save();
                               model.signUp(email, password).then((value) {
                                 if (value == HabitoAuth.SUCCESS) {
-                                  Analytics.sendAnalyticsEvent(Analytics.authSignUpSuccess);
+                                  Analytics.sendAnalyticsEvent(
+                                      Analytics.authSignUpSuccess);
                                   model
-                                      .neverSatisfied(context, "Verify",
-                                          "We've sent you a verification email to the id you provided.")
+                                      .neverSatisfied(
+                                    context,
+                                    MyStrings.signUpHeading[0],
+                                    MyStrings.signUpBody[0],
+                                  )
                                       .then((_) {
                                     model.signOut().whenComplete(
                                         () => Navigator.of(context).pop());
                                   });
                                 } else {
-                                  Analytics.sendAnalyticsEvent(Analytics.authSignUpFailure);
-                                  model.neverSatisfied(context, "Try Again",
-                                      "We could not sign you up at the moment. Sorry for the trouble.");
+                                  Analytics.sendAnalyticsEvent(
+                                      Analytics.authSignUpFailure);
+                                  model.neverSatisfied(
+                                    context,
+                                    MyStrings.signUpHeading[1],
+                                    MyStrings.signUpBody[1],
+                                  );
                                   Navigator.of(context).pop();
                                 }
                               });

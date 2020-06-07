@@ -58,8 +58,8 @@ class _AllHabitsState extends State<AllHabits> {
                   return Center(
                     child: CustomText(
                       widget.showOnlyCompleted
-                          ? "No habits have been completed yet."
-                          : "Start tracking a habit you want \nto develop by tapping +",
+                          ? MyStrings.noCompletedHabitsMessage
+                          : MyStrings.noHabitsMessage,
                       textAlign: TextAlign.center,
                     ),
                   );

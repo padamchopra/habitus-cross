@@ -81,8 +81,7 @@ class Login extends StatelessWidget {
                         Icons.alternate_email,
                         color: MyColors.placeholderGrey,
                       ),
-                      hintStyle:
-                          new TextStyle(color: MyColors.placeholderGrey),
+                      hintStyle: new TextStyle(color: MyColors.placeholderGrey),
                       hintText: "Email",
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 24, vertical: 21),
@@ -115,8 +114,7 @@ class Login extends StatelessWidget {
                         Icons.lock_outline,
                         color: MyColors.placeholderGrey,
                       ),
-                      hintStyle:
-                          new TextStyle(color: MyColors.placeholderGrey),
+                      hintStyle: new TextStyle(color: MyColors.placeholderGrey),
                       hintText: "Password",
                       contentPadding:
                           EdgeInsets.symmetric(horizontal: 24, vertical: 21),
@@ -142,19 +140,22 @@ class Login extends StatelessWidget {
                                   Analytics.sendAnalyticsEvent(
                                       Analytics.authLoginSuccess);
                                   updateUserState();
-                                } else if (signedInResult ==
-                                    HabitoAuth.VERIFICATION_REQUIRED) {
-                                  Analytics.sendAnalyticsEvent(
-                                      Analytics.authVerifyNeeded);
-                                  model.neverSatisfied(context, "Verify",
-                                      "Please verify your email to proceed.");
                                 } else {
-                                  Analytics.sendAnalyticsEvent(
-                                      Analytics.authLoginFailure);
+                                  int index = 1;
+                                  if (signedInResult ==
+                                      HabitoAuth.VERIFICATION_REQUIRED) {
+                                    Analytics.sendAnalyticsEvent(
+                                        Analytics.authVerifyNeeded);
+                                    index = 0;
+                                  } else {
+                                    Analytics.sendAnalyticsEvent(
+                                        Analytics.authLoginFailure);
+                                  }
                                   model.neverSatisfied(
-                                      context,
-                                      "Incorrect Login",
-                                      "Please re-check your details and try again.");
+                                    context,
+                                    MyStrings.signInHeading[index],
+                                    MyStrings.signInBody[index],
+                                  );
                                 }
                               }
                             },
@@ -179,9 +180,13 @@ class Login extends StatelessWidget {
                                 model
                                     .requestPasswordReset(tempEmail)
                                     .then((value) {
-                                      Analytics.sendAnalyticsEvent(Analytics.authPasswordReset);
-                                  model.neverSatisfied(context, "Check Email",
-                                      "Please check your email to reset your password.");
+                                  Analytics.sendAnalyticsEvent(
+                                      Analytics.authPasswordReset);
+                                  model.neverSatisfied(
+                                    context,
+                                    MyStrings.signInHeading[2],
+                                    MyStrings.signInBody[2],
+                                  );
                                 });
                               }
                             },

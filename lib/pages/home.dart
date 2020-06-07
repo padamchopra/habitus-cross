@@ -81,8 +81,11 @@ class _HomeState extends State<Home> {
   }
 
   void addNewExport(BuildContext context) {
-    widget.model.neverSatisfied(context, "Coming Soon!",
-        "New features coming soon! Write a review from profile to request something.");
+    widget.model.neverSatisfied(
+      context,
+      MyStrings.newFeatureTeaseHeading,
+      MyStrings.newFeatureTeaseBody,
+    );
   }
 
   void showMyBottomModal(BuildContext context) {
@@ -99,8 +102,6 @@ class _HomeState extends State<Home> {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       backgroundColor: MyColors.black,
-      //Suggestion: If you want to make notch transparent
-      //extendBody: true,
       body: Stack(
         children: <Widget>[
           PageView(
@@ -130,7 +131,7 @@ class _HomeState extends State<Home> {
         child: Icon(
           Icons.add,
           color: MyColors.perfectBlue,
-          size: 39,
+          size: UniversalValues.plusIconSize,
         ),
       ),
       bottomNavigationBar: MyBottomBar(currentPage, changeScreen),

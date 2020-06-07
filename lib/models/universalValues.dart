@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class UniversalValues {
+  static const double plusIconSize = 40;
   //margin and paddings region start
   static const double headingHorizontalMargin = 30;
   //region end
@@ -65,9 +66,30 @@ class MyColors {
 }
 
 class MyStrings {
+  //alert strings
   static const deleteCategoryHeading = ["Deleted", "Try Again"];
   static const deleteCategoryBody = [
     "This category has been deleted and child habits unlinked.",
     "This category could not be deleted."
   ];
+  static const signInHeading = ["Verify", "Incorrect Login", "Check Email"];
+  static const signInBody = [
+    "Please verify your email to proceed.",
+    "Please re-check your details and try again.",
+    "Please check your email to reset your password."
+  ];
+  static const signUpHeading = ["Verify", "Try Again"];
+  static const signUpBody = [
+    "We've sent you a verification email to the id you provided.",
+    "We could not sign you up at the moment. Sorry for the trouble."
+  ];
+  static const newFeatureTeaseHeading = "Coming Soon!";
+  static const newFeatureTeaseBody =
+      "New features coming soon! Write a review from profile to request something.";
+
+  static const noCategoriesMessage =
+      "No categories yet.\nCreate one now by tapping +";
+  static const noCompletedHabitsMessage = "No habits have been completed yet.";
+  static const noHabitsMessage =
+      "Start tracking a habit you want \nto develop by tapping +";
 }

@@ -85,8 +85,8 @@ class _AllCategoriesState extends State<AllCategories> {
               }
               if (numberOfCategories == 0) {
                 return Center(
-                  child: CustomText(
-                    "No categories yet.\nCreate one now by tapping +",
+                  child: const CustomText(
+                    MyStrings.noCategoriesMessage,
                     textAlign: TextAlign.center,
                   ),
                 );
