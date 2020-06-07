@@ -1,6 +1,6 @@
 name: habito
 description: Build habits in 21 days
-version: 1.0.1+5
+version: 1.0.1+6
 
 environment:
   sdk: ">=2.1.0 <3.0.0"

@@ -55,8 +55,12 @@ class Profile extends StatelessWidget {
                     child: FlatButton(
                       color: MyColors.midnight,
                       onPressed: () {
-                        Analytics.sendAnalyticsEvent(Analytics.storeReviewOpened);
-                        StoreRedirect.redirect();
+                        Analytics.sendAnalyticsEvent(
+                            Analytics.storeReviewOpened);
+                        StoreRedirect.redirect(
+                          androidAppId: "me.padamchopra.habito",
+                          iOSAppId: "1516750469",
+                        );
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
