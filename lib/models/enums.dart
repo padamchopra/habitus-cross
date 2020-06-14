@@ -1,7 +1,9 @@
 enum HabitoAuth{
   SUCCESS,
   FAIL,
-  VERIFICATION_REQUIRED
+  VERIFICATION_REQUIRED,
+  SIGNED_OUT,
+  NO_USER
 }
 
 enum HabitModalMode{
@@ -29,4 +31,18 @@ enum CategorySelectedOption{
   EDIT,
   DUPLICATE_AND_EDIT,
   DELETE
+}
+
+enum HabitProgressChange{
+  SUCCESS,
+  UPDATED_TODAY,
+  LATE,
+  COMPLETE,
+  FAIL
+}
+
+enum HabitReplaceStatus{
+  SUCCESS,
+  FAIL,
+  CATEGORY_DIFFERS
 }

@@ -1,11 +1,10 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:habito/models/analytics.dart';
 import 'package:habito/models/enums.dart';
-import 'package:habito/models/habitoModel.dart';
-import 'package:habito/models/universalValues.dart';
 import 'package:habito/pages/home.dart';
-import 'package:habito/pages/login.dart';
+import 'package:habito/pages/signin.dart';
+import 'package:habito/state/habitoModel.dart';
+import 'package:habito/models/universalValues.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 void main() {
@@ -22,30 +21,25 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   HabitoModel model = HabitoModel();
-  Widget _whatToDisplay = CircularProgressIndicator();
+  Widget _widget = Center(
+    child: CircularProgressIndicator(),
+  );
 
-  void updateUserState() {
+  void updateHomeWidget() {
     setState(() {
-      model.checkIfSignedIn().then((value) {
-        setState(() {
-          _whatToDisplay = value == HabitoAuth.SUCCESS
-              ? Home(updateUserState, model)
-              : Login(updateUserState);
-        });
-      }).catchError((_) {
-        setState(() {
-          _whatToDisplay = Login(updateUserState);
-        });
-      });
+      if (model.userState == HabitoAuth.SUCCESS) {
+        _widget = Home(model);
+      } else {
+        _widget = SignIn(model);
+      }
     });
   }
 
   @override
   void initState() {
     super.initState();
-    updateUserState();
+    model.updateHomeRootWidget = updateHomeWidget;
     _firebaseMessaging.requestNotificationPermissions();
-    Analytics.sendAnalyticsEvent(Analytics.appOpened);
   }
 
   @override
@@ -55,7 +49,7 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          fontFamily: "productsans",
+          fontFamily: "roboto",
           primaryColor: MyColors.black,
           accentColor: MyColors.white,
           highlightColor: MyColors.white,
@@ -65,8 +59,8 @@ class _MyAppState extends State<MyApp> {
         ),
         home: Scaffold(
           resizeToAvoidBottomPadding: false,
-          backgroundColor: MyColors.almostWhite,
-          body: _whatToDisplay,
+          backgroundColor: MyColors.black,
+          body: _widget,
         ),
       ),
     );

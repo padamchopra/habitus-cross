@@ -18,6 +18,7 @@ class CategoryRow extends StatelessWidget {
           color: MyColors.black,
           fontSize: 18,
           textAlign: TextAlign.start,
+          alternateFont: true,
         ),
         SizedBox(width: 10),
         CustomText(
@@ -25,6 +26,7 @@ class CategoryRow extends StatelessWidget {
           color: MyColors.black,
           fontSize: 18,
           textAlign: TextAlign.start,
+          alternateFont: true,
         ),
         SizedBox(width: 10),
         GestureDetector(

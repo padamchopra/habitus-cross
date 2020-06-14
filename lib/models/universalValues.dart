@@ -22,6 +22,10 @@ class UniversalValues {
 class MySpaces {
   static const EdgeInsets listViewTopPadding = EdgeInsets.only(top: 9);
   static const double topPaddingBeforeHeading = 66;
+  static const double screenBorder = 15;
+  static const Widget gapInBetween = SizedBox(height: 15);
+  static const Widget mediumGapInBetween = SizedBox(height: 30);
+  static const Widget largeGapInBetween = SizedBox(height: 42);
 }
 
 class MyColors {
@@ -66,7 +70,17 @@ class MyColors {
 }
 
 class MyStrings {
-  //alert strings
+  static const appName = "Habito.";
+
+  //auth region starts
+  static const signinLabel = "Sign In";
+  static const emailLabel = "Email";
+  static const passwordLabel = "Password";
+  static const emailError = "Invalid email";
+  static const googleLabel = "Google";
+  //region ends
+
+  //alert strings region starts
   static const deleteCategoryHeading = ["Deleted", "Try Again"];
   static const deleteCategoryBody = [
     "This category has been deleted and child habits unlinked.",
@@ -86,6 +100,7 @@ class MyStrings {
   static const newFeatureTeaseHeading = "Coming Soon!";
   static const newFeatureTeaseBody =
       "New features coming soon! Write a review from profile to request something.";
+  //alert strings region ends
 
   static const noCategoriesMessage =
       "No categories yet.\nCreate one now by tapping +";

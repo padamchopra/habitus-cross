@@ -17,6 +17,7 @@ class ModalHeader extends StatelessWidget {
             color: MyColors.black,
             textAlign: TextAlign.center,
             letterSpacing: 0.2,
+            alternateFont: true,
           ),
         ),
         Align(

@@ -19,6 +19,7 @@ dependencies:
   confetti: ^0.5.2
   store_redirect: ^1.0.2
   firebase_analytics: ^5.0.14
+  google_sign_in: ^4.5.1
 
 dev_dependencies:
   flutter_test:
@@ -30,6 +31,14 @@ flutter:
   fonts:
     - family: productsans
       fonts:
-        - asset: assets/productsans.ttf
-        - asset: assets/productsans_bold.ttf
+        - asset: assets/fonts/productsans.ttf
+        - asset: assets/fonts/productsans_bold.ttf
           weight: 800
+    - family: roboto
+      fonts:
+        - asset: assets/fonts/roboto.ttf
+        - asset: assets/fonts/roboto_bold.ttf
+          weight: 800
+
+  assets:
+    - assets/icons/google.png

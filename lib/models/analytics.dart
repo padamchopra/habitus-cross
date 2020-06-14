@@ -1,26 +1,4 @@
-import 'package:firebase_analytics/firebase_analytics.dart';
-
 class Analytics {
-  static FirebaseAnalytics _firebaseAnalytics = FirebaseAnalytics();
-
-  static Future<void> sendAnalyticsEvent(String eventName) async {
-    print("Analytics Event: $eventName");
-    switch (eventName) {
-      case appOpened:
-        await _firebaseAnalytics.logAppOpen();
-        break;
-      case authLoginSuccess:
-        await _firebaseAnalytics.logLogin();
-        break;
-      case authSignUpSuccess:
-        await _firebaseAnalytics.logSignUp(signUpMethod: 'Email and Password');
-        break;
-      default:
-        await _firebaseAnalytics.logEvent(name: eventName);
-        break;
-    }
-  }
-
   static const String appOpened = "Habito Opened";
   static const String storeReviewOpened = "Store Review Opened";
   static const String categoriesOpened = "Categories Screen";

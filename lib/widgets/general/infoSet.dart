@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/text.dart';
 
-class GeneralInfo extends StatelessWidget {
+class InfoSet extends StatelessWidget {
   final String label;
   final String information;
-  GeneralInfo(this.label, this.information);
+  InfoSet(this.label, this.information);
+  
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -22,6 +23,7 @@ class GeneralInfo extends StatelessWidget {
         CustomText(
           information,
           fontSize: 21,
+          alternateFont: true,
         )
       ],
     );

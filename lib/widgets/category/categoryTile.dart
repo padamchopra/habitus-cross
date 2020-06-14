@@ -68,6 +68,7 @@ class CategoryTile extends StatelessWidget {
                 name,
                 fontSize: 21,
                 letterSpacing: 0.2,
+                alternateFont: true,
               ),
             ),
             onTheRight

@@ -26,6 +26,31 @@ class MyCategory {
     this._deleted = false;
   }
 
+  MyCategory.fromFirebase(
+      {@required Map<String, dynamic> data,
+      @required String userId,
+      @required String documentId}) {
+    this._myHabits = [];
+    this._color = data["color"];
+    this._icon = IconData(data["icon"], fontFamily: "MaterialIcons");
+    this._name = data["name"];
+    this._documentId = documentId;
+    this._userId = userId;
+    this._createdAt = data["createdAt"];
+    this._deleted = false;
+  }
+
+  MyCategory.fromCategory(MyCategory myCategory){
+    this._name = myCategory.categoryName;
+    this._myHabits = myCategory.habitsList;
+    this._color = myCategory.categoryColorIndex;
+    this._icon = myCategory.categoryIcon;
+    this._createdAt = myCategory.createdAt;
+    this._documentId = myCategory.documentId;
+    this._userId = myCategory.userId;
+    this._deleted = myCategory.isDeleted;
+  }
+
   set categoryName(String name) {
     this._name = name;
   }
@@ -37,8 +62,8 @@ class MyCategory {
   set categoryIcon(IconData icon) {
     this._icon = icon;
   }
-  
-  set createdAt(Timestamp createdAt){
+
+  set createdAt(Timestamp createdAt) {
     this._createdAt = createdAt;
   }
 
@@ -54,12 +79,20 @@ class MyCategory {
     this._userId = id;
   }
 
-  set deleted(bool deleted){
+  set deleted(bool deleted) {
     this._deleted = deleted;
   }
 
   set habitsList(List<MyHabit> habits) {
     this._myHabits = habits;
+  }
+
+  get isDeleted {
+    return _deleted;
+  }
+
+  get createdAt {
+    return _createdAt;
   }
 
   get habitsList {

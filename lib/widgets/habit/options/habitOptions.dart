@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:habito/models/analytics.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/models/enums.dart';
 import 'package:habito/models/habit.dart';
-import 'package:habito/models/habitoModel.dart';
+import 'package:habito/state/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/habit/habitModal.dart';
 import 'package:habito/widgets/habit/options/habitMoreOptions.dart';
@@ -38,38 +37,32 @@ class _HabitOptionsState extends State<HabitOptions> {
   }
 
   void markHabitDone(HabitoModel model) async {
-    Analytics.sendAnalyticsEvent(Analytics.habitOptionToMarkDone);
     if (widget.showOnlyCompleted) {
-      model.neverSatisfied(context, "Already tracked.",
+      model.showAlert(context, "Already tracked.",
           "This habit has already been completed. Try resetting the progress if you want to go at it again.");
       return;
     }
-    int resultCode = model.markDoneForToday(widget.myHabit);
-    if (resultCode == 0) {
+    HabitProgressChange progressChange = model.markDoneForToday(widget.myHabit);
+    if (progressChange == HabitProgressChange.SUCCESS) {
       setState(() {
         doneButtonColor = MyColors.success;
         doneButtonIconColor = MyColors.white;
       });
-    } else if (resultCode == 1) {
-      model.neverSatisfied(context, "Slow down",
+    } else if (progressChange == HabitProgressChange.UPDATED_TODAY) {
+      model.showAlert(context, "Slow down",
           "You've already marked your progress for this habit today.");
-    } else if (resultCode == 2) {
-      model.neverSatisfied(context, "Woops",
+    } else if (progressChange == HabitProgressChange.LATE) {
+      model.showAlert(context, "Woops",
           "Looks like you missed a day or more. Progress has been reset.");
-    } else if (resultCode == 3) {
+    } else if (progressChange == HabitProgressChange.COMPLETE) {
       model.playConfetti();
-      /*await new Future.delayed(const Duration(seconds: 4));
-      model.neverSatisfied(context, "Congratulations",
-          "You have successfully formed ${model.myHabitsCompletedList.length} habits thrugh Habito!");*/
     } else {
-      model.neverSatisfied(
-          context, "Try Again", "Could not update your progress.");
+      model.showAlert(context, "Try Again", "Could not update your progress.");
     }
     closeOptions();
   }
 
   void viewHabitDetails() {
-    Analytics.sendAnalyticsEvent(Analytics.habitOptionToView);
     closeOptions();
     showModalBottomSheet(
       context: context,
@@ -85,7 +78,6 @@ class _HabitOptionsState extends State<HabitOptions> {
   }
 
   void viewMoreOptions(model) {
-    Analytics.sendAnalyticsEvent(Analytics.habitOptionToView);
     HabitMoreOptions.show(context, model, decideMoreOptionFunction);
   }
 
@@ -93,15 +85,12 @@ class _HabitOptionsState extends State<HabitOptions> {
       HabitSelecetedOption option, HabitoModel model) {
     switch (option) {
       case HabitSelecetedOption.DUPLICATE_AND_EDIT:
-        Analytics.sendAnalyticsEvent(Analytics.habitOptionToDuplicate);
         duplicateAndEdit();
         break;
       case HabitSelecetedOption.RESET_PROGRESS:
-        Analytics.sendAnalyticsEvent(Analytics.habitOptionToResetProgress);
         resetProgress(model);
         break;
       case HabitSelecetedOption.DELETE:
-        Analytics.sendAnalyticsEvent(Analytics.habitOptionToDelete);
         deleteHabit(model);
         break;
     }
@@ -126,11 +115,10 @@ class _HabitOptionsState extends State<HabitOptions> {
     closeOptions();
     model.resetHabitProgress(widget.myHabit).then((value) {
       if (value) {
-        model.neverSatisfied(context, "Reset",
+        model.showAlert(context, "Reset",
             "Progress was reset successfully. Good luck with this fresh start.");
       } else {
-        model.neverSatisfied(
-            context, "Try Again", "Progress could not be reset.");
+        model.showAlert(context, "Try Again", "Progress could not be reset.");
       }
     });
   }
@@ -139,11 +127,10 @@ class _HabitOptionsState extends State<HabitOptions> {
     closeOptions();
     model.deleteHabit(widget.myHabit).then((value) {
       if (value) {
-        model.neverSatisfied(context, "Deleted",
+        model.showAlert(context, "Deleted",
             "That's a bummer. Good luck with the remaining habits.");
       } else {
-        model.neverSatisfied(
-            context, "Try Again", "Habit could not be deleted.");
+        model.showAlert(context, "Try Again", "Habit could not be deleted.");
       }
     });
   }
@@ -151,7 +138,7 @@ class _HabitOptionsState extends State<HabitOptions> {
   initState() {
     super.initState();
     List<Timestamp> updateTimes = widget.myHabit.updateTimes;
-    if (updateTimes.length > 0 &&
+    if (updateTimes != null && updateTimes.length > 0 &&
         updateTimes.asMap()[0].toDate().day == DateTime.now().day) {
       doneButtonColor = MyColors.success;
       doneButtonIconColor = MyColors.white;

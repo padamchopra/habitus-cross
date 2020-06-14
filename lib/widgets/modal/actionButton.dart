@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:habito/models/habitoModel.dart';
+import 'package:habito/state/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/text.dart';
 import 'package:scoped_model/scoped_model.dart';

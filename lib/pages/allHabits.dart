@@ -1,7 +1,6 @@
-import 'package:habito/models/analytics.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/models/habit.dart';
-import 'package:habito/models/habitoModel.dart';
+import 'package:habito/state/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -21,11 +20,6 @@ class AllHabits extends StatefulWidget {
 
 class _AllHabitsState extends State<AllHabits> {
   Map<int, bool> tileClicked = new Map();
-
-  void initState() {
-    super.initState();
-    Analytics.sendAnalyticsEvent(Analytics.habitsOpened);
-  }
 
   void toggleTileClick(int index) {
     setState(() {
@@ -65,7 +59,7 @@ class _AllHabitsState extends State<AllHabits> {
                   );
                 }
                 List<MyHabit> _myHabits = widget.showOnlyCompleted
-                    ? model.myHabitsCompletedList
+                    ? model.myCompletedHabitsList
                     : model.myHabitsList;
                 return StaggeredGridView.countBuilder(
                   addRepaintBoundaries: true,
@@ -73,8 +67,7 @@ class _AllHabitsState extends State<AllHabits> {
                   crossAxisCount: 2,
                   itemCount: numberOfHabits,
                   itemBuilder: (BuildContext context, int index) {
-                    MyCategory _myCategory =
-                        model.findCategoryById(_myHabits[index].category);
+                    MyCategory _myCategory = model.findCategoryById(_myHabits[index].category);
                     return Stack(
                       children: <Widget>[
                         GestureDetector(
@@ -85,10 +78,6 @@ class _AllHabitsState extends State<AllHabits> {
                                   : true;
                               tileClicked.clear();
                               tileClicked[index] = result;
-                              if (result) {
-                                Analytics.sendAnalyticsEvent(
-                                    Analytics.habitOptionsToggled);
-                              }
                             });
                           },
                           child: _myHabits[index].widget(_myCategory),

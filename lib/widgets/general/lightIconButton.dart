@@ -37,6 +37,7 @@ class LightIconButton extends StatelessWidget {
           fontSize: 15,
           color: MyColors.black,
           letterSpacing: 0.2,
+          alternateFont: true,
         ),
       ],
     );
