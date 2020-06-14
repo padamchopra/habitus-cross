@@ -99,6 +99,7 @@ class _HabitTileState extends State<HabitTile> {
                   widget.myHabit.title,
                   fontSize: 24,
                   letterSpacing: 0.2,
+                  alternateFont: true,
                 ),
                 SizedBox(height: 18),
                 CustomText(

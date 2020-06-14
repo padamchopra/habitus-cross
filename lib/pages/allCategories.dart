@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:habito/models/analytics.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/models/enums.dart';
-import 'package:habito/models/habitoModel.dart';
+import 'package:habito/state/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/category/categoryModal.dart';
 import 'package:habito/widgets/category/categoryMoreOptions.dart';
@@ -20,26 +19,17 @@ class AllCategories extends StatefulWidget {
 class _AllCategoriesState extends State<AllCategories> {
   MyCategory _selectedCategory = MyCategory();
 
-  void initState() {
-    super.initState();
-    Analytics.sendAnalyticsEvent(Analytics.categoriesOpened);
-  }
-
   void moreOptionSwitch(CategorySelectedOption option, HabitoModel model) {
     switch (option) {
       case CategorySelectedOption.VIEW_HABITS:
-        Analytics.sendAnalyticsEvent(Analytics.categoryOptionToViewHabits);
         break;
       case CategorySelectedOption.EDIT:
-        Analytics.sendAnalyticsEvent(Analytics.categoryOptionToEdit);
         openCategoryModal(CategoryModalMode.EDIT);
         break;
       case CategorySelectedOption.DUPLICATE_AND_EDIT:
-        Analytics.sendAnalyticsEvent(Analytics.categoryOptionToDuplicate);
         openCategoryModal(CategoryModalMode.DUPLICATE);
         break;
       case CategorySelectedOption.DELETE:
-        Analytics.sendAnalyticsEvent(Analytics.categoryOptionToDelete);
         deleteCategory(model);
         break;
     }
@@ -59,11 +49,16 @@ class _AllCategoriesState extends State<AllCategories> {
   }
 
   void deleteCategory(HabitoModel model) {
-    model.deleteCategory(_selectedCategory).then((value) {
-      model.neverSatisfied(
+    model.deleteCategory(_selectedCategory).then((resultMap) {
+      int index = 1;
+      if (resultMap["deleted"]) {
+        model.updateHabits(resultMap["associatedHabits"]);
+        index = 0;
+      }
+      model.showAlert(
         context,
-        MyStrings.deleteCategoryHeading[value ? 0 : 1],
-        MyStrings.deleteCategoryBody[value ? 0 : 1],
+        MyStrings.deleteCategoryHeading[index],
+        MyStrings.deleteCategoryBody[index],
       );
     });
   }

@@ -80,13 +80,13 @@ class _CategoryModalState extends State<CategoryModal> {
       if (value) {
         print("saved and returned");
         model
-            .neverSatisfied(context, "Saved successfully!",
+            .showAlert(context, "Saved successfully!",
                 "${_myCategory.categoryName} has been added to your categories.")
             .then((value) {
           Navigator.of(context).pop();
         });
       } else {
-        model.neverSatisfied(
+        model.showAlert(
             context, "Try again", "Could not save this category.");
       }
     });
@@ -97,13 +97,13 @@ class _CategoryModalState extends State<CategoryModal> {
       if (value) {
         print("saved and returned");
         model
-            .neverSatisfied(context, "Updated successfully!",
+            .showAlert(context, "Updated successfully!",
                 "${_myCategory.categoryName} has been updated.")
             .then((value) {
           Navigator.of(context).pop();
         });
       } else {
-        model.neverSatisfied(
+        model.showAlert(
             context, "Try again", "Cannot update category right now.");
       }
     });

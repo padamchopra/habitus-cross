@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/models/enums.dart';
 import 'package:habito/models/habit.dart';
-import 'package:habito/models/habitoModel.dart';
+import 'package:habito/state/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/modal/actionButton.dart';
 import 'package:habito/widgets/modal/categoryRow.dart';
@@ -39,7 +39,6 @@ class _HabitoModalState extends State<HabitModal> {
   Widget actionButton;
   initState() {
     super.initState();
-    print(widget.mode);
     if (initialLoading) {
       if (widget.mode == HabitModalMode.NEW)
         actionButton = ActionButton(addNewHabit, "Track");
@@ -84,23 +83,23 @@ class _HabitoModalState extends State<HabitModal> {
     }
     model.addNewHabit(_myHabit).then((value) {
       if (value) {
-        print("saved and returned");
         model
-            .neverSatisfied(context, "Saved successfully!",
+            .showAlert(context, "Saved successfully!",
                 "${_myHabit.title} is now being tracked. Good luck.")
             .then((value) {
           Navigator.of(context).pop();
         });
       } else {
-        model.neverSatisfied(
+        model.showAlert(
             context, "Try again", "Cannot track this habit right now.");
       }
     });
   }
 
   void editMyHabit(HabitoModel model) {
-    if(widget.myHabit.isFinished){
-      model.neverSatisfied(context, "Error", "Cannot edit habit as it has already been completed");
+    if (widget.myHabit.isFinished) {
+      model.showAlert(context, "Error",
+          "Cannot edit habit as it has already been completed");
       return;
     }
     setState(() {
@@ -123,16 +122,14 @@ class _HabitoModalState extends State<HabitModal> {
     }
     model.updateHabit(_myHabit).then((value) {
       if (value) {
-        print("updated and returned");
         model
-            .neverSatisfied(context, "Updated successfully!",
+            .showAlert(context, "Updated successfully!",
                 "${_myHabit.title} has been updated.")
             .then((value) {
           Navigator.of(context).pop();
         });
       } else {
-        model.neverSatisfied(
-            context, "Try again", "Cannot update habit right now.");
+        model.showAlert(context, "Try again", "Cannot update habit right now.");
       }
     });
   }

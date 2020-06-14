@@ -20,6 +20,7 @@ class PageHeading extends StatelessWidget {
             heading,
             fontSize: UniversalValues.headingFontSize,
             fontWeight: FontWeight.bold,
+            alternateFont: true,
           ),
         ),
         SizedBox(

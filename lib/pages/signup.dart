@@ -1,10 +1,10 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:habito/models/analytics.dart';
 import 'package:habito/models/enums.dart';
-import 'package:habito/models/habitoModel.dart';
+import 'package:habito/state/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
+import 'package:habito/widgets/auth/darkTextField.dart';
 import 'package:habito/widgets/background.dart';
 import 'package:habito/widgets/text.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -18,7 +18,6 @@ class Signup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String email, password;
-    Analytics.sendAnalyticsEvent(Analytics.signUpOpened);
 
     return Scaffold(
       resizeToAvoidBottomPadding: false,
@@ -45,118 +44,47 @@ class Signup extends StatelessWidget {
                     SizedBox(
                       height: 60,
                     ),
-                    TextFormField(
+                    DarkTextField(
                       focusNode: _focusNode1,
-                      onEditingComplete: () =>
-                          FocusScope.of(context).requestFocus(_focusNode2),
-                      autocorrect: false,
-                      keyboardType: TextInputType.emailAddress,
-                      cursorColor: MyColors.white,
-                      style: TextStyle(color: MyColors.white, fontSize: 18),
-                      textInputAction: TextInputAction.next,
+                      nextFocusNode: _focusNode2,
+                      hint: "Email",
                       validator: (_email) => EmailValidator.validate(_email)
                           ? null
                           : "Invalid email",
-                      onSaved: (_email) => email = _email,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            width: 0,
-                            style: BorderStyle.none,
-                          ),
-                        ),
-                        labelStyle: TextStyle(color: MyColors.white),
-                        filled: true,
-                        prefixIcon: Icon(
-                          Icons.alternate_email,
-                          color: MyColors.placeholderGrey,
-                        ),
-                        hintStyle:
-                            new TextStyle(color: MyColors.placeholderGrey),
-                        hintText: "Email",
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 24, vertical: 21),
-                        fillColor: MyColors.darkTextFieldBackground,
-                      ),
+                      inputType: TextInputType.emailAddress,
+                      onSave: (_email) => email = _email,
+                      icon: Icons.alternate_email,
                     ),
                     SizedBox(
                       height: 18,
                     ),
-                    TextFormField(
+                    DarkTextField(
                       focusNode: _focusNode2,
-                      onEditingComplete: () =>
-                          FocusScope.of(context).requestFocus(_focusNode3),
-                      autocorrect: false,
-                      keyboardType: TextInputType.emailAddress,
-                      cursorColor: MyColors.white,
-                      style: TextStyle(color: MyColors.white, fontSize: 18),
-                      obscureText: true,
-                      textInputAction: TextInputAction.next,
+                      nextFocusNode: _focusNode3,
+                      hint: "Password",
                       validator: (_password) {
                         if (_password.length >= 6) {
                           password = _password;
                           return null;
-                        } else {
-                          return "Too short.";
                         }
+                        return "Too short.";
                       },
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            width: 0,
-                            style: BorderStyle.none,
-                          ),
-                        ),
-                        labelStyle: TextStyle(color: MyColors.white),
-                        filled: true,
-                        prefixIcon: Icon(
-                          Icons.lock_outline,
-                          color: MyColors.placeholderGrey,
-                        ),
-                        hintStyle:
-                            new TextStyle(color: MyColors.placeholderGrey),
-                        hintText: "Password",
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 24, vertical: 21),
-                        fillColor: MyColors.darkTextFieldBackground,
-                      ),
+                      onSave: (_) {},
+                      icon: Icons.lock_outline,
+                      obscureText: true,
                     ),
                     SizedBox(
                       height: 18,
                     ),
-                    TextFormField(
+                    DarkTextField(
                       focusNode: _focusNode3,
-                      autocorrect: false,
-                      keyboardType: TextInputType.emailAddress,
-                      cursorColor: MyColors.white,
-                      obscureText: true,
-                      textInputAction: TextInputAction.done,
-                      style: TextStyle(color: MyColors.white, fontSize: 18),
+                      hint: "Confirm Password",
                       validator: (_password) => password == _password
                           ? null
                           : "Passwords do not match",
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide(
-                              width: 0,
-                              style: BorderStyle.none,
-                            ),
-                          ),
-                          labelStyle: TextStyle(color: MyColors.white),
-                          filled: true,
-                          prefixIcon: Icon(
-                            Icons.lock_outline,
-                            color: MyColors.placeholderGrey,
-                          ),
-                          hintStyle:
-                              new TextStyle(color: MyColors.placeholderGrey),
-                          hintText: "Confirm password",
-                          contentPadding: EdgeInsets.symmetric(
-                              horizontal: 24, vertical: 21),
-                          fillColor: MyColors.darkTextFieldBackground),
+                      onSave: (_) {},
+                      obscureText: true,
+                      icon: Icons.lock_outline,
                     ),
                     SizedBox(
                       height: 30,
@@ -171,10 +99,8 @@ class Signup extends StatelessWidget {
                               _formKey.currentState.save();
                               model.signUp(email, password).then((value) {
                                 if (value == HabitoAuth.SUCCESS) {
-                                  Analytics.sendAnalyticsEvent(
-                                      Analytics.authSignUpSuccess);
                                   model
-                                      .neverSatisfied(
+                                      .showAlert(
                                     context,
                                     MyStrings.signUpHeading[0],
                                     MyStrings.signUpBody[0],
@@ -184,9 +110,7 @@ class Signup extends StatelessWidget {
                                         () => Navigator.of(context).pop());
                                   });
                                 } else {
-                                  Analytics.sendAnalyticsEvent(
-                                      Analytics.authSignUpFailure);
-                                  model.neverSatisfied(
+                                  model.showAlert(
                                     context,
                                     MyStrings.signUpHeading[1],
                                     MyStrings.signUpBody[1],
