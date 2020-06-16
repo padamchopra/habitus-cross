@@ -12,29 +12,27 @@ class CustomText extends StatelessWidget {
   final bool alternateFont;
   final Function onTap;
   const CustomText(this.content,
-      {this.fontWeight,
-      this.textAlign,
-      this.color,
-      this.fontSize,
-      this.textDecoration,
-      this.letterSpacing,
-      this.alternateFont,
+      {this.fontWeight: FontWeight.normal,
+      this.textAlign: TextAlign.start,
+      this.color: MyColors.white,
+      this.fontSize: 20,
+      this.textDecoration: TextDecoration.none,
+      this.letterSpacing: 0,
+      this.alternateFont: false,
       this.onTap});
   @override
   Widget build(BuildContext context) {
     final Widget text = Text(
       content,
-      textAlign: textAlign == null ? TextAlign.start : TextAlign.center,
+      textAlign: textAlign,
       style: TextStyle(
-          fontFamily: (alternateFont != null && alternateFont)
-              ? 'productsans'
-              : 'roboto',
-          fontWeight: fontWeight == null ? FontWeight.normal : fontWeight,
-          color: color == null ? MyColors.white : color,
-          letterSpacing: letterSpacing == null ? 0 : letterSpacing,
-          fontSize: fontSize == null ? 20 : fontSize,
-          decoration:
-              textDecoration == null ? TextDecoration.none : textDecoration),
+        fontFamily: alternateFont ? 'productsans' : 'roboto',
+        fontWeight: fontWeight,
+        color: color,
+        letterSpacing: letterSpacing,
+        fontSize: fontSize,
+        decoration: textDecoration,
+      ),
     );
 
     if (onTap == null) {

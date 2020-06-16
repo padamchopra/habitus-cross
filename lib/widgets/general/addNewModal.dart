@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:habito/functions/homeFunctions.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/general/lightIconButton.dart';
 
 class AddNewModal extends StatelessWidget {
-  final Function addNewHabit;
-  final Function addNewCategory;
-  final Function addNewExport;
-  AddNewModal(this.addNewHabit, this.addNewCategory, this.addNewExport);
+  AddNewModal();
 
   @override
   Widget build(BuildContext context) {
@@ -29,18 +27,17 @@ class AddNewModal extends StatelessWidget {
               LightIconButton(
                 Icons.lightbulb_outline,
                 "Habit",
-                () => addNewHabit(context),
+                () => HomeFunctions.addNewHabit(context),
               ),
               LightIconButton(
-                  Icons.label_outline,
-                  "Category",
-                  () => addNewCategory(
-                        context,
-                      )),
+                Icons.label_outline,
+                "Category",
+                () => HomeFunctions.addNewCategory(context),
+              ),
               LightIconButton(
                 Icons.import_export,
                 "Export",
-                () => addNewExport(context),
+                () => HomeFunctions.addNewExport(context),
               ),
             ],
           ),

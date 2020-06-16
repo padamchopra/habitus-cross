@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconpicker/Models/IconPack.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
+import 'package:habito/functions/universalFunctions.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/models/enums.dart';
 import 'package:habito/models/universalValues.dart';
+import 'package:habito/state/habitoModel.dart';
 import 'package:habito/widgets/modal/actionButton.dart';
 import 'package:habito/widgets/modal/iconRow.dart';
 import 'package:habito/widgets/modal/modalHeader.dart';
@@ -32,7 +34,6 @@ class _CategoryModalState extends State<CategoryModal> {
   Widget actionButton;
   initState() {
     super.initState();
-    print(widget.mode);
     if (initialLoading) {
       if (widget.mode == CategoryModalMode.NEW)
         actionButton = ActionButton(addNewCategory, "Add");
@@ -75,38 +76,28 @@ class _CategoryModalState extends State<CategoryModal> {
     });
   }
 
-  void addNewCategory(model) {
-    model.addNewCategory(_myCategory).then((value) {
-      if (value) {
-        print("saved and returned");
-        model
-            .showAlert(context, "Saved successfully!",
-                "${_myCategory.categoryName} has been added to your categories.")
-            .then((value) {
-          Navigator.of(context).pop();
-        });
-      } else {
-        model.showAlert(
-            context, "Try again", "Could not save this category.");
-      }
-    });
+  void addNewCategory(HabitoModel model) async {
+    bool categorySaveResult = await model.addNewCategory(_myCategory);
+    if (categorySaveResult) {
+      await UniversalFunctions.showAlert(context, "Saved successfully!",
+          "${_myCategory.categoryName} has been added to your categories.");
+      Navigator.of(context).pop();
+    } else {
+      UniversalFunctions.showAlert(
+          context, "Try again", "Could not save this category.");
+    }
   }
 
-  void updateCategory(model) {
-    model.updateCategory(_myCategory).then((value) {
-      if (value) {
-        print("saved and returned");
-        model
-            .showAlert(context, "Updated successfully!",
-                "${_myCategory.categoryName} has been updated.")
-            .then((value) {
-          Navigator.of(context).pop();
-        });
-      } else {
-        model.showAlert(
-            context, "Try again", "Cannot update category right now.");
-      }
-    });
+  void updateCategory(HabitoModel model) async {
+    bool categoryUpdationResult = await model.updateCategory(_myCategory);
+    if (categoryUpdationResult) {
+      await UniversalFunctions.showAlert(context, "Updated successfully!",
+          "${_myCategory.categoryName} has been updated.");
+      Navigator.of(context).pop();
+    } else {
+      UniversalFunctions.showAlert(
+          context, "Try again", "Cannot update category right now.");
+    }
   }
 
   void editMyCategory(_) {
@@ -196,10 +187,11 @@ class _CategoryModalState extends State<CategoryModal> {
             Padding(
               padding: const EdgeInsets.only(left: 10, top: 15),
               child: CustomText(
-                "-- Preview --",
+                MyStrings.previewLabel,
                 color: MyColors.placeholderGrey,
                 fontSize: 12,
                 textAlign: TextAlign.start,
+                alternateFont: true,
               ),
             ),
             Padding(

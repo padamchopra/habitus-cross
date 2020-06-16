@@ -1,11 +1,8 @@
 import 'dart:io';
-
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:habito/models/enums.dart';
+import 'package:habito/functions/authFunctions.dart';
 import 'package:habito/state/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
-import 'package:habito/pages/signup.dart';
 import 'package:habito/widgets/auth/blueButton.dart';
 import 'package:habito/widgets/auth/darkTextField.dart';
 import 'package:habito/widgets/auth/googleSignIn.dart';
@@ -51,12 +48,11 @@ class SignIn extends StatelessWidget {
                   focusNode: _focusNode1,
                   hint: MyStrings.emailLabel,
                   validator: (_email) {
-                    if (EmailValidator.validate(_email)) {
+                    if (AuthFunctions.validateEmail(_email)) {
                       email = _email;
                       return null;
-                    } else {
-                      return MyStrings.emailError;
                     }
+                    return MyStrings.emailError;
                   },
                   onSave: (_) {},
                   inputType: TextInputType.emailAddress,
@@ -74,48 +70,17 @@ class SignIn extends StatelessWidget {
                 ),
                 MySpaces.mediumGapInBetween,
                 BlueButton(
-                  label: MyStrings.signinLabel,
-                  onPress: () async {
-                    if (_formKey.currentState.validate()) {
-                      _formKey.currentState.save();
-                      HabitoAuth signedInResult =
-                          await model.signIn(email, password);
-                      if (signedInResult == HabitoAuth.SUCCESS) {
-                        await model.fetchUserData();
-                        model.updateUserState();
-                      } else {
-                        int index = 1;
-                        if (signedInResult ==
-                            HabitoAuth.VERIFICATION_REQUIRED) {
-                          index = 0;
-                        }
-                        model.showAlert(
-                          context,
-                          MyStrings.signInHeading[index],
-                          MyStrings.signInBody[index],
-                        );
-                      }
-                    }
-                  },
+                  label: MyStrings.signInLabel,
+                  onPress: () => AuthFunctions.signInWithPassword(context, model, _formKey, email, password),
                 ),
                 MySpaces.gapInBetween,
                 CustomText(
-                  "Forgot Password?",
+                  MyStrings.forgotPasswordLabel,
                   color: MyColors.captionWhite,
                   fontSize: 15,
                   alternateFont: true,
                   textAlign: TextAlign.end,
-                  onTap: () {
-                    if (_formKey.currentState.validate()) {
-                      model.requestPasswordReset(email).then((value) {
-                        model.showAlert(
-                          context,
-                          MyStrings.signInHeading[2],
-                          MyStrings.signInBody[2],
-                        );
-                      });
-                    }
-                  },
+                  onTap: () => AuthFunctions.forgotPasswordWithEmail(context, model, _formKey, email),
                 ),
                 MySpaces.largeGapInBetween,
                 Row(
@@ -125,7 +90,7 @@ class SignIn extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 6.0),
                       child: CustomText(
-                        "OR SIGN IN WITH",
+                        MyStrings.alternateAuthHeader,
                         color: MyColors.captionWhite,
                         fontSize: 12,
                         alternateFont: true,
@@ -140,7 +105,7 @@ class SignIn extends StatelessWidget {
                   children: <Widget>[
                     GoogleSignInButton(
                       width: MediaQuery.of(context).size.width / 3,
-                      signIn: () => model.signInWithGoogle(),
+                      signIn: () => AuthFunctions.signInWithGoogle(model),
                     ),
                   ],
                 )
@@ -153,19 +118,16 @@ class SignIn extends StatelessWidget {
           child: Container(
             margin: EdgeInsets.only(bottom: Platform.isIOS ? 42 : 24),
             child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => Signup()));
-              },
+              onTap: () => AuthFunctions.redirectToSignUp(context, model),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   CustomText(
-                    "Don't have an account? ",
+                    MyStrings.noAccountLabel,
                     fontSize: 17,
                   ),
                   CustomText(
-                    "Sign Up",
+                    MyStrings.signUpLabel,
                     color: MyColors.perfectBlue,
                     fontSize: 17,
                   ),

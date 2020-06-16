@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:habito/functions/universalFunctions.dart';
 import 'package:habito/state/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/general/infoSet.dart';
@@ -17,33 +18,33 @@ class Profile extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const PageHeading("Profile"),
+            const PageHeading(MyStrings.profilePageHeading),
             Expanded(
               child: ListView(
                 padding: EdgeInsets.all(25),
                 children: <Widget>[
                   InfoSet(
-                    "Email",
+                    MyStrings.emailLabel,
                     model.userEmail,
                   ),
                   SizedBox(height: 20),
                   InfoSet(
-                    "Categories",
+                    MyStrings.categoriesInfoTitle,
                     model.myCategoriesList.length.toString(),
                   ),
                   SizedBox(height: 20),
                   InfoSet(
-                    "Active Habits",
+                    MyStrings.activeHabitsInfoTitle,
                     model.myHabitsList.length.toString(),
                   ),
                   SizedBox(height: 20),
                   InfoSet(
-                    "Tracked Habits",
+                    MyStrings.trackedHabitsInfoTitle,
                     model.myCompletedHabitsList.length.toString(),
                   ),
                   SizedBox(height: 20),
                   InfoSet(
-                    "Sort by (more coming soon)",
+                    MyStrings.trackedHabitsInfoTitle,
                     "Old -> New",
                   ),
                   SizedBox(height: 40),
@@ -60,7 +61,7 @@ class Profile extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: CustomText(
-                          "Review",
+                          MyStrings.reviewButton,
                           alternateFont: true,
                         ),
                       ),
@@ -73,14 +74,14 @@ class Profile extends StatelessWidget {
                       color: MyColors.midnight,
                       onPressed: () async {
                         await model.signOut();
-                        await model.showAlert(
-                            context, "Signing Out", "Thanks for using Habito!");
+                        await UniversalFunctions.showAlert(
+                            context, MyStrings.logoutHeading, MyStrings.logoutBody);
                         model.updateUserState();
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: CustomText(
-                          "Logout",
+                          MyStrings.logoutButton,
                           alternateFont: true,
                         ),
                       ),

@@ -1,16 +1,13 @@
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
-import 'package:habito/models/enums.dart';
+import 'package:habito/functions/homeFunctions.dart';
 import 'package:habito/state/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/pages/allCategories.dart';
 import 'package:habito/pages/allHabits.dart';
 import 'package:habito/pages/profile.dart';
-import 'package:habito/widgets/category/categoryModal.dart';
-import 'package:habito/widgets/general/addNewModal.dart';
 import 'package:habito/widgets/general/confettiExplosionBox.dart';
 import 'package:habito/widgets/myBottomBar.dart';
-import 'package:habito/widgets/habit/habitModal.dart';
 
 class Home extends StatefulWidget {
   final HabitoModel model;
@@ -52,45 +49,6 @@ class _HomeState extends State<Home> {
         duration: Duration(milliseconds: 400), curve: Curves.easeOutCirc);
   }
 
-  void addNewHabit(BuildContext context) {
-    Navigator.of(context).pop();
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (BuildContext _context) {
-        return HabitModal(HabitModalMode.NEW);
-      },
-    );
-  }
-
-  void addNewCategory(BuildContext context) {
-    Navigator.of(context).pop();
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (BuildContext _context) {
-        return CategoryModal(CategoryModalMode.NEW);
-      },
-    );
-  }
-
-  void addNewExport(BuildContext context) {
-    widget.model.showAlert(
-      context,
-      MyStrings.newFeatureTeaseHeading,
-      MyStrings.newFeatureTeaseBody,
-    );
-  }
-
-  void showMyBottomModal(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext _context) {
-        return AddNewModal(addNewHabit, addNewCategory, addNewExport);
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,9 +76,7 @@ class _HomeState extends State<Home> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showMyBottomModal(context);
-        },
+        onPressed: () => HomeFunctions.showMyBottomModal(context),
         backgroundColor: MyColors.white,
         child: Icon(
           Icons.add,

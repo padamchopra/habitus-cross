@@ -14,7 +14,7 @@ class PageHeading extends StatelessWidget {
         SizedBox(height: MySpaces.topPaddingBeforeHeading),
         Container(
           margin: EdgeInsets.symmetric(
-            horizontal: UniversalValues.headingHorizontalMargin,
+            horizontal: MySpaces.headingHorizontalMargin,
           ),
           child: CustomText(
             heading,
