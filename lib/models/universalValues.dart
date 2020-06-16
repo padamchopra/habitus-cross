@@ -2,30 +2,24 @@ import 'package:flutter/material.dart';
 
 class UniversalValues {
   static const double plusIconSize = 40;
-  //margin and paddings region start
-  static const double headingHorizontalMargin = 30;
-  //region end
-
-  //font properties region start
   static const double headingFontSize = 45;
-  //region end
+}
 
-  //habit options region starts
+class MySpaces {
+  static const EdgeInsets listViewTopPadding = EdgeInsets.only(top: 9);
+  static const double topPaddingBeforeHeading = 81;
+  static const double headingHorizontalMargin = 30;
+  static const double screenBorder = 15;
+  static const Widget gapInBetween = SizedBox(height: 15);
+  static const Widget mediumGapInBetween = SizedBox(height: 30);
+  static const Widget largeGapInBetween = SizedBox(height: 42);
+
+  //habit option spacing
   static const EdgeInsets marginForHabitFirstOption = EdgeInsets.only(left: 0);
   static const EdgeInsets marginForHabitSecondOption =
       EdgeInsets.only(left: 42);
   static const EdgeInsets marginForHabitThirdOption = EdgeInsets.only(left: 84);
   static const EdgeInsets marginForParentOption = EdgeInsets.only(right: 42);
-  //region end
-}
-
-class MySpaces {
-  static const EdgeInsets listViewTopPadding = EdgeInsets.only(top: 9);
-  static const double topPaddingBeforeHeading = 66;
-  static const double screenBorder = 15;
-  static const Widget gapInBetween = SizedBox(height: 15);
-  static const Widget mediumGapInBetween = SizedBox(height: 30);
-  static const Widget largeGapInBetween = SizedBox(height: 42);
 }
 
 class MyColors {
@@ -73,12 +67,46 @@ class MyStrings {
   static const appName = "Habito.";
 
   //auth region starts
-  static const signinLabel = "Sign In";
+  static const signInLabel = "Sign In";
+  static const signUpLabel = "Sign Up";
+  static const signUpPageHeading = "Join Habito.";
   static const emailLabel = "Email";
   static const passwordLabel = "Password";
+  static const confirmPasswordLabel = "Confirm Password";
   static const emailError = "Invalid email";
+  static const passwordLengthError = "Password too short.";
+  static const passwordMismatchError = "Passwords do not match";
   static const googleLabel = "Google";
-  //region ends
+  static const forgotPasswordLabel = "Forgot Password?";
+  static const alternateAuthHeader = "OR SIGN IN WITH";
+  static const noAccountLabel = "Don't have an account? ";
+  static const alreadyAnAccountLabel = "Already have an account? ";
+  //auth region ends
+
+  //categories region starts
+  static const categoriesPageHeading = "Categories";
+  static const noCategoriesMessage =
+      "No categories found.\nCreate one now by tapping +";
+  static const previewLabel = "-- Preview --";
+  //categories region ends
+
+  //habits region starts
+  static const habitsPageHeading = "Habits";
+  static const completedHabitsPageHeading = "Tracked";
+  static const noCompletedHabitsMessage = "No active habits completed.";
+  static const noHabitsMessage =
+      "Start tracking a habit you want \nto develop by tapping +";
+  //habits region ends
+
+  //profile region starts
+  static const profilePageHeading = "Profile";
+  static const categoriesInfoTitle = "Categories";
+  static const activeHabitsInfoTitle = "Active Habits";
+  static const trackedHabitsInfoTitle = "Tracked Habits";
+  static const sortInfoTitle = "Sort by (soon)";
+  static const reviewButton = "Review";
+  static const logoutButton = "Logout";
+  //profile region ends
 
   //alert strings region starts
   static const deleteCategoryHeading = ["Deleted", "Try Again"];
@@ -100,11 +128,9 @@ class MyStrings {
   static const newFeatureTeaseHeading = "Coming Soon!";
   static const newFeatureTeaseBody =
       "New features coming soon! Write a review from profile to request something.";
+
+  static const logoutHeading = "Logged Out";
+  static const logoutBody = "Thanks for using Habito!";
   //alert strings region ends
 
-  static const noCategoriesMessage =
-      "No categories yet.\nCreate one now by tapping +";
-  static const noCompletedHabitsMessage = "No habits have been completed yet.";
-  static const noHabitsMessage =
-      "Start tracking a habit you want \nto develop by tapping +";
 }

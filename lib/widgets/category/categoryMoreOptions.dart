@@ -1,50 +1,51 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:habito/functions/categoryFunctions.dart';
 import 'package:habito/models/enums.dart';
 import 'package:habito/models/universalValues.dart';
 
 class CategoryMoreOptions {
-  static show(context, model, function) {
-    iOSOptions(context, model, function);
+  static show(context, model, category) {
+    iOSOptions(context, model, category);
   }
 
-  static iOSOptions(context, model, function) {
+  static iOSOptions(context, model, category) {
     showCupertinoModalPopup(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext optionsContext) {
         return CupertinoActionSheet(
           title: Text("Category Options"),
           cancelButton: CupertinoActionSheetAction(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.of(optionsContext).pop(),
             child: Text('Cancel'),
           ),
           actions: <Widget>[
-            /*CupertinoActionSheetAction(
-              onPressed: () {
-                Navigator.of(context).pop();
-                function(CategorySelectedOption.VIEW_HABITS, model);
-              },
-              child: Text("View Habits"),
-            ),*/
             CupertinoActionSheetAction(
-              onPressed: () {
-                Navigator.of(context).pop();
-                function(CategorySelectedOption.EDIT, model);
-              },
+              onPressed: () => CategoryFunctions.handleCategoryOptionSelect(
+                optionsContext: optionsContext,
+                screenContext: context,
+                option: CategorySelectedOption.EDIT,
+                category: category,
+              ),
               child: Text("Edit Details"),
             ),
             CupertinoActionSheetAction(
-              onPressed: () {
-                Navigator.of(context).pop();
-                function(CategorySelectedOption.DUPLICATE_AND_EDIT, model);
-              },
+              onPressed: () => CategoryFunctions.handleCategoryOptionSelect(
+                optionsContext: optionsContext,
+                screenContext: context,
+                option: CategorySelectedOption.DUPLICATE_AND_EDIT,
+                category: category,
+              ),
               child: Text("Duplicate and Edit"),
             ),
             CupertinoActionSheetAction(
-              onPressed: () {
-                Navigator.of(context).pop();
-                function(CategorySelectedOption.DELETE, model);
-              },
+              onPressed: () => CategoryFunctions.handleCategoryOptionSelect(
+                optionsContext: optionsContext,
+                screenContext: context,
+                option: CategorySelectedOption.DELETE,
+                model: model,
+                category: category,
+              ),
               child: Text(
                 "Delete",
                 style: TextStyle(

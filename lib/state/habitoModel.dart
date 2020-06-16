@@ -9,7 +9,6 @@ import 'package:habito/models/habit.dart';
 import 'package:habito/state/authModel.dart';
 import 'package:habito/state/categoryModel.dart';
 import 'package:habito/state/habitModel.dart';
-import 'package:habito/widgets/general/alertNotifyDialog.dart';
 import 'dart:async';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter/material.dart';
@@ -40,18 +39,7 @@ class HabitoModel extends Model with ModelData, AuthModel, CategoryModel, HabitM
     await fetchHabits();
     associateHabitsAndCategories();
   }
-
-  Future<void> showAlert(
-      BuildContext context, String title, String description) async {
-    return showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertNotifyDialog(title, description);
-      },
-    );
-  }
-
+  
 }
 
 mixin ModelData on Model {

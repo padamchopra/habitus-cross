@@ -21,7 +21,7 @@ class BlueButton extends StatelessWidget {
         ),
         width: double.infinity,
         child: CustomText(
-          MyStrings.signinLabel,
+          label,
           color: MyColors.white,
           textAlign: TextAlign.center,
           alternateFont: true,

@@ -33,8 +33,8 @@ class _AllHabitsState extends State<AllHabits> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         widget.showOnlyCompleted
-            ? const PageHeading("Tracked")
-            : const PageHeading("Habits"),
+            ? const PageHeading(MyStrings.completedHabitsPageHeading)
+            : const PageHeading(MyStrings.habitsPageHeading),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -55,6 +55,7 @@ class _AllHabitsState extends State<AllHabits> {
                           ? MyStrings.noCompletedHabitsMessage
                           : MyStrings.noHabitsMessage,
                       textAlign: TextAlign.center,
+                      alternateFont: true,
                     ),
                   );
                 }

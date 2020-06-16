@@ -16,7 +16,7 @@ class DarkTextField extends StatelessWidget {
     @required this.validator,
     @required this.onSave,
     this.nextFocusNode,
-    this.inputType,
+    this.inputType: TextInputType.text,
     this.icon,
     this.obscureText,
   });
@@ -34,7 +34,7 @@ class DarkTextField extends StatelessWidget {
       validator: validator,
       onSaved: onSave,
       autocorrect: false,
-      keyboardType: inputType != null ? inputType : TextInputType.text,
+      keyboardType: inputType,
       cursorColor: MyColors.white,
       style: TextStyle(
         color: MyColors.white,

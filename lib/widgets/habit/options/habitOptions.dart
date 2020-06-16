@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:habito/functions/universalFunctions.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/models/enums.dart';
 import 'package:habito/models/habit.dart';
@@ -26,9 +27,9 @@ class HabitOptions extends StatefulWidget {
 }
 
 class _HabitOptionsState extends State<HabitOptions> {
-  EdgeInsets doneButtonMargin = UniversalValues.marginForHabitSecondOption;
-  EdgeInsets moreButtonMargin = UniversalValues.marginForHabitSecondOption;
-  EdgeInsets parentMargin = UniversalValues.marginForParentOption;
+  EdgeInsets doneButtonMargin = MySpaces.marginForHabitSecondOption;
+  EdgeInsets moreButtonMargin = MySpaces.marginForHabitSecondOption;
+  EdgeInsets parentMargin = MySpaces.marginForParentOption;
   Color doneButtonColor = MyColors.habitOption;
   Color doneButtonIconColor = MyColors.placeholderGrey;
 
@@ -38,7 +39,7 @@ class _HabitOptionsState extends State<HabitOptions> {
 
   void markHabitDone(HabitoModel model) async {
     if (widget.showOnlyCompleted) {
-      model.showAlert(context, "Already tracked.",
+      UniversalFunctions.showAlert(context, "Already tracked.",
           "This habit has already been completed. Try resetting the progress if you want to go at it again.");
       return;
     }
@@ -49,15 +50,15 @@ class _HabitOptionsState extends State<HabitOptions> {
         doneButtonIconColor = MyColors.white;
       });
     } else if (progressChange == HabitProgressChange.UPDATED_TODAY) {
-      model.showAlert(context, "Slow down",
+      UniversalFunctions.showAlert(context, "Slow down",
           "You've already marked your progress for this habit today.");
     } else if (progressChange == HabitProgressChange.LATE) {
-      model.showAlert(context, "Woops",
+      UniversalFunctions.showAlert(context, "Woops",
           "Looks like you missed a day or more. Progress has been reset.");
     } else if (progressChange == HabitProgressChange.COMPLETE) {
       model.playConfetti();
     } else {
-      model.showAlert(context, "Try Again", "Could not update your progress.");
+      UniversalFunctions.showAlert(context, "Try Again", "Could not update your progress.");
     }
     closeOptions();
   }
@@ -115,10 +116,10 @@ class _HabitOptionsState extends State<HabitOptions> {
     closeOptions();
     model.resetHabitProgress(widget.myHabit).then((value) {
       if (value) {
-        model.showAlert(context, "Reset",
+        UniversalFunctions.showAlert(context, "Reset",
             "Progress was reset successfully. Good luck with this fresh start.");
       } else {
-        model.showAlert(context, "Try Again", "Progress could not be reset.");
+        UniversalFunctions.showAlert(context, "Try Again", "Progress could not be reset.");
       }
     });
   }
@@ -127,10 +128,10 @@ class _HabitOptionsState extends State<HabitOptions> {
     closeOptions();
     model.deleteHabit(widget.myHabit).then((value) {
       if (value) {
-        model.showAlert(context, "Deleted",
+        UniversalFunctions.showAlert(context, "Deleted",
             "That's a bummer. Good luck with the remaining habits.");
       } else {
-        model.showAlert(context, "Try Again", "Habit could not be deleted.");
+        UniversalFunctions.showAlert(context, "Try Again", "Habit could not be deleted.");
       }
     });
   }
@@ -145,8 +146,8 @@ class _HabitOptionsState extends State<HabitOptions> {
     }
     new Future.delayed(Duration(milliseconds: 10)).then((_) {
       setState(() {
-        doneButtonMargin = UniversalValues.marginForHabitFirstOption;
-        moreButtonMargin = UniversalValues.marginForHabitThirdOption;
+        doneButtonMargin = MySpaces.marginForHabitFirstOption;
+        moreButtonMargin = MySpaces.marginForHabitThirdOption;
         parentMargin = EdgeInsets.all(0);
       });
     });
@@ -169,7 +170,7 @@ class _HabitOptionsState extends State<HabitOptions> {
               ),
               OptionCircle(
                 viewHabitDetails,
-                UniversalValues.marginForHabitSecondOption,
+                MySpaces.marginForHabitSecondOption,
                 Icons.remove_red_eye,
               ),
               OptionCircle(

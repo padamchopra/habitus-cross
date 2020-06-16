@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:habito/functions/universalFunctions.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/models/enums.dart';
 import 'package:habito/models/habit.dart';
@@ -96,9 +97,9 @@ class _HabitoModalState extends State<HabitModal> {
     });
   }
 
-  void editMyHabit(HabitoModel model) {
+  void editMyHabit(_) {
     if (widget.myHabit.isFinished) {
-      model.showAlert(context, "Error",
+      UniversalFunctions.showAlert(context, "Error",
           "Cannot edit habit as it has already been completed");
       return;
     }

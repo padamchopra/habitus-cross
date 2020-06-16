@@ -40,7 +40,7 @@ class MyCategory {
     this._deleted = false;
   }
 
-  MyCategory.fromCategory(MyCategory myCategory){
+  MyCategory.fromCategory(MyCategory myCategory) {
     this._name = myCategory.categoryName;
     this._myHabits = myCategory.habitsList;
     this._color = myCategory.categoryColorIndex;
@@ -135,14 +135,14 @@ class MyCategory {
     _myHabits.insert(0, myHabit);
   }
 
-  Widget widget({bool showNumberOfHabits, bool overridePadding}) {
+  Widget widget({bool showNumberOfHabits: false, bool overridePadding: false}) {
     return CategoryTile(
-      showNumberOfHabits == null ? false : true,
+      showNumberOfHabits,
       _myHabits.length,
       _icon,
       _color,
       _name,
-      overridePadding == null ? false : overridePadding,
+      overridePadding,
     );
   }
 
