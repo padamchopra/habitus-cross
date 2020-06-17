@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:habito/functions/universalFunctions.dart';
 import 'package:habito/models/enums.dart';
+import 'package:habito/models/universalValues.dart';
 import 'package:habito/state/habitoModel.dart';
 
 mixin AuthModel on ModelData {
@@ -11,7 +14,8 @@ mixin AuthModel on ModelData {
     try {
       firebaseUser = await firebaseAuth.currentUser();
       if (firebaseUser != null) {
-        if (firebaseUser.providerId == "password" && !firebaseUser.isEmailVerified){
+        if (firebaseUser.providerId == "password" &&
+            !firebaseUser.isEmailVerified) {
           if (sendEmail) await firebaseUser.sendEmailVerification();
           return HabitoAuth.VERIFICATION_REQUIRED;
         }
@@ -68,7 +72,7 @@ mixin AuthModel on ModelData {
     }
   }
 
-  Future<HabitoAuth> signInWithGoogle() async {
+  Future<HabitoAuth> signInWithGoogle(BuildContext context) async {
     try {
       final GoogleSignInAccount googleSignInAccount =
           await _googleSignIn.signIn();
@@ -81,8 +85,32 @@ mixin AuthModel on ModelData {
       await firebaseAuth.signInWithCredential(credential);
       return (await checkIfSignedIn());
     } catch (e) {
+      handleAuthError(context, e);
+      await signOut();
       return HabitoAuth.FAIL;
     }
   }
 
+  Future<HabitoAuth> signInWithFacebook(
+      BuildContext context, String token) async {
+    try {
+      final facebookAuthCredential =
+          FacebookAuthProvider.getCredential(accessToken: token);
+      await firebaseAuth.signInWithCredential(facebookAuthCredential);
+      return (await checkIfSignedIn());
+    } catch (e) {
+      handleAuthError(context, e);
+      await signOut();
+      return HabitoAuth.FAIL;
+    }
+  }
+
+  void handleAuthError(context, e) {
+    String title = "Try Again";
+    String body = "Cannot sign you in right now.";
+    if (MyStrings.oAuthErrors.containsKey(e.code)) {
+      body = MyStrings.oAuthErrors[e.code];
+    }
+    UniversalFunctions.showAlert(context, title, body);
+  }
 }
