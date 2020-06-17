@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/text.dart';
 
-class GoogleSignInButton extends StatelessWidget {
+class OAuthButton extends StatelessWidget {
+  final String assetName;
+  final String label;
   final double width;
   final Function signIn;
-  GoogleSignInButton({
+  OAuthButton({
+    @required this.assetName,
+    @required this.label,
     @required this.width,
     @required this.signIn,
   });
@@ -24,14 +28,15 @@ class GoogleSignInButton extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 12.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               Image(
-                image: AssetImage("assets/icons/google.png"),
+                image: AssetImage("assets/icons/$assetName.png"),
                 height: 16,
+                width: 16,
               ),
               CustomText(
-                MyStrings.googleLabel,
+                label,
                 fontSize: 16,
                 alternateFont: true,
               ),

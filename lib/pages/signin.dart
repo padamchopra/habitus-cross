@@ -5,7 +5,7 @@ import 'package:habito/state/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/auth/blueButton.dart';
 import 'package:habito/widgets/auth/darkTextField.dart';
-import 'package:habito/widgets/auth/googleSignIn.dart';
+import 'package:habito/widgets/auth/OAuthButton.dart';
 import 'package:habito/widgets/background.dart';
 import 'package:habito/widgets/text.dart';
 
@@ -42,6 +42,7 @@ class SignIn extends StatelessWidget {
                   fontSize: 54,
                   fontWeight: FontWeight.w700,
                   alternateFont: true,
+                  letterSpacing: -0.9,
                 ),
                 MySpaces.largeGapInBetween,
                 DarkTextField(
@@ -71,7 +72,8 @@ class SignIn extends StatelessWidget {
                 MySpaces.mediumGapInBetween,
                 BlueButton(
                   label: MyStrings.signInLabel,
-                  onPress: () => AuthFunctions.signInWithPassword(context, model, _formKey, email, password),
+                  onPress: () => AuthFunctions.signInWithPassword(
+                      context, model, _formKey, email, password),
                 ),
                 MySpaces.gapInBetween,
                 CustomText(
@@ -80,7 +82,8 @@ class SignIn extends StatelessWidget {
                   fontSize: 15,
                   alternateFont: true,
                   textAlign: TextAlign.end,
-                  onTap: () => AuthFunctions.forgotPasswordWithEmail(context, model, _formKey, email),
+                  onTap: () => AuthFunctions.forgotPasswordWithEmail(
+                      context, model, _formKey, email),
                 ),
                 MySpaces.largeGapInBetween,
                 Row(
@@ -101,11 +104,21 @@ class SignIn extends StatelessWidget {
                 ),
                 MySpaces.gapInBetween,
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
-                    GoogleSignInButton(
-                      width: MediaQuery.of(context).size.width / 3,
-                      signIn: () => AuthFunctions.signInWithGoogle(model),
+                    OAuthButton(
+                      assetName: 'google',
+                      label: MyStrings.googleLabel,
+                      width: MediaQuery.of(context).size.width / 2.6,
+                      signIn: () =>
+                          AuthFunctions.signInWithGoogle(context, model),
+                    ),
+                    OAuthButton(
+                      assetName: 'facebook',
+                      label: MyStrings.facebookLabel,
+                      width: MediaQuery.of(context).size.width / 2.6,
+                      signIn: () =>
+                          AuthFunctions.signInWithFacebook(context, model),
                     ),
                   ],
                 )

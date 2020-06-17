@@ -77,6 +77,7 @@ class MyStrings {
   static const passwordLengthError = "Password too short.";
   static const passwordMismatchError = "Passwords do not match";
   static const googleLabel = "Google";
+  static const facebookLabel = "Facebook";
   static const forgotPasswordLabel = "Forgot Password?";
   static const alternateAuthHeader = "OR SIGN IN WITH";
   static const noAccountLabel = "Don't have an account? ";
@@ -120,6 +121,16 @@ class MyStrings {
     "Please re-check your details and try again.",
     "Please check your email to reset your password."
   ];
+  static const oAuthErrors = {
+    'ERROR_INVALID_CREDENTIAL':
+        'Invalid credentials. Please check your details again.',
+    'ERROR_USER_DISABLED':
+        'Looks like your account is disabled. Contact us at jb.padamchopra@gmail.com.',
+    'ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL':
+        'Looks like you are already registered with a different authentication provider.',
+    'ERROR_OPERATION_NOT_ALLOWED':
+        'Signing in with this provider is no longer allowed.'
+  };
   static const signUpHeading = ["Verify", "Try Again"];
   static const signUpBody = [
     "We've sent you a verification email to the id you provided.",
