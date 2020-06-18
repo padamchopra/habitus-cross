@@ -42,7 +42,7 @@ class SignIn extends StatelessWidget {
                   fontSize: 54,
                   fontWeight: FontWeight.w700,
                   alternateFont: true,
-                  letterSpacing: -0.9,
+                  letterSpacing: -1,
                 ),
                 MySpaces.largeGapInBetween,
                 DarkTextField(
@@ -72,8 +72,13 @@ class SignIn extends StatelessWidget {
                 MySpaces.mediumGapInBetween,
                 BlueButton(
                   label: MyStrings.signInLabel,
-                  onPress: () => AuthFunctions.signInWithPassword(
-                      context, model, _formKey, email, password),
+                  onPress: () {
+                    if (_formKey.currentState.validate()) {
+                      _formKey.currentState.save();
+                      AuthFunctions.signInWithPassword(
+                          context, model, email, password);
+                    }
+                  },
                 ),
                 MySpaces.gapInBetween,
                 CustomText(
@@ -82,8 +87,12 @@ class SignIn extends StatelessWidget {
                   fontSize: 15,
                   alternateFont: true,
                   textAlign: TextAlign.end,
-                  onTap: () => AuthFunctions.forgotPasswordWithEmail(
-                      context, model, _formKey, email),
+                  onTap: () {
+                    if(_formKey.currentState.validate()){
+                      AuthFunctions.forgotPasswordWithEmail(
+                      context, model, email);
+                    }
+                  },
                 ),
                 MySpaces.largeGapInBetween,
                 Row(

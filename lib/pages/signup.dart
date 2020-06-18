@@ -42,6 +42,7 @@ class Signup extends StatelessWidget {
                     fontSize: 54,
                     fontWeight: FontWeight.w700,
                     alternateFont: true,
+                    letterSpacing: -1,
                   ),
                   MySpaces.largeGapInBetween,
                   DarkTextField(
@@ -87,9 +88,14 @@ class Signup extends StatelessWidget {
                   ),
                   MySpaces.mediumGapInBetween,
                   BlueButton(
-                    label: MyStrings.signInLabel,
-                    onPress: () => AuthFunctions.signUpWithPassword(
-                        context, model, _formKey, email, password),
+                    label: MyStrings.signUpLabel,
+                    onPress: () {
+                      if (_formKey.currentState.validate()) {
+                        _formKey.currentState.save();
+                        AuthFunctions.signUpWithPassword(
+                            context, model, email, password);
+                      }
+                    },
                   ),
                 ],
               ),

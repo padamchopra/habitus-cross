@@ -9,20 +9,20 @@ import 'package:habito/state/habitoModel.dart';
 mixin AuthModel on ModelData {
   GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  Future<HabitoAuth> checkIfSignedIn({bool sendEmail: false}) async {
+  Future<HabitoAuth> checkIfSignedIn(
+      {bool emailAuth: false, bool sendEmail: false}) async {
     if (isDevTesting) return HabitoAuth.SUCCESS;
     try {
       firebaseUser = await firebaseAuth.currentUser();
       if (firebaseUser != null) {
-        if (firebaseUser.providerId == "password" &&
-            !firebaseUser.isEmailVerified) {
+        if (emailAuth && !firebaseUser.isEmailVerified) {
           if (sendEmail) await firebaseUser.sendEmailVerification();
           return HabitoAuth.VERIFICATION_REQUIRED;
         }
         return HabitoAuth.SUCCESS;
       }
       return HabitoAuth.NO_USER;
-    } on Exception catch (_) {
+    } catch (_) {
       return HabitoAuth.FAIL;
     }
   }
@@ -32,12 +32,13 @@ mixin AuthModel on ModelData {
     try {
       await firebaseAuth.signOut();
       return HabitoAuth.SIGNED_OUT;
-    } on Exception catch (_) {
+    } catch (_) {
       return HabitoAuth.FAIL;
     }
   }
 
-  Future<HabitoAuth> signIn(String email, String password) async {
+  Future<HabitoAuth> signIn(
+      BuildContext context, String email, String password) async {
     if (isDevTesting) {
       return HabitoAuth.SUCCESS;
     }
@@ -45,29 +46,33 @@ mixin AuthModel on ModelData {
       firebaseUser = (await firebaseAuth.signInWithEmailAndPassword(
               email: email, password: password))
           .user;
-      return (await checkIfSignedIn(sendEmail: true));
-    } on Exception catch (_) {
+      return (await checkIfSignedIn(emailAuth: true, sendEmail: true));
+    } catch (e) {
+      handleAuthError(context, e);
       return HabitoAuth.FAIL;
     }
   }
 
-  Future<HabitoAuth> signUp(String email, String password) async {
+  Future<HabitoAuth> signUp(
+      BuildContext context, String email, String password) async {
     if (isDevTesting) return HabitoAuth.SUCCESS;
     try {
       firebaseUser = (await firebaseAuth.createUserWithEmailAndPassword(
               email: email, password: password))
           .user;
-      return (await checkIfSignedIn(sendEmail: true));
-    } on Exception catch (_) {
+      return (await checkIfSignedIn(emailAuth: true, sendEmail: true));
+    } catch (e) {
+      handleAuthError(context, e);
       return HabitoAuth.FAIL;
     }
   }
 
-  Future<HabitoAuth> requestPasswordReset(String email) async {
+  Future<HabitoAuth> requestPasswordReset(BuildContext context, String email) async {
     try {
       await firebaseAuth.sendPasswordResetEmail(email: email);
       return HabitoAuth.SUCCESS;
-    } on Exception catch (_) {
+    } catch (e) {
+      handleAuthError(context, e);
       return HabitoAuth.FAIL;
     }
   }
@@ -107,9 +112,9 @@ mixin AuthModel on ModelData {
 
   void handleAuthError(context, e) {
     String title = "Try Again";
-    String body = "Cannot sign you in right now.";
-    if (MyStrings.oAuthErrors.containsKey(e.code)) {
-      body = MyStrings.oAuthErrors[e.code];
+    String body = "Cannot carry out authentication in right now.";
+    if (MyStrings.authErrors.containsKey(e.code)) {
+      body = MyStrings.authErrors[e.code];
     }
     UniversalFunctions.showAlert(context, title, body);
   }

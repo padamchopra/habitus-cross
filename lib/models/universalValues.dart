@@ -121,7 +121,7 @@ class MyStrings {
     "Please re-check your details and try again.",
     "Please check your email to reset your password."
   ];
-  static const oAuthErrors = {
+  static const authErrors = {
     'ERROR_INVALID_CREDENTIAL':
         'Invalid credentials. Please check your details again.',
     'ERROR_USER_DISABLED':
@@ -129,7 +129,15 @@ class MyStrings {
     'ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL':
         'Looks like you are already registered with a different authentication provider.',
     'ERROR_OPERATION_NOT_ALLOWED':
-        'Signing in with this provider is no longer allowed.'
+        'Signing in with this provider is no longer allowed.',
+    'ERROR_WEAK_PASSWORD': 'Your password is too weak.',
+    'ERROR_INVALID_EMAIL': 'Your email is invalid.',
+    'ERROR_EMAIL_ALREADY_IN_USE':
+        'Your email is already being used by an account. Reach out at jb.padamchopra@gmail.com',
+    'ERROR_WRONG_PASSWORD': 'Invalid credentials.',
+    'ERROR_USER_NOT_FOUND':
+        'No account with this email address was found. Try signing up.',
+    'ERROR_TOO_MANY_REQUESTS': 'Too many login requests were made.'
   };
   static const signUpHeading = ["Verify", "Try Again"];
   static const signUpBody = [
