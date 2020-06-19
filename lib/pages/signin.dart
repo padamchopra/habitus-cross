@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:habito/functions/authFunctions.dart';
 import 'package:habito/state/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
-import 'package:habito/widgets/auth/blueButton.dart';
 import 'package:habito/widgets/auth/darkTextField.dart';
 import 'package:habito/widgets/auth/OAuthButton.dart';
 import 'package:habito/widgets/background.dart';
+import 'package:habito/widgets/general/CustomButton.dart';
 import 'package:habito/widgets/text.dart';
 
 class SignIn extends StatelessWidget {
@@ -70,7 +70,7 @@ class SignIn extends StatelessWidget {
                   obscureText: true,
                 ),
                 MySpaces.mediumGapInBetween,
-                BlueButton(
+                CustomButton(
                   label: MyStrings.signInLabel,
                   onPress: () {
                     if (_formKey.currentState.validate()) {
@@ -88,9 +88,9 @@ class SignIn extends StatelessWidget {
                   alternateFont: true,
                   textAlign: TextAlign.end,
                   onTap: () {
-                    if(_formKey.currentState.validate()){
+                    if (_formKey.currentState.validate()) {
                       AuthFunctions.forgotPasswordWithEmail(
-                      context, model, email);
+                          context, model, email);
                     }
                   },
                 ),

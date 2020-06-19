@@ -1,13 +1,12 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:habito/functions/authFunctions.dart';
 import 'package:habito/state/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
-import 'package:habito/widgets/auth/blueButton.dart';
 import 'package:habito/widgets/auth/darkTextField.dart';
 import 'package:habito/widgets/background.dart';
+import 'package:habito/widgets/general/CustomButton.dart';
 import 'package:habito/widgets/text.dart';
 
 class Signup extends StatelessWidget {
@@ -87,7 +86,7 @@ class Signup extends StatelessWidget {
                     obscureText: true,
                   ),
                   MySpaces.mediumGapInBetween,
-                  BlueButton(
+                  CustomButton(
                     label: MyStrings.signUpLabel,
                     onPress: () {
                       if (_formKey.currentState.validate()) {

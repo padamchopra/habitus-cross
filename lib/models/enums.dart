@@ -3,7 +3,8 @@ enum HabitoAuth{
   FAIL,
   VERIFICATION_REQUIRED,
   SIGNED_OUT,
-  NO_USER
+  NO_USER,
+  DELETED
 }
 
 enum HabitModalMode{

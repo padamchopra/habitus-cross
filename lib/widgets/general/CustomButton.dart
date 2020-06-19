@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/text.dart';
 
-class BlueButton extends StatelessWidget {
+class CustomButton extends StatelessWidget {
   final String label;
   final Function onPress;
-  BlueButton({
+  final Color color;
+  CustomButton({
     @required this.label,
     @required this.onPress,
+    this.color: MyColors.perfectBlue,
   });
 
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
-      color: MyColors.perfectBlue,
+      color: color,
       onPressed: onPress,
       child: Container(
         padding: EdgeInsets.symmetric(
