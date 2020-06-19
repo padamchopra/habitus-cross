@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:habito/functions/profileFunctions.dart';
-import 'package:habito/functions/universalFunctions.dart';
 import 'package:habito/state/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/general/CustomButton.dart';
 import 'package:habito/widgets/general/infoSet.dart';
 import 'package:habito/widgets/general/pageHeading.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:store_redirect/store_redirect.dart';
 
 class Profile extends StatelessWidget {
   Profile();

@@ -20,7 +20,10 @@ class NotesTextField extends StatelessWidget {
       keyboardType: TextInputType.multiline,
       cursorColor: MyColors.perfectBlue,
       maxLines: null,
-      style: TextStyle(color: MyColors.black, fontSize: 18),
+      style: TextStyle(
+        color: MyColors.black,
+        fontSize: 18,
+      ),
       decoration: InputDecoration(
         border: InputBorder.none,
         labelStyle: TextStyle(color: MyColors.white),

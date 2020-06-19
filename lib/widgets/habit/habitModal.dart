@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:habito/functions/homeFunctions.dart';
 import 'package:habito/functions/universalFunctions.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/models/enums.dart';
@@ -76,7 +77,7 @@ class _HabitoModalState extends State<HabitModal> {
     initialLoading = false;
   }
 
-  void addNewHabit(model) {
+  void addNewHabit(HabitoModel model) {
     _myHabit.title = title;
     _myHabit.description = description;
     if (categorySet) {
@@ -84,14 +85,13 @@ class _HabitoModalState extends State<HabitModal> {
     }
     model.addNewHabit(_myHabit).then((value) {
       if (value) {
-        model
-            .showAlert(context, "Saved successfully!",
+        UniversalFunctions.showAlert(context, "Saved successfully!",
                 "${_myHabit.title} is now being tracked. Good luck.")
             .then((value) {
           Navigator.of(context).pop();
         });
       } else {
-        model.showAlert(
+        UniversalFunctions.showAlert(
             context, "Try again", "Cannot track this habit right now.");
       }
     });
@@ -115,7 +115,7 @@ class _HabitoModalState extends State<HabitModal> {
     });
   }
 
-  void updateHabit(model) {
+  void updateHabit(HabitoModel model) {
     _myHabit.title = title;
     _myHabit.description = description;
     if (categorySet) {
@@ -123,14 +123,14 @@ class _HabitoModalState extends State<HabitModal> {
     }
     model.updateHabit(_myHabit).then((value) {
       if (value) {
-        model
-            .showAlert(context, "Updated successfully!",
+        UniversalFunctions.showAlert(context, "Updated successfully!",
                 "${_myHabit.title} has been updated.")
             .then((value) {
           Navigator.of(context).pop();
         });
       } else {
-        model.showAlert(context, "Try again", "Cannot update habit right now.");
+        UniversalFunctions.showAlert(
+            context, "Try again", "Cannot update habit right now.");
       }
     });
   }
@@ -146,9 +146,10 @@ class _HabitoModalState extends State<HabitModal> {
               if (categorySet) {
                 _selectedIndex = 0;
               }
+
               return Container(
                 color: MyColors.white,
-                height: 217,
+                height: 240,
                 child: Column(
                   children: <Widget>[
                     Row(
@@ -172,9 +173,13 @@ class _HabitoModalState extends State<HabitModal> {
                         ),
                         GestureDetector(
                           onTap: () {
+                            if (_selectedIndex == 0) {
+                              HomeFunctions.addNewCategory(context);
+                              return;
+                            }
                             setState(() {
                               categorySet = true;
-                              _myCategory = myCategories[_selectedIndex];
+                              _myCategory = myCategories[_selectedIndex - 1];
                               Navigator.of(context).pop();
                             });
                           },
@@ -182,9 +187,8 @@ class _HabitoModalState extends State<HabitModal> {
                             padding: const EdgeInsets.all(12.0),
                             child: CustomText(
                               "Done",
-                              color: MyColors.perfectBlue,
+                              color: MyColors.alertBlue,
                               fontSize: 18,
-                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -201,9 +205,12 @@ class _HabitoModalState extends State<HabitModal> {
                         onSelectedItemChanged: (index) {
                           _selectedIndex = index;
                         },
-                        childCount: myCategories.length,
+                        childCount: myCategories.length + 1,
                         itemBuilder: (context, index) {
-                          return myCategories[index].spinnerTile();
+                          if (index == 0) {
+                            return MyCategory.addNewForPicker().spinnerTile();
+                          }
+                          return myCategories[index - 1].spinnerTile();
                         },
                       ),
                     )
@@ -240,6 +247,7 @@ class _HabitoModalState extends State<HabitModal> {
                     showPicker,
                     color: _myCategory.categoryColor,
                     icon: _myCategory.categoryIcon,
+                    name: _myCategory.categoryName,
                   )
                 : CategoryRow(showPicker),
             SizedBox(height: 6),

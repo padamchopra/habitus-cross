@@ -13,10 +13,13 @@ import 'dart:async';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter/material.dart';
 
-class HabitoModel extends Model with ModelData, AuthModel, CategoryModel, HabitModel {
+class HabitoModel extends Model
+    with ModelData, AuthModel, CategoryModel, HabitModel {
   Function updateHomeRootWidget = () {};
   HabitoAuth userState;
-  Widget homeRootWidget = Center(child: CircularProgressIndicator(),);
+  Widget homeRootWidget = Center(
+    child: CircularProgressIndicator(),
+  );
 
   HabitoModel() {
     initialiseVariables();
@@ -28,7 +31,7 @@ class HabitoModel extends Model with ModelData, AuthModel, CategoryModel, HabitM
     if (result == HabitoAuth.SUCCESS) {
       fetchUserData();
       userState = HabitoAuth.SUCCESS;
-    }else{
+    } else {
       userState = HabitoAuth.NO_USER;
     }
     updateHomeRootWidget();
@@ -39,7 +42,6 @@ class HabitoModel extends Model with ModelData, AuthModel, CategoryModel, HabitM
     await fetchHabits();
     associateHabitsAndCategories();
   }
-  
 }
 
 mixin ModelData on Model {
@@ -105,5 +107,4 @@ mixin ModelData on Model {
     }
     return firebaseUser.email;
   }
-  
 }

@@ -51,6 +51,17 @@ class MyCategory {
     this._deleted = myCategory.isDeleted;
   }
 
+  MyCategory.addNewForPicker() {
+    this._myHabits = [];
+    this._color = 0;
+    this._icon = Icons.add;
+    this._name = "Create Category";
+    this._documentId = "";
+    this._userId = "";
+    this._createdAt = Timestamp.now();
+    this._deleted = false;
+  }
+
   set categoryName(String name) {
     this._name = name;
   }

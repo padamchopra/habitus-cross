@@ -6,10 +6,14 @@ class CategoryRow extends StatelessWidget {
   final Function onTapFunction;
   final Color color;
   final IconData icon;
-  CategoryRow(this.onTapFunction, {this.color, this.icon});
+  final String name;
+  CategoryRow(this.onTapFunction, {this.color, this.icon, this.name});
 
   @override
   Widget build(BuildContext context) {
+    String categoryName = (name != null && name.length > 15)
+        ? name.substring(0, 13) + '...'
+        : name;
     return Row(
       children: <Widget>[
         SizedBox(width: 10),
@@ -34,19 +38,38 @@ class CategoryRow extends StatelessWidget {
           child: Container(
             padding: EdgeInsets.all(5),
             decoration: BoxDecoration(
-              color: color != null
-                  ? color
-                  : MyColors.backdropBlack,
+              color: color != null ? color : MyColors.backdropBlack,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: icon != null 
-                ? Icon(
-                    icon,
-                    color: MyColors.white,
-                  )
-                : Icon(
-                    Icons.arrow_drop_down,
-                  ),
+            child: Row(
+              children: <Widget>[
+                icon != null
+                    ? Padding(
+                        padding: EdgeInsets.only(
+                          left: 3.0,
+                          right: name == null ? 3 : 0,
+                        ),
+                        child: Icon(
+                          icon,
+                          color: MyColors.white,
+                        ),
+                      )
+                    : Icon(
+                        Icons.arrow_drop_down,
+                      ),
+                name != null
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 9.0),
+                        child: CustomText(
+                          categoryName,
+                          fontSize: 16,
+                          letterSpacing: 0.2,
+                          alternateFont: true,
+                        ),
+                      )
+                    : Container(),
+              ],
+            ),
           ),
         ),
       ],
