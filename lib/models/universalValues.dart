@@ -40,6 +40,7 @@ class MyColors {
   static Color buttonBlueBackground = Colors.blue.withAlpha(50);
   static const Color labelBackground = Colors.white10;
 
+  static const Color alertBlue = Color(0xff027AFE);
   static const Color perfectBlue = Colors.blue;
   static const Color perfectRed = Colors.red;
 
@@ -105,8 +106,8 @@ class MyStrings {
   static const activeHabitsInfoTitle = "Active Habits";
   static const trackedHabitsInfoTitle = "Tracked Habits";
   static const sortInfoTitle = "Sort by (soon)";
-  static const reviewButton = "Review";
-  static const logoutButton = "Logout";
+  static const reviewButton = "Review App";
+  static const signoutButton = "Sign Out";
   //profile region ends
 
   //alert strings region starts
@@ -137,7 +138,8 @@ class MyStrings {
     'ERROR_WRONG_PASSWORD': 'Invalid credentials.',
     'ERROR_USER_NOT_FOUND':
         'No account with this email address was found. Try signing up.',
-    'ERROR_TOO_MANY_REQUESTS': 'Too many login requests were made.'
+    'ERROR_TOO_MANY_REQUESTS': 'Too many login requests were made.',
+    'ERROR_REQUIRES_RECENT_LOGIN': 'We need to reauthenticate you. Please login again.'
   };
   static const signUpHeading = ["Verify", "Try Again"];
   static const signUpBody = [
@@ -148,8 +150,14 @@ class MyStrings {
   static const newFeatureTeaseBody =
       "New features coming soon! Write a review from profile to request something.";
 
-  static const logoutHeading = "Logged Out";
-  static const logoutBody = "Thanks for using Habito!";
+  static const logoutHeading = "Sign Out?";
+  static const logoutBody =
+      "You can always access your content by signing back in.";
+
+  static const deleteAccountHeading = "Are you sure?";
+  static const deleteAccountBody =
+      "You will not be able to retrieve your saved details or account later.";
+
   //alert strings region ends
 
 }

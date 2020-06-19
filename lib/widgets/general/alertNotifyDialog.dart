@@ -34,7 +34,7 @@ class AlertNotifyDialog extends StatelessWidget {
             isDefaultAction: true,
             child: CustomText(
               'OK',
-              color: MyColors.perfectBlue,
+              color: MyColors.alertBlue,
               textAlign: TextAlign.center,
             ),
             onPressed: () {
@@ -64,7 +64,7 @@ class AlertNotifyDialog extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: CustomText(
                 'OK',
-                color: MyColors.perfectBlue,
+                color: MyColors.alertBlue,
                 textAlign: TextAlign.center,
               ),
             ),

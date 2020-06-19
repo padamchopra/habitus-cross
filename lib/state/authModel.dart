@@ -37,6 +37,18 @@ mixin AuthModel on ModelData {
     }
   }
 
+  Future<HabitoAuth> deleteAccount(BuildContext context) async {
+    if (isDevTesting) return HabitoAuth.DELETED;
+    try {
+      await firebaseUser.delete();
+      return HabitoAuth.DELETED;
+    } catch (e) {
+      handleAuthError(context, e);
+      await signOut();
+      return HabitoAuth.FAIL;
+    }
+  }
+
   Future<HabitoAuth> signIn(
       BuildContext context, String email, String password) async {
     if (isDevTesting) {
@@ -67,7 +79,8 @@ mixin AuthModel on ModelData {
     }
   }
 
-  Future<HabitoAuth> requestPasswordReset(BuildContext context, String email) async {
+  Future<HabitoAuth> requestPasswordReset(
+      BuildContext context, String email) async {
     try {
       await firebaseAuth.sendPasswordResetEmail(email: email);
       return HabitoAuth.SUCCESS;

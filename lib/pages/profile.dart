@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:habito/functions/profileFunctions.dart';
 import 'package:habito/functions/universalFunctions.dart';
 import 'package:habito/state/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
+import 'package:habito/widgets/general/CustomButton.dart';
 import 'package:habito/widgets/general/infoSet.dart';
 import 'package:habito/widgets/general/pageHeading.dart';
-import 'package:habito/widgets/text.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:store_redirect/store_redirect.dart';
 
@@ -27,66 +28,45 @@ class Profile extends StatelessWidget {
                     MyStrings.emailLabel,
                     model.userEmail,
                   ),
-                  SizedBox(height: 20),
+                  MySpaces.gapInBetween,
                   InfoSet(
                     MyStrings.categoriesInfoTitle,
                     model.myCategoriesList.length.toString(),
                   ),
-                  SizedBox(height: 20),
+                  MySpaces.gapInBetween,
                   InfoSet(
                     MyStrings.activeHabitsInfoTitle,
                     model.myHabitsList.length.toString(),
                   ),
-                  SizedBox(height: 20),
+                  MySpaces.gapInBetween,
                   InfoSet(
                     MyStrings.trackedHabitsInfoTitle,
                     model.myCompletedHabitsList.length.toString(),
                   ),
-                  SizedBox(height: 20),
+                  MySpaces.gapInBetween,
                   InfoSet(
                     MyStrings.trackedHabitsInfoTitle,
                     "Old -> New",
                   ),
-                  SizedBox(height: 40),
-                  Container(
-                    width: double.infinity,
-                    child: FlatButton(
-                      color: MyColors.midnight,
-                      onPressed: () {
-                        StoreRedirect.redirect(
-                          androidAppId: "me.padamchopra.habito",
-                          iOSAppId: "1516750469",
-                        );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: CustomText(
-                          MyStrings.reviewButton,
-                          alternateFont: true,
-                        ),
-                      ),
-                    ),
+                  MySpaces.largeGapInBetween,
+                  CustomButton(
+                    label: MyStrings.reviewButton,
+                    onPress: ProfileFunctions.reviewApp,
+                    color: MyColors.midnight,
                   ),
-                  SizedBox(height: 10),
-                  Container(
-                    width: double.infinity,
-                    child: FlatButton(
-                      color: MyColors.midnight,
-                      onPressed: () async {
-                        await model.signOut();
-                        await UniversalFunctions.showAlert(
-                            context, MyStrings.logoutHeading, MyStrings.logoutBody);
-                        model.updateUserState();
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: CustomText(
-                          MyStrings.logoutButton,
-                          alternateFont: true,
-                        ),
-                      ),
-                    ),
-                  )
+                  MySpaces.gapInBetween,
+                  CustomButton(
+                    label: MyStrings.signoutButton,
+                    onPress: () => ProfileFunctions.signOut(context, model),
+                    color: MyColors.midnight,
+                  ),
+                  MySpaces.gapInBetween,
+                  CustomButton(
+                    label: "Delete Account",
+                    onPress: () =>
+                        ProfileFunctions.deleteAccount(context, model),
+                    color: MyColors.perfectRed,
+                  ),
                 ],
               ),
             ),
