@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:habito/functions/universalFunctions.dart';
+import 'package:habito/models/analyticsEvents.dart';
 import 'package:habito/models/enums.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/state/habitoModel.dart';
@@ -17,12 +18,19 @@ mixin AuthModel on ModelData {
       if (firebaseUser != null) {
         if (emailAuth && !firebaseUser.isEmailVerified) {
           if (sendEmail) await firebaseUser.sendEmailVerification();
+          logAnalyticsEvent(AnalyticsEvents.authSentVerificationEmail);
           return HabitoAuth.VERIFICATION_REQUIRED;
         }
+        logAnalyticsEvent(AnalyticsEvents.authSignIn, success: true);
         return HabitoAuth.SUCCESS;
       }
       return HabitoAuth.NO_USER;
-    } catch (_) {
+    } catch (e) {
+      logAnalyticsEvent(
+        AnalyticsEvents.authSignIn,
+        success: false,
+        error: e.code,
+      );
       return HabitoAuth.FAIL;
     }
   }
@@ -31,8 +39,14 @@ mixin AuthModel on ModelData {
     if (isDevTesting) return HabitoAuth.SIGNED_OUT;
     try {
       await firebaseAuth.signOut();
+      logAnalyticsEvent(AnalyticsEvents.authSignOut, success: true);
       return HabitoAuth.SIGNED_OUT;
-    } catch (_) {
+    } catch (e) {
+      logAnalyticsEvent(
+        AnalyticsEvents.authSignOut,
+        success: false,
+        error: e.code,
+      );
       return HabitoAuth.FAIL;
     }
   }
@@ -41,9 +55,15 @@ mixin AuthModel on ModelData {
     if (isDevTesting) return HabitoAuth.DELETED;
     try {
       await firebaseUser.delete();
+      logAnalyticsEvent(AnalyticsEvents.authDeleteAccount, success: true);
       return HabitoAuth.DELETED;
     } catch (e) {
       handleAuthError(context, e);
+      logAnalyticsEvent(
+        AnalyticsEvents.authDeleteAccount,
+        success: false,
+        error: e.code,
+      );
       await signOut();
       return HabitoAuth.FAIL;
     }
@@ -60,6 +80,11 @@ mixin AuthModel on ModelData {
           .user;
       return (await checkIfSignedIn(emailAuth: true, sendEmail: true));
     } catch (e) {
+      logAnalyticsEvent(
+        AnalyticsEvents.authSignIn,
+        success: false,
+        error: e.code,
+      );
       handleAuthError(context, e);
       return HabitoAuth.FAIL;
     }
@@ -72,8 +97,17 @@ mixin AuthModel on ModelData {
       firebaseUser = (await firebaseAuth.createUserWithEmailAndPassword(
               email: email, password: password))
           .user;
+      logAnalyticsEvent(
+        AnalyticsEvents.authSignUp,
+        success: true,
+      );
       return (await checkIfSignedIn(emailAuth: true, sendEmail: true));
     } catch (e) {
+      logAnalyticsEvent(
+        AnalyticsEvents.authSignUp,
+        success: false,
+        error: e.code,
+      );
       handleAuthError(context, e);
       return HabitoAuth.FAIL;
     }
@@ -83,8 +117,17 @@ mixin AuthModel on ModelData {
       BuildContext context, String email) async {
     try {
       await firebaseAuth.sendPasswordResetEmail(email: email);
+      logAnalyticsEvent(
+        AnalyticsEvents.authPasswordReset,
+        success: true,
+      );
       return HabitoAuth.SUCCESS;
     } catch (e) {
+      logAnalyticsEvent(
+        AnalyticsEvents.authPasswordReset,
+        success: true,
+        error: e.code,
+      );
       handleAuthError(context, e);
       return HabitoAuth.FAIL;
     }
@@ -101,8 +144,17 @@ mixin AuthModel on ModelData {
         idToken: googleSignInAuthentication.idToken,
       );
       await firebaseAuth.signInWithCredential(credential);
+      logAnalyticsEvent(
+        AnalyticsEvents.authSignInWithGoogle,
+        success: true,
+      );
       return (await checkIfSignedIn());
     } catch (e) {
+      logAnalyticsEvent(
+        AnalyticsEvents.authSignInWithGoogle,
+        success: false,
+        error: e.code,
+      );
       handleAuthError(context, e);
       await signOut();
       return HabitoAuth.FAIL;
@@ -115,8 +167,17 @@ mixin AuthModel on ModelData {
       final facebookAuthCredential =
           FacebookAuthProvider.getCredential(accessToken: token);
       await firebaseAuth.signInWithCredential(facebookAuthCredential);
+      logAnalyticsEvent(
+        AnalyticsEvents.authSignInWithFacebook,
+        success: true,
+      );
       return (await checkIfSignedIn());
     } catch (e) {
+      logAnalyticsEvent(
+        AnalyticsEvents.authSignInWithFacebook,
+        success: false,
+        error: e.code,
+      );
       handleAuthError(context, e);
       await signOut();
       return HabitoAuth.FAIL;

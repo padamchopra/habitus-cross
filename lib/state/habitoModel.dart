@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:habito/models/analyticsEvents.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/models/devTesting.dart';
 import 'package:habito/models/enums.dart';
@@ -69,6 +70,7 @@ mixin ModelData on Model {
     if (!isDevTesting) {
       firebaseAuth = FirebaseAuth.instance;
       firestore = Firestore.instance;
+      logAnalyticsEvent(AnalyticsEvents.appOpened, success: true);
     }
   }
 
@@ -99,6 +101,20 @@ mixin ModelData on Model {
         notifyListeners();
       }
     });
+  }
+
+  void logAnalyticsEvent(String eventName, {bool success, error}) {
+    if (success == null) {
+      firebaseAnalytics.logEvent(name: eventName);
+    } else {
+      firebaseAnalytics.logEvent(
+        name: eventName,
+        parameters: {
+          "success": success,
+          "error": error,
+        },
+      );
+    }
   }
 
   get userEmail {

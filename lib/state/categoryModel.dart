@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:habito/models/analyticsEvents.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/models/devTesting.dart';
 import 'package:habito/models/habit.dart';
@@ -60,7 +61,13 @@ mixin CategoryModel on ModelData {
           myCategoriesList.add(currentCategory);
           notifyListeners();
         }
-      } on Exception catch (_) {
+        logAnalyticsEvent(AnalyticsEvents.categoryFetch, success: true);
+      } catch (e) {
+        logAnalyticsEvent(
+          AnalyticsEvents.categoryFetch,
+          success: false,
+          error: e.code,
+        );
         myCategoriesList.clear();
       }
 
@@ -80,8 +87,14 @@ mixin CategoryModel on ModelData {
         DocumentReference documentReference =
             firestore.collection("categories").document();
         await documentReference.setData(myCategory.toJson());
+        logAnalyticsEvent(AnalyticsEvents.categoryNew, success: true);
         myCategory.documentId = documentReference.documentID;
-      } on Exception catch (_) {
+      } catch (e) {
+        logAnalyticsEvent(
+          AnalyticsEvents.categoryNew,
+          success: false,
+          error: e.code,
+        );
         return false;
       }
     } else
@@ -102,7 +115,13 @@ mixin CategoryModel on ModelData {
             .collection("categories")
             .document(myCategory.documentId)
             .updateData(myCategory.toJson());
-      } on Exception catch (_) {
+        logAnalyticsEvent(AnalyticsEvents.categoryUpdate, success: true);
+      } catch (e) {
+        logAnalyticsEvent(
+          AnalyticsEvents.categoryUpdate,
+          success: true,
+          error: e.code,
+        );
         return false;
       }
     } else
@@ -125,9 +144,15 @@ mixin CategoryModel on ModelData {
                 .collection("categories")
                 .document(category.documentId)
                 .updateData(category.toJson());
+            logAnalyticsEvent(AnalyticsEvents.categoryDelete, success: true);
           }
           toReturn["deleted"] = true;
-        } catch (_) {
+        } catch (e) {
+          logAnalyticsEvent(
+            AnalyticsEvents.categoryDelete,
+            success: false,
+            error: e.code,
+          );
           category.deleted = false;
           toReturn["deleted"] = false;
         }

@@ -208,7 +208,12 @@ class _HabitoModalState extends State<HabitModal> {
                         childCount: myCategories.length + 1,
                         itemBuilder: (context, index) {
                           if (index == 0) {
-                            return MyCategory.addNewForPicker().spinnerTile();
+                            return GestureDetector(
+                              onTap: () {
+                                HomeFunctions.addNewCategory(context);
+                              },
+                              child: MyCategory.addNewForPicker().spinnerTile(),
+                            );
                           }
                           return myCategories[index - 1].spinnerTile();
                         },

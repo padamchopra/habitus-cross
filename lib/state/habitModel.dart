@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:habito/models/analyticsEvents.dart';
 import 'package:habito/models/devTesting.dart';
 import 'package:habito/models/enums.dart';
 import 'package:habito/models/habit.dart';
@@ -75,7 +76,13 @@ mixin HabitModel on ModelData {
             firestore.collection("habits").document();
         await documentReference.setData(myHabit.toJson());
         myHabit.documentId = documentReference.documentID;
-      } on Exception catch (_) {
+        logAnalyticsEvent(AnalyticsEvents.habitNew, success: true);
+      } catch (e) {
+        logAnalyticsEvent(
+          AnalyticsEvents.habitNew,
+          success: false,
+          error: e.code,
+        );
         return false;
       }
     } else
@@ -108,13 +115,20 @@ mixin HabitModel on ModelData {
             .collection("habits")
             .document(myHabit.documentId)
             .updateData(myHabit.updatedJson());
-      } on Exception catch (_) {
+        logAnalyticsEvent(AnalyticsEvents.habitUpdate, success: true);
+      } catch (e) {
+        logAnalyticsEvent(
+          AnalyticsEvents.habitUpdate,
+          success: false,
+          error: e.code,
+        );
         return false;
       }
     } else
       return false;
     HabitReplaceStatus replaceStatus = habitsListReplace(myHabit);
-    if (refreshAssociations || replaceStatus == HabitReplaceStatus.CATEGORY_DIFFERS){
+    if (refreshAssociations ||
+        replaceStatus == HabitReplaceStatus.CATEGORY_DIFFERS) {
       associateHabitsAndCategories();
     }
     notifyListeners();
@@ -133,11 +147,18 @@ mixin HabitModel on ModelData {
                   .collection("habits")
                   .document(myHabit.documentId)
                   .updateData(myHabit.toJson());
+              logAnalyticsEvent(AnalyticsEvents.habitCompletedReset,
+                  success: true);
             }
             habitsListAdd(myHabit);
             habit.resetProgress();
             toReturn = true;
-          } catch (_) {
+          } catch (e) {
+            logAnalyticsEvent(
+              AnalyticsEvents.habitCompletedReset,
+              success: false,
+              error: e.code,
+            );
             toReturn = false;
           }
         }
@@ -154,10 +175,16 @@ mixin HabitModel on ModelData {
                   .collection("habits")
                   .document(duplicateHabit.documentId)
                   .updateData(duplicateHabit.toJson());
+              logAnalyticsEvent(AnalyticsEvents.habitReset, success: true);
             }
             habit.resetProgress();
             toReturn = true;
-          } catch (_) {
+          } catch (e) {
+            logAnalyticsEvent(
+              AnalyticsEvents.habitReset,
+              success: false,
+              error: e.code,
+            );
             toReturn = false;
           }
         }
@@ -182,9 +209,16 @@ mixin HabitModel on ModelData {
                   .collection("habits")
                   .document(habit.documentId)
                   .updateData(habit.toJson());
+              logAnalyticsEvent(AnalyticsEvents.habitCompletedDelete,
+                  success: true);
             }
             toReturn = true;
-          } catch (_) {
+          } catch (e) {
+            logAnalyticsEvent(
+              AnalyticsEvents.habitCompletedDelete,
+              success: false,
+              error: e.code,
+            );
             habit.isDeleted = false;
             toReturn = false;
           }
@@ -200,9 +234,15 @@ mixin HabitModel on ModelData {
                   .collection("habits")
                   .document(habit.documentId)
                   .updateData(habit.toJson());
+              logAnalyticsEvent(AnalyticsEvents.habitDelete, success: true);
             }
             toReturn = true;
-          } catch (_) {
+          } catch (e) {
+            logAnalyticsEvent(
+              AnalyticsEvents.habitDelete,
+              success: false,
+              error: e.code,
+            );
             habit.isDeleted = false;
             toReturn = false;
           }
@@ -244,7 +284,13 @@ mixin HabitModel on ModelData {
           habitsListAddAtEnd(currentHabit);
           notifyListeners();
         }
-      } on Exception catch (_) {
+        logAnalyticsEvent(AnalyticsEvents.habitFetch, success: true);
+      } catch (e) {
+        logAnalyticsEvent(
+          AnalyticsEvents.habitFetch,
+          success: false,
+          error: e.code,
+        );
         myHabitsList.clear();
       }
     } else
@@ -263,10 +309,17 @@ mixin HabitModel on ModelData {
         if (progressChange != HabitProgressChange.FAIL && !isDevTesting) {
           try {
             firestore
-              .collection("habits")
-              .document(habit.documentId)
-              .updateData(habit.toJson());
-          } on Exception catch (_) {
+                .collection("habits")
+                .document(habit.documentId)
+                .updateData(habit.toJson());
+            logAnalyticsEvent(AnalyticsEvents.habitMarkDoneForToday,
+                success: true);
+          } catch (e) {
+            logAnalyticsEvent(
+              AnalyticsEvents.habitMarkDoneForToday,
+              success: false,
+              error: e.code,
+            );
             habit = myHabit;
             progressChange = HabitProgressChange.FAIL;
           }
@@ -274,11 +327,11 @@ mixin HabitModel on ModelData {
       }
     });
     if (progressChange == HabitProgressChange.COMPLETE) {
+      logAnalyticsEvent(AnalyticsEvents.habitMarkComplete, success: true);
       myHabitsList.remove(myHabit);
       habitsListAdd(myHabit);
     }
     notifyListeners();
     return progressChange;
   }
-
 }
