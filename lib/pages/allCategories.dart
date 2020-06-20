@@ -40,7 +40,7 @@ class _AllCategoriesState extends State<AllCategories> {
                 );
               }
 
-              List<MyCategory> _myCategories = model.myCategoriesList;
+              List<MyCategory> _myCategories = model.myCategoriesAsList;
               return ListView.builder(
                 padding: MySpaces.listViewTopPadding,
                 itemCount: numberOfCategories,
@@ -48,12 +48,10 @@ class _AllCategoriesState extends State<AllCategories> {
                   return GestureDetector(
                     onTap: () {
                       CategoryMoreOptions.show(
-                        context,
-                        model,
-                        _myCategories[index]
-                      );
+                          context, model, _myCategories[index]);
                     },
-                    child: _myCategories[index].widget(showNumberOfHabits: true),
+                    child:
+                        _myCategories[index].widget(showNumberOfHabits: true),
                   );
                 },
               );

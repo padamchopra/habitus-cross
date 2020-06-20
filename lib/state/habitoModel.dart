@@ -41,7 +41,6 @@ class HabitoModel extends Model
   Future<void> fetchUserData() async {
     await fetchCategories();
     await fetchHabits();
-    associateHabitsAndCategories();
   }
 }
 
@@ -51,9 +50,8 @@ mixin ModelData on Model {
   FirebaseUser firebaseUser;
   Firestore firestore;
   FirebaseAnalytics firebaseAnalytics;
-  List<MyCategory> myCategoriesList;
-  List<MyHabit> myHabitsList;
-  List<MyHabit> myCompletedHabitsList;
+  Map<String, MyCategory> myCategories = new Map();
+  Map<bool, Map<String, MyHabit>> myHabitsMap;
   bool areCategoriesLoaded;
   bool areHabitsLoaded;
   Function playConfetti;
@@ -64,9 +62,10 @@ mixin ModelData on Model {
     firebaseAnalytics = FirebaseAnalytics();
     areCategoriesLoaded = false;
     areHabitsLoaded = false;
-    myCategoriesList = [];
-    myHabitsList = [];
-    myCompletedHabitsList = [];
+    myHabitsMap = {
+      false: {},
+      true: {},
+    };
     if (!isDevTesting) {
       firebaseAuth = FirebaseAuth.instance;
       firestore = Firestore.instance;
@@ -74,33 +73,24 @@ mixin ModelData on Model {
     }
   }
 
-  void associateHabitsAndCategories() {
-    Map<String, List<MyHabit>> map = new Map();
-    for (MyHabit myHabit in myHabitsList) {
-      if (myHabit.category != "") {
-        if (map.containsKey(myHabit.category)) {
-          map[myHabit.category].add(myHabit);
-        } else {
-          map[myHabit.category] = [];
-          map[myHabit.category].add(myHabit);
-        }
-      }
-    }
-    myCategoriesList.forEach((category) {
-      if (map.containsKey(category.documentId)) {
-        category.habitsList = map[category.documentId];
-      }
-    });
-    notifyListeners();
+  get myCategoriesAsList {
+    return myCategories.values.toList();
   }
 
-  void addHabitToCategory(MyHabit habit, String categoryDocumentId) async {
-    myCategoriesList.forEach((category) {
-      if (category.documentId == categoryDocumentId) {
-        category.addHabitToList(habit);
-        notifyListeners();
-      }
-    });
+  List<MyHabit> myHabitsAsList(bool completed) {
+    return myHabitsMap[completed].values.toList();
+  }
+
+  void removeHabitFromCategory(MyHabit myHabit) {
+    if (myHabit.category != "") {
+      myCategories[myHabit.category].habitsMap.remove(myHabit.documentId);
+    }
+  }
+
+  void addHabitToCategory(MyHabit myHabit) {
+    if (myHabit.category != "") {
+      myCategories[myHabit.category].addHabitToMap(myHabit);
+    }
   }
 
   void logAnalyticsEvent(String eventName, {bool success, error}) {

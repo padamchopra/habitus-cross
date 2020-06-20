@@ -2,47 +2,39 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:habito/models/analyticsEvents.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/models/devTesting.dart';
-import 'package:habito/models/habit.dart';
 import 'package:habito/state/habitoModel.dart';
 
 mixin CategoryModel on ModelData {
   int numberOfCategories() {
     if (areCategoriesLoaded) {
-      return myCategoriesList.length;
+      return myCategories.length;
     } else {
       return -1;
     }
   }
 
   bool categoriesListReplace(MyCategory myCategory) {
-    bool toReturn = false;
-    myCategoriesList.forEach((element) {
-      if (element.documentId == myCategory.documentId) {
-        element = myCategory;
-        toReturn = true;
-      }
-    });
-    return toReturn;
+    if (myCategories.containsKey(myCategory.documentId)) {
+      myCategories[myCategory.documentId] = myCategory;
+      return true;
+    }
+    return false;
   }
 
-  MyCategory findCategoryById(String id) {
-    if (!areCategoriesLoaded) {
-      fetchCategories();
-    }
-    if (id == "") {
+  MyCategory getCategoryById(String id) {
+    if (id != "" && myCategories.containsKey(id)) {
+      return myCategories[id];
+    } else {
+      if (!areCategoriesLoaded) fetchCategories();
       return MyCategory();
     }
-    return myCategoriesList.firstWhere(
-      (element) => element.documentId == id,
-      orElse: () => MyCategory(),
-    );
   }
 
   Future<void> fetchCategories() async {
     if (isDevTesting) {
-      myCategoriesList.addAll(DevTesting.getInitialCategories());
+      myCategories = DevTesting.getInitialCategories();
     } else if (firebaseUser != null) {
-      myCategoriesList.clear();
+      myCategories.clear();
       String userId = firebaseUser.uid;
 
       try {
@@ -58,7 +50,7 @@ mixin CategoryModel on ModelData {
             userId: userId,
             documentId: documentSnapshot.documentID,
           );
-          myCategoriesList.add(currentCategory);
+          myCategories[documentSnapshot.documentID] = currentCategory;
           notifyListeners();
         }
         logAnalyticsEvent(AnalyticsEvents.categoryFetch, success: true);
@@ -66,12 +58,11 @@ mixin CategoryModel on ModelData {
         logAnalyticsEvent(
           AnalyticsEvents.categoryFetch,
           success: false,
-          error: e.code,
+          error: e.toString(),
         );
-        myCategoriesList.clear();
+        myCategories.clear();
       }
 
-      myCategoriesList = myCategoriesList.toSet().toList();
       notifyListeners();
       areCategoriesLoaded = true;
     } else
@@ -80,7 +71,7 @@ mixin CategoryModel on ModelData {
 
   Future<bool> addNewCategory(MyCategory myCategory) async {
     if (isDevTesting) {
-      myCategory.documentId = "categoryId${myCategoriesList.length + 1}";
+      myCategory.documentId = "categoryId${myCategories.length + 1}";
     } else if (firebaseUser != null) {
       myCategory.userId = firebaseUser.uid;
       try {
@@ -93,14 +84,14 @@ mixin CategoryModel on ModelData {
         logAnalyticsEvent(
           AnalyticsEvents.categoryNew,
           success: false,
-          error: e.code,
+          error: e.toString(),
         );
         return false;
       }
     } else
       return false;
 
-    myCategoriesList.insert(0, myCategory);
+    myCategories[myCategory.documentId] = myCategory;
     notifyListeners();
     return true;
   }
@@ -120,48 +111,44 @@ mixin CategoryModel on ModelData {
         logAnalyticsEvent(
           AnalyticsEvents.categoryUpdate,
           success: true,
-          error: e.code,
+          error: e.toString(),
         );
         return false;
       }
     } else
       return false;
-    associateHabitsAndCategories();
     notifyListeners();
     return true;
   }
 
   Future<Map<String, dynamic>> deleteCategory(MyCategory myCategory) async {
     Map<String, dynamic> toReturn = {"deleted": false, "associatedHabits": []};
-    List<MyHabit> myAssociatedHabits = [];
-    myCategoriesList.forEach((category) {
-      if (category.documentId == myCategory.documentId) {
-        myAssociatedHabits = category.habitsList;
-        category.deleted = true;
-        try {
-          if (!isDevTesting) {
-            firestore
-                .collection("categories")
-                .document(category.documentId)
-                .updateData(category.toJson());
-            logAnalyticsEvent(AnalyticsEvents.categoryDelete, success: true);
-          }
-          toReturn["deleted"] = true;
-        } catch (e) {
-          logAnalyticsEvent(
-            AnalyticsEvents.categoryDelete,
-            success: false,
-            error: e.code,
-          );
-          category.deleted = false;
-          toReturn["deleted"] = false;
-        }
-      }
-    });
+    Map<String, bool> myAssociatedHabits = new Map();
 
-    if (toReturn["deleted"]) {
-      myCategoriesList.remove(myCategory);
-      toReturn["associatedHabits"] = myAssociatedHabits;
+    if (myCategories.containsKey(myCategory.documentId)) {
+      MyCategory mySavedCategory = myCategories[myCategory.documentId];
+      myAssociatedHabits = mySavedCategory.habitsMap;
+      try {
+        mySavedCategory.deleted = true;
+        if (!isDevTesting) {
+          firestore
+              .collection("categories")
+              .document(mySavedCategory.documentId)
+              .updateData(mySavedCategory.toJson());
+          logAnalyticsEvent(AnalyticsEvents.categoryDelete, success: true);
+        }
+        myCategories.remove(myCategory.documentId);
+        toReturn["deleted"] = true;
+        toReturn["myAssociatedHabits"] = myAssociatedHabits;
+      } catch (e) {
+        logAnalyticsEvent(
+          AnalyticsEvents.categoryDelete,
+          success: false,
+          error: e.toString(),
+        );
+        mySavedCategory.deleted = false;
+        toReturn["deleted"] = false;
+      }
     }
     return toReturn;
   }

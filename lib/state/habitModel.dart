@@ -6,69 +6,34 @@ import 'package:habito/models/habit.dart';
 import 'package:habito/state/habitoModel.dart';
 
 mixin HabitModel on ModelData {
-  int numberOfHabits() {
+  int numberOfHabits(bool isCompleted) {
     if (areHabitsLoaded) {
-      return myHabitsList.length;
+      return myHabitsMap[isCompleted].length;
     } else {
       return -1;
     }
   }
 
-  int numberOfCompletedHabits() {
-    if (areHabitsLoaded) {
-      return myCompletedHabitsList.length;
-    } else {
-      return -1;
-    }
+  void habitsCollectionAdd(MyHabit myHabit) {
+    myHabitsMap[myHabit.isFinished][myHabit.documentId] = myHabit;
   }
 
-  void habitsListAdd(MyHabit myHabit) {
-    if (myHabit.isFinished) {
-      myCompletedHabitsList.insert(0, myHabit);
-    } else {
-      myHabitsList.insert(0, myHabit);
+  void habitsListReplace(MyHabit myHabit) {
+    if (myHabitsMap[myHabit.isFinished].containsKey(myHabit.documentId)) {
+      MyHabit mySavedHabit =
+          myHabitsMap[myHabit.isFinished][myHabit.documentId];
+      if (mySavedHabit.category != myHabit.category) {
+        //update category associations
+        removeHabitFromCategory(mySavedHabit);
+        addHabitToCategory(myHabit);
+      }
+      myHabitsMap[myHabit.isFinished][myHabit.documentId] = myHabit;
     }
-  }
-
-  void habitsListAddAtEnd(MyHabit myHabit) {
-    if (myHabit.isFinished) {
-      myCompletedHabitsList.add(myHabit);
-    } else {
-      myHabitsList.add(myHabit);
-    }
-  }
-
-  HabitReplaceStatus habitsListReplace(MyHabit myHabit) {
-    HabitReplaceStatus replaceStatus = HabitReplaceStatus.FAIL;
-    if (myHabit.isFinished) {
-      myCompletedHabitsList.forEach((element) {
-        if (element.documentId == myHabit.documentId) {
-          if (element.category != myHabit.category) {
-            replaceStatus = HabitReplaceStatus.CATEGORY_DIFFERS;
-          } else {
-            replaceStatus = HabitReplaceStatus.SUCCESS;
-          }
-          element = myHabit;
-        }
-      });
-    } else {
-      myHabitsList.forEach((element) {
-        if (element.documentId == myHabit.documentId) {
-          if (element.category != myHabit.category) {
-            replaceStatus = HabitReplaceStatus.CATEGORY_DIFFERS;
-          } else {
-            replaceStatus = HabitReplaceStatus.SUCCESS;
-          }
-          element = myHabit;
-        }
-      });
-    }
-    return replaceStatus;
   }
 
   Future<bool> addNewHabit(MyHabit myHabit) async {
     if (isDevTesting) {
-      myHabit.documentId = "habitId${myHabitsList.length}";
+      myHabit.documentId = "habitId${myHabitsMap[myHabit.isFinished].length}";
     } else if (firebaseUser != null) {
       myHabit.userId = firebaseUser.uid;
       try {
@@ -81,31 +46,28 @@ mixin HabitModel on ModelData {
         logAnalyticsEvent(
           AnalyticsEvents.habitNew,
           success: false,
-          error: e.code,
+          error: e.toString(),
         );
         return false;
       }
     } else
       return false;
-    habitsListAdd(myHabit);
-    if (myHabit.category != "") {
-      addHabitToCategory(myHabit, myHabit.category);
-    }
+    habitsCollectionAdd(myHabit);
+    addHabitToCategory(myHabit);
     notifyListeners();
     return true;
   }
 
-  Future<void> updateHabits(List<MyHabit> myHabits) async {
-    myHabits.forEach((habit) async {
-      habit.category = "";
-      await updateHabit(habit, refreshAssociations: true);
+  Future<void> updateHabits(Map<bool, String> myHabitsList) async {
+    myHabitsList.forEach((key, value) async {
+      MyHabit mySavedHabit = myHabitsMap[value][key];
+      mySavedHabit.category = "";
+      await updateHabit(mySavedHabit);
     });
-    associateHabitsAndCategories();
     notifyListeners();
   }
 
-  Future<bool> updateHabit(MyHabit myHabit,
-      {bool refreshAssociations: false}) async {
+  Future<bool> updateHabit(MyHabit myHabit) async {
     if (isDevTesting) {
       myHabit.userId = DevTesting.userId;
     } else if (firebaseUser != null) {
@@ -120,142 +82,78 @@ mixin HabitModel on ModelData {
         logAnalyticsEvent(
           AnalyticsEvents.habitUpdate,
           success: false,
-          error: e.code,
+          error: e.toString(),
         );
         return false;
       }
     } else
       return false;
-    HabitReplaceStatus replaceStatus = habitsListReplace(myHabit);
-    if (refreshAssociations ||
-        replaceStatus == HabitReplaceStatus.CATEGORY_DIFFERS) {
-      associateHabitsAndCategories();
-    }
+    habitsListReplace(myHabit);
     notifyListeners();
     return true;
   }
 
   Future<bool> resetHabitProgress(MyHabit myHabit) async {
     bool toReturn = false;
-    if (myHabit.isFinished) {
-      myCompletedHabitsList.forEach((habit) {
-        if (habit.documentId == myHabit.documentId) {
-          try {
-            myHabit.resetProgress();
-            if (!isDevTesting) {
-              firestore
-                  .collection("habits")
-                  .document(myHabit.documentId)
-                  .updateData(myHabit.toJson());
-              logAnalyticsEvent(AnalyticsEvents.habitCompletedReset,
-                  success: true);
-            }
-            habitsListAdd(myHabit);
-            habit.resetProgress();
-            toReturn = true;
-          } catch (e) {
-            logAnalyticsEvent(
-              AnalyticsEvents.habitCompletedReset,
-              success: false,
-              error: e.code,
-            );
-            toReturn = false;
-          }
+    if (myHabitsMap[myHabit.isFinished].containsKey(myHabit.documentId)) {
+      MyHabit mySavedHabit =
+          myHabitsMap[myHabit.isFinished][myHabit.documentId];
+      try {
+        mySavedHabit.resetProgress();
+        if (!isDevTesting) {
+          firestore
+              .collection("habits")
+              .document(myHabit.documentId)
+              .updateData(myHabit.toJson());
+          logAnalyticsEvent(AnalyticsEvents.habitReset, success: true);
         }
-      });
-      if (toReturn) myCompletedHabitsList.remove(myHabit);
-    } else {
-      myHabitsList.forEach((habit) {
-        if (habit.documentId == myHabit.documentId) {
-          try {
-            MyHabit duplicateHabit = habit;
-            duplicateHabit.resetProgress();
-            if (!isDevTesting) {
-              firestore
-                  .collection("habits")
-                  .document(duplicateHabit.documentId)
-                  .updateData(duplicateHabit.toJson());
-              logAnalyticsEvent(AnalyticsEvents.habitReset, success: true);
-            }
-            habit.resetProgress();
-            toReturn = true;
-          } catch (e) {
-            logAnalyticsEvent(
-              AnalyticsEvents.habitReset,
-              success: false,
-              error: e.code,
-            );
-            toReturn = false;
-          }
-        }
-      });
-    }
-    if (toReturn) {
-      associateHabitsAndCategories();
-      notifyListeners();
+        habitsCollectionAdd(mySavedHabit);
+        myHabitsMap[true].remove(myHabit);
+        myCategories[mySavedHabit.category].habitsMap[mySavedHabit.documentId] =
+            false;
+        notifyListeners();
+        toReturn = true;
+      } catch (e) {
+        logAnalyticsEvent(
+          AnalyticsEvents.habitReset,
+          success: false,
+          error: e.toString(),
+        );
+        toReturn = false;
+      }
     }
     return toReturn;
   }
 
   Future<bool> deleteHabit(MyHabit myHabit) async {
     bool toReturn = false;
-    if (myHabit.isFinished) {
-      myCompletedHabitsList.forEach((habit) {
-        if (habit.documentId == myHabit.documentId) {
-          try {
-            habit.isDeleted = true;
-            if (!isDevTesting) {
-              firestore
-                  .collection("habits")
-                  .document(habit.documentId)
-                  .updateData(habit.toJson());
-              logAnalyticsEvent(AnalyticsEvents.habitCompletedDelete,
-                  success: true);
-            }
-            toReturn = true;
-          } catch (e) {
-            logAnalyticsEvent(
-              AnalyticsEvents.habitCompletedDelete,
-              success: false,
-              error: e.code,
-            );
-            habit.isDeleted = false;
-            toReturn = false;
-          }
+    if (myHabitsMap[myHabit.isFinished].containsKey(myHabit.documentId)) {
+      MyHabit mySavedHabit =
+          myHabitsMap[myHabit.isFinished][myHabit.documentId];
+      try {
+        mySavedHabit.isDeleted = true;
+        if (!isDevTesting) {
+          firestore
+              .collection("habits")
+              .document(mySavedHabit.documentId)
+              .updateData(mySavedHabit.toJson());
+          logAnalyticsEvent(AnalyticsEvents.habitDelete, success: true);
         }
-      });
-    } else {
-      myHabitsList.forEach((habit) {
-        if (habit.documentId == myHabit.documentId) {
-          try {
-            habit.isDeleted = true;
-            if (!isDevTesting) {
-              firestore
-                  .collection("habits")
-                  .document(habit.documentId)
-                  .updateData(habit.toJson());
-              logAnalyticsEvent(AnalyticsEvents.habitDelete, success: true);
-            }
-            toReturn = true;
-          } catch (e) {
-            logAnalyticsEvent(
-              AnalyticsEvents.habitDelete,
-              success: false,
-              error: e.code,
-            );
-            habit.isDeleted = false;
-            toReturn = false;
-          }
-        }
-      });
-    }
-    if (toReturn) {
-      if (myHabit.isFinished) {
-        myCompletedHabitsList.remove(myHabit);
-      } else {
-        myHabitsList.remove(myHabit);
+        toReturn = true;
+      } catch (e) {
+        logAnalyticsEvent(
+          AnalyticsEvents.habitDelete,
+          success: false,
+          error: e.toString(),
+        );
+        mySavedHabit.isDeleted = false;
+        toReturn = false;
       }
-      associateHabitsAndCategories();
+    }
+
+    if (toReturn) {
+      myHabitsMap[myHabit.isFinished].remove(myHabit.documentId);
+      removeHabitFromCategory(myHabit);
       notifyListeners();
     }
     return toReturn;
@@ -263,10 +161,10 @@ mixin HabitModel on ModelData {
 
   Future<void> fetchHabits() async {
     if (isDevTesting) {
-      DevTesting.getInitialHabits()
-          .forEach((element) => habitsListAddAtEnd(element));
+      myHabitsMap = DevTesting.getInitialHabits();
     } else if (firebaseUser != null) {
-      myHabitsList.clear();
+      myHabitsMap[true].clear();
+      myHabitsMap[false].clear();
       String userId = firebaseUser.uid;
 
       try {
@@ -281,7 +179,8 @@ mixin HabitModel on ModelData {
             data: documentSnapshot.data,
             documentId: documentSnapshot.documentID,
           );
-          habitsListAddAtEnd(currentHabit);
+          habitsCollectionAdd(currentHabit);
+          addHabitToCategory(currentHabit);
           notifyListeners();
         }
         logAnalyticsEvent(AnalyticsEvents.habitFetch, success: true);
@@ -289,48 +188,49 @@ mixin HabitModel on ModelData {
         logAnalyticsEvent(
           AnalyticsEvents.habitFetch,
           success: false,
-          error: e.code,
+          error: e.toString(),
         );
-        myHabitsList.clear();
+        myHabitsMap[true].clear();
+        myHabitsMap[false].clear();
       }
     } else
       return;
 
-    myHabitsList = myHabitsList.toSet().toList();
     areHabitsLoaded = true;
     notifyListeners();
   }
 
   HabitProgressChange markDoneForToday(MyHabit myHabit) {
     HabitProgressChange progressChange = HabitProgressChange.FAIL;
-    myHabitsList.forEach((habit) {
-      if (habit.documentId == myHabit.documentId) {
-        progressChange = habit.markAsDone(isDevTesting);
-        if (progressChange != HabitProgressChange.FAIL && !isDevTesting) {
-          try {
-            firestore
-                .collection("habits")
-                .document(habit.documentId)
-                .updateData(habit.toJson());
-            logAnalyticsEvent(AnalyticsEvents.habitMarkDoneForToday,
-                success: true);
-          } catch (e) {
-            logAnalyticsEvent(
-              AnalyticsEvents.habitMarkDoneForToday,
-              success: false,
-              error: e.code,
-            );
-            habit = myHabit;
-            progressChange = HabitProgressChange.FAIL;
-          }
+    if (myHabitsMap[false].containsKey(myHabit.documentId)) {
+      MyHabit mySavedHabit = myHabitsMap[false][myHabit.documentId];
+      progressChange = mySavedHabit.markAsDone(isDevTesting);
+      if (progressChange != HabitProgressChange.FAIL && !isDevTesting) {
+        try {
+          firestore
+              .collection("habits")
+              .document(mySavedHabit.documentId)
+              .updateData(mySavedHabit.toJson());
+          logAnalyticsEvent(AnalyticsEvents.habitMarkDoneForToday,
+              success: true);
+        } catch (e) {
+          logAnalyticsEvent(
+            AnalyticsEvents.habitMarkDoneForToday,
+            success: false,
+            error: e.toString(),
+          );
+          mySavedHabit = myHabit;
+          progressChange = HabitProgressChange.FAIL;
         }
       }
-    });
-    if (progressChange == HabitProgressChange.COMPLETE) {
-      logAnalyticsEvent(AnalyticsEvents.habitMarkComplete, success: true);
-      myHabitsList.remove(myHabit);
-      habitsListAdd(myHabit);
+
+      if (progressChange == HabitProgressChange.COMPLETE) {
+        logAnalyticsEvent(AnalyticsEvents.habitMarkComplete, success: true);
+        habitsCollectionAdd(mySavedHabit);
+        myHabitsMap[false].remove(myHabit.documentId);
+      }
     }
+
     notifyListeners();
     return progressChange;
   }
