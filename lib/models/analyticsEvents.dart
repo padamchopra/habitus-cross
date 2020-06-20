@@ -19,9 +19,7 @@ class AnalyticsEvents {
   static const String habitFetch = "Habit: Fetch";
   static const String habitNew = "Habit: New";
   static const String habitUpdate = "Habit: Update";
-  static const String habitCompletedDelete = "Habit: Delete Completed";
   static const String habitDelete = "Habit: Delete";
-  static const String habitCompletedReset = "Habit: Reset Progress for completed";
   static const String habitReset = "Habit: Reset Progress";
   static const String habitMarkDoneForToday = "Habit: Log Day";
   static const String habitMarkComplete = "Habit: Log Complete";

@@ -45,20 +45,23 @@ class DevTesting {
     return currentHabit;
   }
 
-  static List<MyHabit> getInitialHabits() {
-    return [
-      habit("Pushups", "As many as you can.", 18, 0, false, 0),
-      habit("Drink More Water", "At regular intervals.", 12, 1, false, 1),
-      habit("Practice French", "Duolingo", 0, -1, false, 2),
-      habit("CoD", "", 0, -1, false, 3),
-      habit("Reduce Screentime", "Only 2-3 hours a day", 21, -1, false, 4)
-    ];
+  static Map<bool, Map<String, MyHabit>> getInitialHabits() {
+    Map<String, MyHabit> activeHabits = {
+      "0": habit("Pushups", "As many as you can.", 18, 0, false, 0),
+      "1": habit("Drink More Water", "At regular intervals.", 12, 1, false, 1),
+      "2": habit("Practice French", "Duolingo", 0, -1, false, 2),
+      "3": habit("CoD", "", 0, -1, false, 3)
+    };
+    Map<String, MyHabit> finishedHabits = {
+      "0": habit("Reduce Screentime", "Only 2-3 hours a day", 21, -1, false, 0)
+    };
+    return {false: activeHabits, true: finishedHabits};
   }
 
-  static List<MyCategory> getInitialCategories() {
-    return [
-      category(3, "Fitness", Icons.fitness_center, 0, 1),
-      category(1, "Health", Icons.healing, 1, 1)
-    ];
+  static Map<String, MyCategory> getInitialCategories() {
+    return {
+      "0": category(3, "Fitness", Icons.fitness_center, 0, 1),
+      "1": category(1, "Health", Icons.healing, 1, 1)
+    };
   }
 }

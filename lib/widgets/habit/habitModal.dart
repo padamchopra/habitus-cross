@@ -107,7 +107,7 @@ class _HabitoModalState extends State<HabitModal> {
       modalHeadText = "Edit Habit";
       editingEnabled = true;
       actionButton = ActionButton(updateHabit, "Update");
-      _myHabit = widget.myHabit;
+      _myHabit = MyHabit.fromHabit(widget.myHabit);
       if (widget.myHabit.category == "") {
         categorySet = false;
         _myCategory = MyCategory();
@@ -144,7 +144,7 @@ class _HabitoModalState extends State<HabitModal> {
         builder: (BuildContext context) {
           return ScopedModelDescendant<HabitoModel>(
             builder: (context, child, model) {
-              List<MyCategory> myCategories = model.myCategoriesList;
+              List<MyCategory> myCategories = model.myCategoriesAsList;
               if (categorySet) {
                 _selectedIndex = 0;
               }

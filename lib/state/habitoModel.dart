@@ -51,9 +51,8 @@ mixin ModelData on Model {
   FirebaseUser firebaseUser;
   Firestore firestore;
   FirebaseAnalytics firebaseAnalytics;
-  List<MyCategory> myCategoriesList;
-  List<MyHabit> myHabitsList;
-  List<MyHabit> myCompletedHabitsList;
+  Map<String, MyCategory> myCategories = new Map();
+  Map<bool, Map<String, MyHabit>> myHabitsMap;
   bool areCategoriesLoaded;
   bool areHabitsLoaded;
   Function playConfetti;
@@ -64,9 +63,10 @@ mixin ModelData on Model {
     firebaseAnalytics = FirebaseAnalytics();
     areCategoriesLoaded = false;
     areHabitsLoaded = false;
-    myCategoriesList = [];
-    myHabitsList = [];
-    myCompletedHabitsList = [];
+    myHabitsMap = {
+      false: {},
+      true: {},
+    };
     if (!isDevTesting) {
       firebaseAuth = FirebaseAuth.instance;
       firestore = Firestore.instance;
@@ -74,33 +74,35 @@ mixin ModelData on Model {
     }
   }
 
+  get myCategoriesAsList {
+    return myCategories.values.toList();
+  }
+
+  List<MyHabit> myHabitsAsList(bool completed) {
+    return myHabitsMap[completed].values.toList();
+  }
+
   void associateHabitsAndCategories() {
-    Map<String, List<MyHabit>> map = new Map();
-    for (MyHabit myHabit in myHabitsList) {
-      if (myHabit.category != "") {
-        if (map.containsKey(myHabit.category)) {
-          map[myHabit.category].add(myHabit);
-        } else {
-          map[myHabit.category] = [];
-          map[myHabit.category].add(myHabit);
+    Map<String, Map<String, MyHabit>> habitCategoryMap = new Map();
+    myHabitsMap[false].forEach((key, value) {
+      if (value.category != "") {
+        if (!habitCategoryMap.containsKey(value.category)) {
+          habitCategoryMap[value.category] = new Map();
         }
-      }
-    }
-    myCategoriesList.forEach((category) {
-      if (map.containsKey(category.documentId)) {
-        category.habitsList = map[category.documentId];
+        habitCategoryMap[value.category][value.documentId] = value;
       }
     });
+
+    habitCategoryMap.forEach((key, value) {
+      myCategories[key].habitsList = value.values.toList();
+    });
+
     notifyListeners();
   }
 
   void addHabitToCategory(MyHabit habit, String categoryDocumentId) async {
-    myCategoriesList.forEach((category) {
-      if (category.documentId == categoryDocumentId) {
-        category.addHabitToList(habit);
-        notifyListeners();
-      }
-    });
+    myCategories[categoryDocumentId].addHabitToList(habit);
+    notifyListeners();
   }
 
   void logAnalyticsEvent(String eventName, {bool success, error}) {

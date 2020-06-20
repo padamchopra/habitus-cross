@@ -11,9 +11,16 @@ class CategoryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String categoryName = (name != null && name.length > 15)
-        ? name.substring(0, 13) + '...'
-        : name;
+    String categoryName;
+    if (name == null) {
+      categoryName = null;
+    } else if (name == "") {
+      categoryName = "unnamed";
+    } else if (name.length > 15) {
+      categoryName = name.substring(0, 13) + '...';
+    } else {
+      categoryName = name;
+    }
     return Row(
       children: <Widget>[
         SizedBox(width: 10),
@@ -47,7 +54,7 @@ class CategoryRow extends StatelessWidget {
                     ? Padding(
                         padding: EdgeInsets.only(
                           left: 3.0,
-                          right: name == null ? 3 : 0,
+                          right: categoryName == null ? 3 : 0,
                         ),
                         child: Icon(
                           icon,
@@ -57,7 +64,7 @@ class CategoryRow extends StatelessWidget {
                     : Icon(
                         Icons.arrow_drop_down,
                       ),
-                name != null
+                categoryName != null
                     ? Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 9.0),
                         child: CustomText(

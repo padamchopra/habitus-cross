@@ -40,9 +40,8 @@ class _AllHabitsState extends State<AllHabits> {
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: ScopedModelDescendant<HabitoModel>(
               builder: (context, child, model) {
-                int numberOfHabits = widget.showOnlyCompleted
-                    ? model.numberOfCompletedHabits()
-                    : model.numberOfHabits();
+                int numberOfHabits =
+                    model.numberOfHabits(widget.showOnlyCompleted);
                 if (numberOfHabits == -1) {
                   return Center(
                     child: const CircularProgressIndicator(),
@@ -59,16 +58,16 @@ class _AllHabitsState extends State<AllHabits> {
                     ),
                   );
                 }
-                List<MyHabit> _myHabits = widget.showOnlyCompleted
-                    ? model.myCompletedHabitsList
-                    : model.myHabitsList;
+                List<MyHabit> _myHabits =
+                    model.myHabitsAsList(widget.showOnlyCompleted);
                 return StaggeredGridView.countBuilder(
                   addRepaintBoundaries: true,
                   padding: MySpaces.listViewTopPadding,
                   crossAxisCount: 2,
                   itemCount: numberOfHabits,
                   itemBuilder: (BuildContext context, int index) {
-                    MyCategory _myCategory = model.findCategoryById(_myHabits[index].category);
+                    MyCategory _myCategory =
+                        model.getCategoryById(_myHabits[index].category);
                     return Stack(
                       children: <Widget>[
                         GestureDetector(

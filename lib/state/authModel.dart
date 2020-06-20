@@ -29,7 +29,7 @@ mixin AuthModel on ModelData {
       logAnalyticsEvent(
         AnalyticsEvents.authSignIn,
         success: false,
-        error: e.code,
+        error: e.toString(),
       );
       return HabitoAuth.FAIL;
     }
@@ -45,7 +45,7 @@ mixin AuthModel on ModelData {
       logAnalyticsEvent(
         AnalyticsEvents.authSignOut,
         success: false,
-        error: e.code,
+        error: e.toString(),
       );
       return HabitoAuth.FAIL;
     }
@@ -58,12 +58,12 @@ mixin AuthModel on ModelData {
       logAnalyticsEvent(AnalyticsEvents.authDeleteAccount, success: true);
       return HabitoAuth.DELETED;
     } catch (e) {
-      handleAuthError(context, e);
       logAnalyticsEvent(
         AnalyticsEvents.authDeleteAccount,
         success: false,
         error: e.code,
       );
+      handleAuthError(context, e);
       await signOut();
       return HabitoAuth.FAIL;
     }

@@ -29,17 +29,17 @@ class Profile extends StatelessWidget {
                   MySpaces.gapInBetween,
                   InfoSet(
                     MyStrings.categoriesInfoTitle,
-                    model.myCategoriesList.length.toString(),
+                    model.myCategories.length.toString(),
                   ),
                   MySpaces.gapInBetween,
                   InfoSet(
                     MyStrings.activeHabitsInfoTitle,
-                    model.myHabitsList.length.toString(),
+                    model.myHabitsAsList(false).length.toString(),
                   ),
                   MySpaces.gapInBetween,
                   InfoSet(
                     MyStrings.trackedHabitsInfoTitle,
-                    model.myCompletedHabitsList.length.toString(),
+                    model.myHabitsAsList(true).length.toString(),
                   ),
                   MySpaces.gapInBetween,
                   InfoSet(
