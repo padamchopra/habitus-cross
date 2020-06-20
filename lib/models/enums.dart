@@ -41,9 +41,3 @@ enum HabitProgressChange{
   COMPLETE,
   FAIL
 }
-
-enum HabitReplaceStatus{
-  SUCCESS,
-  FAIL,
-  CATEGORY_DIFFERS
-}

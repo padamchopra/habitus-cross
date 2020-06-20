@@ -7,7 +7,7 @@ import 'package:habito/widgets/category/categoryTile.dart';
 
 class MyCategory {
   String _name;
-  List<MyHabit> _myHabits;
+  Map<String, bool> _myHabits;
   int _color;
   IconData _icon;
   Timestamp _createdAt;
@@ -16,7 +16,7 @@ class MyCategory {
   bool _deleted;
 
   MyCategory() {
-    this._myHabits = [];
+    this._myHabits = new Map();
     this._color = 0;
     this._icon = Icons.label_outline;
     this._name = "";
@@ -30,7 +30,7 @@ class MyCategory {
       {@required Map<String, dynamic> data,
       @required String userId,
       @required String documentId}) {
-    this._myHabits = [];
+    this._myHabits = new Map();
     this._color = data["color"];
     this._icon = IconData(data["icon"], fontFamily: "MaterialIcons");
     this._name = data["name"];
@@ -42,7 +42,7 @@ class MyCategory {
 
   MyCategory.fromCategory(MyCategory myCategory) {
     this._name = myCategory.categoryName;
-    this._myHabits = myCategory.habitsList;
+    this._myHabits = myCategory.habitsMap;
     this._color = myCategory.categoryColorIndex;
     this._icon = myCategory.categoryIcon;
     this._createdAt = myCategory.createdAt;
@@ -52,7 +52,7 @@ class MyCategory {
   }
 
   MyCategory.addNewForPicker() {
-    this._myHabits = [];
+    this._myHabits = new Map();
     this._color = 0;
     this._icon = Icons.add;
     this._name = "Create Category";
@@ -94,7 +94,7 @@ class MyCategory {
     this._deleted = deleted;
   }
 
-  set habitsList(List<MyHabit> habits) {
+  set habitsMap(Map<String, bool> habits) {
     this._myHabits = habits;
   }
 
@@ -106,7 +106,7 @@ class MyCategory {
     return _createdAt;
   }
 
-  get habitsList {
+  get habitsMap {
     return this._myHabits;
   }
 
@@ -142,14 +142,19 @@ class MyCategory {
     return _icon;
   }
 
-  void addHabitToList(MyHabit myHabit) {
-    _myHabits.insert(0, myHabit);
+  void addHabitToMap(MyHabit myHabit) {
+    _myHabits[myHabit.documentId] = myHabit.isFinished;
   }
 
   Widget widget({bool showNumberOfHabits: false, bool overridePadding: false}) {
+    int numberOfActiveHabits = 0;
+    _myHabits.forEach((key, value) {
+      if (!value) numberOfActiveHabits++;
+    });
+
     return CategoryTile(
       showNumberOfHabits,
-      _myHabits.length,
+      numberOfActiveHabits,
       _icon,
       _color,
       _name,

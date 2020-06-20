@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:habito/models/analyticsEvents.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/models/devTesting.dart';
-import 'package:habito/models/habit.dart';
 import 'package:habito/state/habitoModel.dart';
 
 mixin CategoryModel on ModelData {
@@ -124,11 +123,11 @@ mixin CategoryModel on ModelData {
 
   Future<Map<String, dynamic>> deleteCategory(MyCategory myCategory) async {
     Map<String, dynamic> toReturn = {"deleted": false, "associatedHabits": []};
-    List<MyHabit> myAssociatedHabits = [];
+    Map<String, bool> myAssociatedHabits = new Map();
 
     if (myCategories.containsKey(myCategory.documentId)) {
       MyCategory mySavedCategory = myCategories[myCategory.documentId];
-      myAssociatedHabits = mySavedCategory.habitsList;
+      myAssociatedHabits = mySavedCategory.habitsMap;
       try {
         mySavedCategory.deleted = true;
         if (!isDevTesting) {

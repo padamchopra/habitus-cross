@@ -18,18 +18,17 @@ mixin HabitModel on ModelData {
     myHabitsMap[myHabit.isFinished][myHabit.documentId] = myHabit;
   }
 
-  HabitReplaceStatus habitsListReplace(MyHabit myHabit) {
-    HabitReplaceStatus replaceStatus = HabitReplaceStatus.FAIL;
+  void habitsListReplace(MyHabit myHabit) {
     if (myHabitsMap[myHabit.isFinished].containsKey(myHabit.documentId)) {
-      if (myHabitsMap[myHabit.isFinished][myHabit.documentId].category !=
-          myHabit.category) {
-        replaceStatus = HabitReplaceStatus.CATEGORY_DIFFERS;
-      } else {
-        replaceStatus = HabitReplaceStatus.SUCCESS;
+      MyHabit mySavedHabit =
+          myHabitsMap[myHabit.isFinished][myHabit.documentId];
+      if (mySavedHabit.category != myHabit.category) {
+        //update category associations
+        removeHabitFromCategory(mySavedHabit);
+        addHabitToCategory(myHabit);
       }
       myHabitsMap[myHabit.isFinished][myHabit.documentId] = myHabit;
     }
-    return replaceStatus;
   }
 
   Future<bool> addNewHabit(MyHabit myHabit) async {
@@ -54,24 +53,21 @@ mixin HabitModel on ModelData {
     } else
       return false;
     habitsCollectionAdd(myHabit);
-    if (myHabit.category != "") {
-      addHabitToCategory(myHabit, myHabit.category);
-    }
+    addHabitToCategory(myHabit);
     notifyListeners();
     return true;
   }
 
-  Future<void> updateHabits(List<MyHabit> myHabitsList) async {
-    myHabitsList.forEach((habit) async {
-      habit.category = "";
-      await updateHabit(habit, refreshAssociations: true);
+  Future<void> updateHabits(Map<bool, String> myHabitsList) async {
+    myHabitsList.forEach((key, value) async {
+      MyHabit mySavedHabit = myHabitsMap[value][key];
+      mySavedHabit.category = "";
+      await updateHabit(mySavedHabit);
     });
-    associateHabitsAndCategories();
     notifyListeners();
   }
 
-  Future<bool> updateHabit(MyHabit myHabit,
-      {bool refreshAssociations: false}) async {
+  Future<bool> updateHabit(MyHabit myHabit) async {
     if (isDevTesting) {
       myHabit.userId = DevTesting.userId;
     } else if (firebaseUser != null) {
@@ -92,11 +88,7 @@ mixin HabitModel on ModelData {
       }
     } else
       return false;
-    HabitReplaceStatus replaceStatus = habitsListReplace(myHabit);
-    if (refreshAssociations ||
-        replaceStatus == HabitReplaceStatus.CATEGORY_DIFFERS) {
-      associateHabitsAndCategories();
-    }
+    habitsListReplace(myHabit);
     notifyListeners();
     return true;
   }
@@ -116,6 +108,10 @@ mixin HabitModel on ModelData {
           logAnalyticsEvent(AnalyticsEvents.habitReset, success: true);
         }
         habitsCollectionAdd(mySavedHabit);
+        myHabitsMap[true].remove(myHabit);
+        myCategories[mySavedHabit.category].habitsMap[mySavedHabit.documentId] =
+            false;
+        notifyListeners();
         toReturn = true;
       } catch (e) {
         logAnalyticsEvent(
@@ -125,12 +121,6 @@ mixin HabitModel on ModelData {
         );
         toReturn = false;
       }
-      if (toReturn) myHabitsMap[true].remove(myHabit);
-    }
-
-    if (toReturn) {
-      associateHabitsAndCategories();
-      notifyListeners();
     }
     return toReturn;
   }
@@ -163,7 +153,7 @@ mixin HabitModel on ModelData {
 
     if (toReturn) {
       myHabitsMap[myHabit.isFinished].remove(myHabit.documentId);
-      associateHabitsAndCategories();
+      removeHabitFromCategory(myHabit);
       notifyListeners();
     }
     return toReturn;
@@ -190,6 +180,7 @@ mixin HabitModel on ModelData {
             documentId: documentSnapshot.documentID,
           );
           habitsCollectionAdd(currentHabit);
+          addHabitToCategory(currentHabit);
           notifyListeners();
         }
         logAnalyticsEvent(AnalyticsEvents.habitFetch, success: true);

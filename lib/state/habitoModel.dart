@@ -41,7 +41,6 @@ class HabitoModel extends Model
   Future<void> fetchUserData() async {
     await fetchCategories();
     await fetchHabits();
-    associateHabitsAndCategories();
   }
 }
 
@@ -82,27 +81,16 @@ mixin ModelData on Model {
     return myHabitsMap[completed].values.toList();
   }
 
-  void associateHabitsAndCategories() {
-    Map<String, Map<String, MyHabit>> habitCategoryMap = new Map();
-    myHabitsMap[false].forEach((key, value) {
-      if (value.category != "") {
-        if (!habitCategoryMap.containsKey(value.category)) {
-          habitCategoryMap[value.category] = new Map();
-        }
-        habitCategoryMap[value.category][value.documentId] = value;
-      }
-    });
-
-    habitCategoryMap.forEach((key, value) {
-      myCategories[key].habitsList = value.values.toList();
-    });
-
-    notifyListeners();
+  void removeHabitFromCategory(MyHabit myHabit) {
+    if (myHabit.category != "") {
+      myCategories[myHabit.category].habitsMap.remove(myHabit.documentId);
+    }
   }
 
-  void addHabitToCategory(MyHabit habit, String categoryDocumentId) async {
-    myCategories[categoryDocumentId].addHabitToList(habit);
-    notifyListeners();
+  void addHabitToCategory(MyHabit myHabit) {
+    if (myHabit.category != "") {
+      myCategories[myHabit.category].addHabitToMap(myHabit);
+    }
   }
 
   void logAnalyticsEvent(String eventName, {bool success, error}) {
