@@ -120,6 +120,8 @@ class _HabitoModalState extends State<HabitModal> {
     _myHabit.description = description;
     if (categorySet) {
       _myHabit.category = _myCategory.documentId;
+    } else {
+      _myHabit.category = "";
     }
     model.updateHabit(_myHabit).then((value) {
       if (value) {
