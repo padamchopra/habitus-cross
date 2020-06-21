@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:habito/functions/habitFunctions.dart';
 import 'package:habito/functions/universalFunctions.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/models/enums.dart';
@@ -7,7 +8,6 @@ import 'package:habito/models/habit.dart';
 import 'package:habito/state/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/habit/habitModal.dart';
-import 'package:habito/widgets/habit/options/habitMoreOptions.dart';
 import 'package:habito/widgets/habit/options/optionCircle.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -16,9 +16,12 @@ class HabitOptions extends StatefulWidget {
   final MyHabit myHabit;
   final MyCategory myCategory;
   final Function toggle;
-  final bool showOnlyCompleted;
-  HabitOptions(this.index, this.myHabit, this.myCategory, this.toggle,
-      this.showOnlyCompleted);
+  HabitOptions(
+    this.index,
+    this.myHabit,
+    this.myCategory,
+    this.toggle,
+  );
 
   @override
   State<StatefulWidget> createState() {
@@ -37,109 +40,39 @@ class _HabitOptionsState extends State<HabitOptions> {
     widget.toggle(widget.index);
   }
 
-  void markHabitDone(HabitoModel model) async {
-    if (widget.showOnlyCompleted) {
-      UniversalFunctions.showAlert(context, "Already tracked.",
-          "This habit has already been completed. Try resetting the progress if you want to go at it again.");
-      return;
-    }
-    HabitProgressChange progressChange = model.markDoneForToday(widget.myHabit);
-    if (progressChange == HabitProgressChange.SUCCESS) {
-      setState(() {
-        doneButtonColor = MyColors.success;
-        doneButtonIconColor = MyColors.white;
-      });
-    } else if (progressChange == HabitProgressChange.UPDATED_TODAY) {
-      UniversalFunctions.showAlert(context, "Slow down",
-          "You've already marked your progress for this habit today.");
-    } else if (progressChange == HabitProgressChange.LATE) {
-      UniversalFunctions.showAlert(context, "Woops",
-          "Looks like you missed a day or more. Progress has been reset.");
-    } else if (progressChange == HabitProgressChange.COMPLETE) {
-      model.playConfetti();
-    } else {
-      UniversalFunctions.showAlert(context, "Try Again", "Could not update your progress.");
-    }
-    closeOptions();
-  }
-
-  void viewHabitDetails() {
-    closeOptions();
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (BuildContext _context) {
-        return HabitModal(
-          HabitModalMode.VIEW,
-          myHabit: widget.myHabit,
-          myCategory: widget.myCategory,
-        );
-      },
-    );
-  }
-
   void viewMoreOptions(model) {
-    HabitMoreOptions.show(context, model, decideMoreOptionFunction);
-  }
-
-  void decideMoreOptionFunction(
-      HabitSelecetedOption option, HabitoModel model) {
-    switch (option) {
-      case HabitSelecetedOption.DUPLICATE_AND_EDIT:
-        duplicateAndEdit();
-        break;
-      case HabitSelecetedOption.RESET_PROGRESS:
-        resetProgress(model);
-        break;
-      case HabitSelecetedOption.DELETE:
-        deleteHabit(model);
-        break;
-    }
-  }
-
-  void duplicateAndEdit() {
     closeOptions();
-    showModalBottomSheet(
+    HabitFunctions.viewMoreOptions(
       context: context,
-      isScrollControlled: true,
-      builder: (BuildContext _context) {
-        return HabitModal(
-          HabitModalMode.DUPLICATE,
-          myHabit: widget.myHabit,
-          myCategory: widget.myCategory,
-        );
-      },
+      model: model,
+      myHabit: widget.myHabit,
+      myCategory: widget.myCategory,
     );
   }
 
-  void resetProgress(HabitoModel model) {
+  void markHabitDone(context, model, myHabit) {
     closeOptions();
-    model.resetHabitProgress(widget.myHabit).then((value) {
-      if (value) {
-        UniversalFunctions.showAlert(context, "Reset",
-            "Progress was reset successfully. Good luck with this fresh start.");
-      } else {
-        UniversalFunctions.showAlert(context, "Try Again", "Progress could not be reset.");
-      }
-    });
+    HabitFunctions.markHabitDone(
+      context: context,
+      model: model,
+      myHabit: myHabit,
+    );
   }
 
-  void deleteHabit(HabitoModel model) {
+  void viewHabitDetails(context, myHabit, myCategory) {
     closeOptions();
-    model.deleteHabit(widget.myHabit).then((value) {
-      if (value) {
-        UniversalFunctions.showAlert(context, "Deleted",
-            "That's a bummer. Good luck with the remaining habits.");
-      } else {
-        UniversalFunctions.showAlert(context, "Try Again", "Habit could not be deleted.");
-      }
-    });
+    HabitFunctions.viewHabitDetails(
+      context: context,
+      myHabit: myHabit,
+      myCategory: myCategory,
+    );
   }
 
   initState() {
     super.initState();
     List<Timestamp> updateTimes = widget.myHabit.updateTimes;
-    if (updateTimes != null && updateTimes.length > 0 &&
+    if (updateTimes != null &&
+        updateTimes.length > 0 &&
         updateTimes.asMap()[0].toDate().day == DateTime.now().day) {
       doneButtonColor = MyColors.success;
       doneButtonIconColor = MyColors.white;
@@ -164,12 +97,20 @@ class _HabitOptionsState extends State<HabitOptions> {
           return Stack(
             children: [
               OptionCircle(
-                () => markHabitDone(model),
+                () => markHabitDone(
+                  context,
+                  model,
+                  widget.myHabit,
+                ),
                 doneButtonMargin,
                 Icons.check,
               ),
               OptionCircle(
-                viewHabitDetails,
+                () => viewHabitDetails(
+                  context,
+                  widget.myHabit,
+                  widget.myCategory,
+                ),
                 MySpaces.marginForHabitSecondOption,
                 Icons.remove_red_eye,
               ),

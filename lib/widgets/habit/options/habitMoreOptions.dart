@@ -1,50 +1,68 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:habito/functions/habitFunctions.dart';
 import 'package:habito/models/enums.dart';
 import 'package:habito/models/universalValues.dart';
 
 class HabitMoreOptions {
-  static show(context, model, function) {
-    iOSOptions(context, model, function);
+  static show(context, model, habit, category) {
+    iOSOptions(context, model, habit, category);
   }
 
-  static iOSOptions(context, model, function) {
+  static iOSOptions(context, model, habit, category) {
     showCupertinoModalPopup(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext _context) {
         return CupertinoActionSheet(
           title: Text("More Options"),
           cancelButton: CupertinoActionSheetAction(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.of(_context).pop(),
             child: Text('Cancel'),
           ),
           actions: <Widget>[
             CupertinoActionSheetAction(
               onPressed: () {
-                Navigator.of(context).pop();
-                function(HabitSelecetedOption.DUPLICATE_AND_EDIT, model);
+                Navigator.of(_context).pop();
+                HabitFunctions.handleHabitOptionSelect(
+                  context, 
+                  model,
+                  HabitSelecetedOption.DUPLICATE_AND_EDIT,
+                  habit,
+                  category,
+                );
               },
               child: Text("Duplicate and Edit"),
             ),
             CupertinoActionSheetAction(
               onPressed: () {
-                Navigator.of(context).pop();
-                function(HabitSelecetedOption.RESET_PROGRESS, model);
+                Navigator.of(_context).pop();
+                HabitFunctions.handleHabitOptionSelect(
+                  context, 
+                  model,
+                  HabitSelecetedOption.RESET_PROGRESS,
+                  habit,
+                  category,
+                );
               },
               child: Text("Reset Progress"),
             ),
             CupertinoActionSheetAction(
-              onPressed: () {
-                Navigator.of(context).pop();
-                function(HabitSelecetedOption.DELETE, model);
-              },
-              child: Text(
-                "Delete",
-                style: TextStyle(
-                  color: MyColors.perfectRed,
-                ),
-              )
-            ),
+                onPressed: () {
+                  Navigator.of(_context).pop();
+                  HabitFunctions.handleHabitOptionSelect(
+                    context, 
+                    model,
+                    HabitSelecetedOption.DELETE,
+                    habit,
+                    category,
+                  );
+                },
+                child: Text(
+                  "Delete",
+                  style: TextStyle(
+                    color: MyColors.perfectRed,
+                  ),
+                )),
           ],
         );
       },

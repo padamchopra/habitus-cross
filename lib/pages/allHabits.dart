@@ -1,3 +1,4 @@
+import 'package:habito/functions/habitFunctions.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/models/habit.dart';
 import 'package:habito/state/habitoModel.dart';
@@ -71,7 +72,18 @@ class _AllHabitsState extends State<AllHabits> {
                     return Stack(
                       children: <Widget>[
                         GestureDetector(
-                          onTapDown: (tapDetails) {
+                          onLongPress: () {
+                            setState(() {
+                              tileClicked[index] = false;
+                            });
+                            HabitFunctions.viewMoreOptions(
+                              context: context,
+                              model: model,
+                              myHabit: _myHabits[index],
+                              myCategory: _myCategory,
+                            );
+                          },
+                          onTap: () {
                             setState(() {
                               bool result = tileClicked.containsKey(index)
                                   ? !tileClicked[index]
@@ -85,11 +97,11 @@ class _AllHabitsState extends State<AllHabits> {
                         (tileClicked.containsKey(index) && tileClicked[index])
                             ? Align(
                                 child: HabitOptions(
-                                    index,
-                                    _myHabits[index],
-                                    _myCategory,
-                                    toggleTileClick,
-                                    widget.showOnlyCompleted),
+                                  index,
+                                  _myHabits[index],
+                                  _myCategory,
+                                  toggleTileClick,
+                                ),
                                 alignment: Alignment.topCenter)
                             : Container(),
                       ],
