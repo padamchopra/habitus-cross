@@ -47,7 +47,7 @@ class _AllCategoriesState extends State<AllCategories> {
                 itemCount: numberOfCategories,
                 itemBuilder: (BuildContext context, int index) {
                   return GestureDetector(
-                    onLongPress: () => CategoryFunctions.viewMoreOptions(
+                    onTap: () => CategoryFunctions.viewMoreOptions(
                       context: context,
                       model: model,
                       myCategory: _myCategories[index],

@@ -20,7 +20,11 @@ class CategoryFunctions {
       "Delete": CategorySelectedOption.DELETE,
     };
     CategorySelectedOption option = await Options.show(
-        context, offset, CategorySelectedOption.NONE, values);
+      context,
+      offset,
+      CategorySelectedOption.NONE,
+      values,
+    );
     handleCategoryOptionSelect(model, option, myCategory);
   }
 
