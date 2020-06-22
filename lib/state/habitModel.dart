@@ -58,11 +58,10 @@ mixin HabitModel on ModelData {
     return true;
   }
 
-  Future<void> updateHabits(Map<bool, String> myHabitsList) async {
+  Future<void> updateHabits(Map<String, bool> myHabitsList) async {
     myHabitsList.forEach((key, value) async {
-      MyHabit mySavedHabit = myHabitsMap[value][key];
-      mySavedHabit.category = "";
-      await updateHabit(mySavedHabit);
+      myHabitsMap[value][key].category = "";
+      await updateHabit(myHabitsMap[value][key]);
     });
     notifyListeners();
   }
@@ -109,11 +108,14 @@ mixin HabitModel on ModelData {
         }
         habitsCollectionAdd(mySavedHabit);
         myHabitsMap[true].remove(myHabit);
-        myCategories[mySavedHabit.category].habitsMap[mySavedHabit.documentId] =
-            false;
+        if (mySavedHabit.category != "") {
+          myCategories[mySavedHabit.category]
+              .habitsMap[mySavedHabit.documentId] = false;
+        }
         notifyListeners();
         toReturn = true;
       } catch (e) {
+        print(e);
         logAnalyticsEvent(
           AnalyticsEvents.habitReset,
           success: false,

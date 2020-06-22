@@ -9,7 +9,7 @@ class OptionCircle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTapDown: onTap,
       child: AnimatedContainer(
         duration: Duration(milliseconds: 200),
         curve: Curves.decelerate,

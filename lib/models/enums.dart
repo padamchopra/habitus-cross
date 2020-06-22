@@ -1,4 +1,4 @@
-enum HabitoAuth{
+enum HabitoAuth {
   SUCCESS,
   FAIL,
   VERIFICATION_REQUIRED,
@@ -7,37 +7,18 @@ enum HabitoAuth{
   DELETED
 }
 
-enum HabitModalMode{
-  NEW,
-  VIEW,
-  EDIT,
-  DUPLICATE
-}
+enum HabitModalMode { NEW, VIEW, EDIT, DUPLICATE }
 
-enum CategoryModalMode{
-  NEW,
-  VIEW,
-  EDIT,
-  DUPLICATE
-}
+enum CategoryModalMode { NEW, VIEW, EDIT, DUPLICATE }
 
-enum HabitSelecetedOption{
-  DUPLICATE_AND_EDIT,
-  RESET_PROGRESS,
-  DELETE
-}
+enum HabitSelectedOption { NONE, DUPLICATE_AND_EDIT, RESET_PROGRESS, DELETE }
 
-enum CategorySelectedOption{
+enum CategorySelectedOption {
+  NONE,
   VIEW_HABITS,
   EDIT,
   DUPLICATE_AND_EDIT,
   DELETE
 }
 
-enum HabitProgressChange{
-  SUCCESS,
-  UPDATED_TODAY,
-  LATE,
-  COMPLETE,
-  FAIL
-}
+enum HabitProgressChange { SUCCESS, UPDATED_TODAY, LATE, COMPLETE, FAIL }

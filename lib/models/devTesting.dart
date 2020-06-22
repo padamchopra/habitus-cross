@@ -6,6 +6,7 @@ import 'package:habito/models/habit.dart';
 class DevTesting {
   static bool testing = false;
   static bool showSignIn = false;
+  static bool notLoggingAnalytics = false;
   static String userId = "Tester";
   static String userEmail = "user@habito.test";
 

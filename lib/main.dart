@@ -20,6 +20,8 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  final globalScaffoldKey = GlobalKey<ScaffoldState>();
+
   HabitoModel model = HabitoModel();
   Widget _widget = Center(
     child: CircularProgressIndicator(),
@@ -38,6 +40,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    model.globalScaffoldKey = globalScaffoldKey;
     model.updateHomeRootWidget = updateHomeWidget;
     _firebaseMessaging.requestNotificationPermissions();
   }
@@ -58,6 +61,7 @@ class _MyAppState extends State<MyApp> {
               BottomSheetThemeData(backgroundColor: MyColors.transparent),
         ),
         home: Scaffold(
+          key: globalScaffoldKey,
           resizeToAvoidBottomPadding: false,
           backgroundColor: MyColors.black,
           body: _widget,

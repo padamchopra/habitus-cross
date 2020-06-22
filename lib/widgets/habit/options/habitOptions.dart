@@ -1,13 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:habito/functions/habitFunctions.dart';
-import 'package:habito/functions/universalFunctions.dart';
 import 'package:habito/models/category.dart';
-import 'package:habito/models/enums.dart';
 import 'package:habito/models/habit.dart';
 import 'package:habito/state/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
-import 'package:habito/widgets/habit/habitModal.dart';
 import 'package:habito/widgets/habit/options/optionCircle.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -40,13 +37,14 @@ class _HabitOptionsState extends State<HabitOptions> {
     widget.toggle(widget.index);
   }
 
-  void viewMoreOptions(model) {
+  void viewMoreOptions(model, offset) {
     closeOptions();
     HabitFunctions.viewMoreOptions(
       context: context,
       model: model,
       myHabit: widget.myHabit,
       myCategory: widget.myCategory,
+      offset: offset,
     );
   }
 
@@ -97,7 +95,7 @@ class _HabitOptionsState extends State<HabitOptions> {
           return Stack(
             children: [
               OptionCircle(
-                () => markHabitDone(
+                (_) => markHabitDone(
                   context,
                   model,
                   widget.myHabit,
@@ -106,7 +104,7 @@ class _HabitOptionsState extends State<HabitOptions> {
                 Icons.check,
               ),
               OptionCircle(
-                () => viewHabitDetails(
+                (_) => viewHabitDetails(
                   context,
                   widget.myHabit,
                   widget.myCategory,
@@ -115,7 +113,8 @@ class _HabitOptionsState extends State<HabitOptions> {
                 Icons.remove_red_eye,
               ),
               OptionCircle(
-                () => viewMoreOptions(model),
+                (TapDownDetails tapDownDetails) =>
+                    viewMoreOptions(model, tapDownDetails.globalPosition),
                 moreButtonMargin,
                 Icons.more_horiz,
               ),

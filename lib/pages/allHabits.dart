@@ -21,6 +21,7 @@ class AllHabits extends StatefulWidget {
 
 class _AllHabitsState extends State<AllHabits> {
   Map<int, bool> tileClicked = new Map();
+  TapDownDetails tapDownDetails;
 
   void toggleTileClick(int index) {
     setState(() {
@@ -81,8 +82,10 @@ class _AllHabitsState extends State<AllHabits> {
                               model: model,
                               myHabit: _myHabits[index],
                               myCategory: _myCategory,
+                              offset: tapDownDetails.globalPosition,
                             );
                           },
+                          onTapDown: (details) => tapDownDetails = details,
                           onTap: () {
                             setState(() {
                               bool result = tileClicked.containsKey(index)

@@ -6,7 +6,10 @@ class UniversalValues {
 }
 
 class MySpaces {
-  static const EdgeInsets listViewTopPadding = EdgeInsets.only(top: 9);
+  static const EdgeInsets listViewTopPadding = EdgeInsets.only(
+    top: 9,
+    bottom: 18,
+  );
   static const double topPaddingBeforeHeading = 81;
   static const double headingHorizontalMargin = 30;
   static const double screenBorder = 15;
@@ -139,7 +142,8 @@ class MyStrings {
     'ERROR_USER_NOT_FOUND':
         'No account with this email address was found. Try signing up.',
     'ERROR_TOO_MANY_REQUESTS': 'Too many login requests were made.',
-    'ERROR_REQUIRES_RECENT_LOGIN': 'We need to reauthenticate you. Please login again.'
+    'ERROR_REQUIRES_RECENT_LOGIN':
+        'We need to reauthenticate you. Please login again.'
   };
   static const signUpHeading = ["Verify", "Try Again"];
   static const signUpBody = [

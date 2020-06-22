@@ -4,8 +4,8 @@ import 'package:habito/models/category.dart';
 import 'package:habito/models/enums.dart';
 import 'package:habito/models/habit.dart';
 import 'package:habito/state/habitoModel.dart';
+import 'package:habito/widgets/general/options.dart';
 import 'package:habito/widgets/habit/habitModal.dart';
-import 'package:habito/widgets/habit/options/habitMoreOptions.dart';
 
 class HabitFunctions {
   static void markHabitDone({
@@ -38,84 +38,68 @@ class HabitFunctions {
   }
 
   static void handleHabitOptionSelect(
-    BuildContext context,
     HabitoModel model,
-    HabitSelecetedOption option,
+    HabitSelectedOption option,
     MyHabit myHabit,
     MyCategory myCategory,
   ) {
     switch (option) {
-      case HabitSelecetedOption.DUPLICATE_AND_EDIT:
-        duplicateAndEdit(context, myHabit, myCategory);
+      case HabitSelectedOption.DUPLICATE_AND_EDIT:
+        duplicateAndEdit(model, myHabit, myCategory);
         break;
-      case HabitSelecetedOption.RESET_PROGRESS:
-        resetProgress(context, model, myHabit);
+      case HabitSelectedOption.RESET_PROGRESS:
+        resetProgress(model, myHabit);
         break;
-      case HabitSelecetedOption.DELETE:
-        deleteHabit(context, model, myHabit);
+      case HabitSelectedOption.DELETE:
+        deleteHabit(model, myHabit);
+        break;
+      case HabitSelectedOption.NONE:
         break;
     }
   }
 
   static void resetProgress(
-    BuildContext context,
-    HabitoModel model,
-    MyHabit myHabit,
-  ) {
-    model.resetHabitProgress(myHabit).then((value) {
-      if (value) {
-        UniversalFunctions.showAlert(
-          context,
-          "Reset",
-          "Progress was reset successfully. Good luck with this fresh start.",
-        );
-      } else {
-        UniversalFunctions.showAlert(
-          context,
-          "Try Again",
-          "Progress could not be reset.",
-        );
-      }
-    });
-  }
-
-  static void deleteHabit(
-    BuildContext context,
     HabitoModel model,
     MyHabit myHabit,
   ) async {
+    GlobalKey<ScaffoldState> key = model.globalScaffoldKey;
+    bool resetResult = await model.resetHabitProgress(myHabit);
+    UniversalFunctions.showAlert(
+      key.currentContext,
+      resetResult ? "Reset" : "Try Again",
+      resetResult
+          ? "Progress was reset successfully. Good luck with this fresh start."
+          : "Progress could not be reset.",
+    );
+  }
+
+  static void deleteHabit(
+    HabitoModel model,
+    MyHabit myHabit,
+  ) async {
+    GlobalKey<ScaffoldState> key = model.globalScaffoldKey;
     bool deletionResult = await model.deleteHabit(myHabit);
-    if (deletionResult) {
-      UniversalFunctions.showAlert(
-        context,
-        "Deleted",
-        "That's a bummer. Good luck with the remaining habits.",
-      );
-    } else {
-      UniversalFunctions.showAlert(
-        context,
-        "Try Again",
-        "Habit could not be deleted.",
-      );
-    }
+
+    UniversalFunctions.showAlert(
+      key.currentContext,
+      deletionResult ? "Deleted" : "Try Again",
+      deletionResult
+          ? "That's a bummer. Good luck with the remaining habits."
+          : "Habit could not be deleted.",
+    );
   }
 
   static void duplicateAndEdit(
-    BuildContext context,
+    HabitoModel model,
     MyHabit myHabit,
     MyCategory myCategory,
   ) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (BuildContext _context) {
-        return HabitModal(
+    GlobalKey<ScaffoldState> key = model.globalScaffoldKey;
+    key.currentState.showBottomSheet((context) => HabitModal(
           HabitModalMode.DUPLICATE,
           myHabit: myHabit,
           myCategory: myCategory,
-        );
-      },
-    );
+        ));
   }
 
   static void viewMoreOptions({
@@ -123,8 +107,16 @@ class HabitFunctions {
     @required HabitoModel model,
     @required MyHabit myHabit,
     @required MyCategory myCategory,
-  }) {
-    HabitMoreOptions.show(context, model, myHabit, myCategory);
+    @required Offset offset,
+  }) async {
+    Map<String, dynamic> values = {
+      "Duplicate and Edit": HabitSelectedOption.DUPLICATE_AND_EDIT,
+      "Reset Progress": HabitSelectedOption.RESET_PROGRESS,
+      "Delete": HabitSelectedOption.DELETE,
+    };
+    HabitSelectedOption option =
+        await Options.show(context, offset, HabitSelectedOption.NONE, values);
+    handleHabitOptionSelect(model, option, myHabit, myCategory);
   }
 
   static void viewHabitDetails({

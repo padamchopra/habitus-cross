@@ -5,34 +5,55 @@ import 'package:habito/models/enums.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/state/habitoModel.dart';
 import 'package:habito/widgets/category/categoryModal.dart';
+import 'package:habito/widgets/general/options.dart';
 
 class CategoryFunctions {
+  static void viewMoreOptions({
+    @required BuildContext context,
+    @required HabitoModel model,
+    @required MyCategory myCategory,
+    @required Offset offset,
+  }) async {
+    Map<String, dynamic> values = {
+      "Edit": CategorySelectedOption.EDIT,
+      "Duplicate and Edit": CategorySelectedOption.DUPLICATE_AND_EDIT,
+      "Delete": CategorySelectedOption.DELETE,
+    };
+    CategorySelectedOption option = await Options.show(
+        context, offset, CategorySelectedOption.NONE, values);
+    handleCategoryOptionSelect(model, option, myCategory);
+  }
+
   static void handleCategoryOptionSelect(
-      {@required BuildContext optionsContext,
-      @required BuildContext screenContext,
-      HabitoModel model,
-      @required CategorySelectedOption option,
-      @required MyCategory category}) {
-    Navigator.of(optionsContext).pop();
+    HabitoModel model,
+    CategorySelectedOption option,
+    MyCategory category,
+  ) {
     switch (option) {
       case CategorySelectedOption.VIEW_HABITS:
         break;
       case CategorySelectedOption.EDIT:
-        openCategoryModal(screenContext, CategoryModalMode.EDIT, category);
+        openCategoryModal(model, CategoryModalMode.EDIT, category);
         break;
       case CategorySelectedOption.DUPLICATE_AND_EDIT:
-        openCategoryModal(screenContext, CategoryModalMode.DUPLICATE, category);
+        openCategoryModal(model, CategoryModalMode.DUPLICATE, category);
         break;
       case CategorySelectedOption.DELETE:
-        deleteCategory(screenContext, model, category);
+        deleteCategory(model, category);
+        break;
+      case CategorySelectedOption.NONE:
         break;
     }
   }
 
   static void openCategoryModal(
-      BuildContext context, CategoryModalMode option, MyCategory category) {
+    HabitoModel model,
+    CategoryModalMode option,
+    MyCategory category,
+  ) {
+    GlobalKey<ScaffoldState> key = model.globalScaffoldKey;
     showModalBottomSheet(
-      context: context,
+      context: key.currentState.context,
       isScrollControlled: true,
       builder: (BuildContext _context) {
         return CategoryModal(
@@ -43,19 +64,18 @@ class CategoryFunctions {
     );
   }
 
-  static void deleteCategory(
-      BuildContext context, HabitoModel model, MyCategory category) {
-    model.deleteCategory(category).then((resultMap) {
-      int index = 1;
-      if (resultMap["deleted"]) {
-        model.updateHabits(resultMap["associatedHabits"]);
-        index = 0;
-      }
-      UniversalFunctions.showAlert(
-        context,
-        MyStrings.deleteCategoryHeading[index],
-        MyStrings.deleteCategoryBody[index],
-      );
-    });
+  static void deleteCategory(HabitoModel model, MyCategory category) async {
+    GlobalKey<ScaffoldState> key = model.globalScaffoldKey;
+    Map<String, bool> associatedHabits = await model.deleteCategory(category);
+    int index = 1;
+    if (associatedHabits.isNotEmpty) {
+      model.updateHabits(associatedHabits);
+      index = 0;
+    }
+    UniversalFunctions.showAlert(
+      key.currentState.context,
+      MyStrings.deleteCategoryHeading[index],
+      MyStrings.deleteCategoryBody[index],
+    );
   }
 }

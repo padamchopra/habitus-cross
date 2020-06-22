@@ -121,13 +121,11 @@ mixin CategoryModel on ModelData {
     return true;
   }
 
-  Future<Map<String, dynamic>> deleteCategory(MyCategory myCategory) async {
-    Map<String, dynamic> toReturn = {"deleted": false, "associatedHabits": []};
+  Future<Map<String, bool>> deleteCategory(MyCategory myCategory) async {
     Map<String, bool> myAssociatedHabits = new Map();
 
     if (myCategories.containsKey(myCategory.documentId)) {
       MyCategory mySavedCategory = myCategories[myCategory.documentId];
-      myAssociatedHabits = mySavedCategory.habitsMap;
       try {
         mySavedCategory.deleted = true;
         if (!isDevTesting) {
@@ -137,19 +135,17 @@ mixin CategoryModel on ModelData {
               .updateData(mySavedCategory.toJson());
           logAnalyticsEvent(AnalyticsEvents.categoryDelete, success: true);
         }
+        myAssociatedHabits = mySavedCategory.habitsMap;
         myCategories.remove(myCategory.documentId);
-        toReturn["deleted"] = true;
-        toReturn["myAssociatedHabits"] = myAssociatedHabits;
       } catch (e) {
         logAnalyticsEvent(
           AnalyticsEvents.categoryDelete,
           success: false,
           error: e.toString(),
         );
-        mySavedCategory.deleted = false;
-        toReturn["deleted"] = false;
+        myAssociatedHabits.clear();
       }
     }
-    return toReturn;
+    return myAssociatedHabits;
   }
 }

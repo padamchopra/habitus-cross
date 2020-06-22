@@ -17,10 +17,19 @@ import 'package:flutter/material.dart';
 class HabitoModel extends Model
     with ModelData, AuthModel, CategoryModel, HabitModel {
   Function updateHomeRootWidget = () {};
+  GlobalKey<ScaffoldState> _globalScaffoldKey;
   HabitoAuth userState;
   Widget homeRootWidget = Center(
     child: CircularProgressIndicator(),
   );
+
+  get globalScaffoldKey {
+    return _globalScaffoldKey;
+  }
+
+  set globalScaffoldKey(key) {
+    this._globalScaffoldKey = key;
+  }
 
   HabitoModel() {
     initialiseVariables();
@@ -93,18 +102,17 @@ mixin ModelData on Model {
     }
   }
 
-  void logAnalyticsEvent(String eventName, {bool success, error}) {
-    if (success == null) {
-      firebaseAnalytics.logEvent(name: eventName);
-    } else {
-      firebaseAnalytics.logEvent(
-        name: eventName,
-        parameters: {
-          "success": success,
-          "error": error,
-        },
-      );
-    }
+  void logAnalyticsEvent(String eventName,
+      {bool success: true, error: "None"}) {
+    print(eventName);
+    if (DevTesting.notLoggingAnalytics) return;
+    firebaseAnalytics.logEvent(
+      name: eventName,
+      parameters: {
+        "success": success,
+        "error": error,
+      },
+    );
   }
 
   get userEmail {

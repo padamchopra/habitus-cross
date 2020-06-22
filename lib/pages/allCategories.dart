@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:habito/functions/categoryFunctions.dart';
 import 'package:habito/models/category.dart';
 import 'package:habito/state/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
-import 'package:habito/widgets/category/categoryMoreOptions.dart';
 import 'package:habito/widgets/general/pageHeading.dart';
 import 'package:habito/widgets/text.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -41,15 +41,19 @@ class _AllCategoriesState extends State<AllCategories> {
               }
 
               List<MyCategory> _myCategories = model.myCategoriesAsList;
+              TapDownDetails tapDownDetails;
               return ListView.builder(
                 padding: MySpaces.listViewTopPadding,
                 itemCount: numberOfCategories,
                 itemBuilder: (BuildContext context, int index) {
                   return GestureDetector(
-                    onTap: () {
-                      CategoryMoreOptions.show(
-                          context, model, _myCategories[index]);
-                    },
+                    onLongPress: () => CategoryFunctions.viewMoreOptions(
+                      context: context,
+                      model: model,
+                      myCategory: _myCategories[index],
+                      offset: tapDownDetails.globalPosition,
+                    ),
+                    onTapDown: (details) => tapDownDetails = details,
                     child:
                         _myCategories[index].widget(showNumberOfHabits: true),
                   );
