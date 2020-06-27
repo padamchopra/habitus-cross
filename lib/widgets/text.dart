@@ -20,6 +20,11 @@ class CustomText extends StatelessWidget {
       this.letterSpacing: 0,
       this.alternateFont: false,
       this.onTap});
+
+  get textContent {
+    return content;
+  }
+
   @override
   Widget build(BuildContext context) {
     final Widget text = Text(

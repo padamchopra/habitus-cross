@@ -4,11 +4,48 @@ import 'package:habito/state/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/general/CustomButton.dart';
 import 'package:habito/widgets/general/infoSet.dart';
+import 'package:habito/widgets/general/itemPicker.dart';
 import 'package:habito/widgets/general/pageHeading.dart';
+import 'package:habito/widgets/text.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class Profile extends StatelessWidget {
-  Profile();
+  final List<Widget> sortingOptions = [
+    CustomText(
+      "Old -> New",
+      fontSize: 18,
+      color: Colors.black,
+      alternateFont: true,
+    ),
+  ];
+
+  Widget buildSortingUI(String label) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6),
+        color: MyColors.midnight,
+      ),
+      padding: EdgeInsets.all(12),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: CustomText(
+              label,
+              fontSize: 18,
+              alternateFont: true,
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Icon(
+              Icons.arrow_drop_down,
+              color: MyColors.placeholderGrey,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +83,24 @@ class Profile extends StatelessWidget {
                     MyStrings.trackedHabitsInfoTitle,
                     "Old -> New",
                   ),
+                  /*CustomText(
+                    MyStrings.trackedHabitsInfoTitle,
+                    color: MyColors.captionWhite,
+                    fontSize: 15,
+                  ),
+                  SizedBox(
+                    height: 3,
+                  ),
+                  ItemPicker(
+                    context: context,
+                    newValueAssigned: (value) => print(value),
+                    options: sortingOptions,
+                    buildMainWidget: (index) {
+                      CustomText textWidget = sortingOptions[index];
+                      return buildSortingUI(textWidget.textContent);
+                    },
+                    iOSDefault: buildSortingUI("Select Option"),
+                  ),*/
                   MySpaces.largeGapInBetween,
                   CustomButton(
                     label: MyStrings.reviewButton,
