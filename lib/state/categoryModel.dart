@@ -33,6 +33,7 @@ mixin CategoryModel on ModelData {
   Future<void> fetchCategories() async {
     if (isDevTesting) {
       myCategories = DevTesting.getInitialCategories();
+      areCategoriesLoaded = true;
     } else if (firebaseUser != null) {
       myCategories.clear();
       String userId = firebaseUser.uid;

@@ -4,7 +4,6 @@ import 'package:habito/state/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/general/CustomButton.dart';
 import 'package:habito/widgets/general/infoSet.dart';
-import 'package:habito/widgets/general/itemPicker.dart';
 import 'package:habito/widgets/general/pageHeading.dart';
 import 'package:habito/widgets/text.dart';
 import 'package:scoped_model/scoped_model.dart';
