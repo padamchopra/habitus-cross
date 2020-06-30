@@ -38,7 +38,7 @@ class ProfileFunctions {
         if (deletionResult == HabitoAuth.DELETED) {
           UniversalFunctions.showAlert(
             context,
-            "Deleted Account",
+            "Account deleted",
             "We hate to see you go. Good luck!",
           );
         }

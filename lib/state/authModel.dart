@@ -186,7 +186,7 @@ mixin AuthModel on ModelData {
 
   void handleAuthError(context, e) {
     String title = "Try Again";
-    String body = "Cannot carry out authentication in right now.";
+    String body = "Cannot carry out authentication right now.";
     if (MyStrings.authErrors.containsKey(e.code)) {
       body = MyStrings.authErrors[e.code];
     }

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:habito/models/universalValues.dart';
 
 class Options {
   static Future<dynamic> show(
@@ -23,7 +24,7 @@ class Options {
     Map<String, dynamic> values,
   ) async {
     var option = defaultValue;
-    var options = [];
+    List<Widget> options = [];
 
     await showCupertinoModalPopup(
       context: context,
@@ -34,7 +35,14 @@ class Options {
               Navigator.of(_context).pop();
               option = value;
             },
-            child: Text(key),
+            child: key == "Delete"
+                ? Text(
+                    key,
+                    style: TextStyle(
+                      color: MyColors.perfectRed,
+                    ),
+                  )
+                : Text(key),
           ));
         });
 
