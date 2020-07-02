@@ -10,12 +10,13 @@ import 'package:habito/models/habit.dart';
 import 'package:habito/state/authModel.dart';
 import 'package:habito/state/categoryModel.dart';
 import 'package:habito/state/habitModel.dart';
+import 'package:habito/state/profileModel.dart';
 import 'dart:async';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter/material.dart';
 
 class HabitoModel extends Model
-    with ModelData, AuthModel, CategoryModel, HabitModel {
+    with ModelData, AuthModel, CategoryModel, HabitModel, ProfileModel {
   Function updateHomeRootWidget = () {};
   GlobalKey<ScaffoldState> _globalScaffoldKey;
   HabitoAuth userState;
@@ -48,6 +49,7 @@ class HabitoModel extends Model
   }
 
   Future<void> fetchUserData() async {
+    await loadSortingPreference();
     await fetchCategories();
     await fetchHabits();
   }
@@ -64,6 +66,10 @@ mixin ModelData on Model {
   bool areCategoriesLoaded;
   bool areHabitsLoaded;
   Function playConfetti;
+  Function sortingMethod = (o1, o2) {
+    return -1;
+  };
+  String sortingHabitsByDefaultName = "Select Option";
 
   void initialiseVariables() {
     isDevTesting = DevTesting.testing && !DevTesting.showSignIn;

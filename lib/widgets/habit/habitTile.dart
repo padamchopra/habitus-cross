@@ -24,15 +24,23 @@ class _HabitTileState extends State<HabitTile> {
       _daysCompleted = 0;
     } else {
       _daysCompleted = widget.myHabit.daysCompleted;
-      new Future.delayed(Duration(milliseconds: 0)).then((_) {
-        setState(() {
+      new Future.delayed(Duration(milliseconds: 5)).then((_) {
+        if (this.mounted) {
+          setState(() {
+            widget.myHabit.daysCompleted = 21;
+          });
+        } else {
           widget.myHabit.daysCompleted = 21;
-        });
+        }
       });
       new Future.delayed(Duration(milliseconds: 600)).then((_) {
-        setState(() {
+        if (this.mounted) {
+          setState(() {
+            widget.myHabit.daysCompleted = _daysCompleted;
+          });
+        } else {
           widget.myHabit.daysCompleted = _daysCompleted;
-        });
+        }
       });
     }
   }

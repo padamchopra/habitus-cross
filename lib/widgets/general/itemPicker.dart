@@ -9,16 +9,18 @@ import 'package:scoped_model/scoped_model.dart';
 
 class ItemPicker extends StatefulWidget {
   final BuildContext context;
+  final List<String> options;
+  final Function buildPickerWidget;
+  final Function buildIOSDefaultWidget;
   final Function newValueAssigned;
-  final List<Widget> options;
-  final Function buildMainWidget;
-  final Widget iOSDefault;
+  final String defaultValue;
   ItemPicker({
     @required this.context,
     @required this.newValueAssigned,
     @required this.options,
-    @required this.buildMainWidget,
-    @required this.iOSDefault,
+    @required this.buildIOSDefaultWidget,
+    @required this.buildPickerWidget,
+    @required this.defaultValue,
   });
 
   @override
@@ -40,9 +42,10 @@ class _ItemPickerState extends State<ItemPicker> {
 
   void refreshWidget() {
     if (_confirmedIndex == -1) {
-      iOSMainWidget = widget.iOSDefault;
+      iOSMainWidget = widget.buildIOSDefaultWidget(widget.defaultValue);
     } else {
-      iOSMainWidget = widget.buildMainWidget(_confirmedIndex);
+      iOSMainWidget =
+          widget.buildIOSDefaultWidget(widget.options[_confirmedIndex]);
     }
   }
 
@@ -62,9 +65,10 @@ class _ItemPickerState extends State<ItemPicker> {
                       onTap: () {
                         setState(() {
                           _confirmedIndex = -1;
-                          refreshWidget();
+                          iOSMainWidget =
+                              widget.buildIOSDefaultWidget("Select Option");
                         });
-                        widget.newValueAssigned(null);
+                        widget.newValueAssigned("");
                         Navigator.of(context).pop();
                       },
                       child: Padding(
@@ -114,7 +118,8 @@ class _ItemPickerState extends State<ItemPicker> {
                         height: 40,
                         child: Align(
                           alignment: Alignment.center,
-                          child: widget.options[index],
+                          child:
+                              widget.buildPickerWidget(widget.options[index]),
                         ),
                       );
                     },
@@ -135,8 +140,36 @@ class _ItemPickerState extends State<ItemPicker> {
                 onTap: () => showIOSPicker(model),
                 child: iOSMainWidget,
               )
-            : Container();
+            : showAndroidPicker(model);
       },
+    );
+  }
+
+  Widget showAndroidPicker(HabitoModel model) {
+    return DropdownButton<String>(
+      hint: CustomText(
+        widget.defaultValue,
+        fontSize: 18,
+        alternateFont: true,
+      ),
+      icon: Icon(Icons.arrow_downward),
+      isExpanded: true,
+      iconSize: 24,
+      elevation: 16,
+      style: TextStyle(color: MyColors.white),
+      underline: Container(
+        height: 2,
+        color: MyColors.midnight,
+      ),
+      onChanged: (String newValue) {
+        widget.newValueAssigned(newValue);
+      },
+      items: widget.options.map<DropdownMenuItem<String>>((String option) {
+        return DropdownMenuItem<String>(
+          value: option,
+          child: widget.buildPickerWidget(option),
+        );
+      }).toList(),
     );
   }
 }

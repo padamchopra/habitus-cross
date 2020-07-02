@@ -4,21 +4,29 @@ import 'package:habito/state/habitoModel.dart';
 import 'package:habito/models/universalValues.dart';
 import 'package:habito/widgets/general/CustomButton.dart';
 import 'package:habito/widgets/general/infoSet.dart';
+import 'package:habito/widgets/general/itemPicker.dart';
 import 'package:habito/widgets/general/pageHeading.dart';
 import 'package:habito/widgets/text.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class Profile extends StatelessWidget {
-  final List<Widget> sortingOptions = [
-    CustomText(
-      "Old -> New",
+  final List<String> sortingOptions = [
+    "Old -> New",
+    "A -> Z",
+    "Days Completed",
+    "Categories"
+  ];
+
+  Widget buildPickerWidget(String optionName) {
+    return CustomText(
+      optionName,
       fontSize: 18,
       color: Colors.black,
       alternateFont: true,
-    ),
-  ];
+    );
+  }
 
-  Widget buildSortingUI(String label) {
+  Widget buildIOSDefaultWidget(String label) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),
@@ -78,12 +86,8 @@ class Profile extends StatelessWidget {
                     model.myHabitsAsList(true).length.toString(),
                   ),
                   MySpaces.gapInBetween,
-                  InfoSet(
-                    MyStrings.trackedHabitsInfoTitle,
-                    "Old -> New",
-                  ),
-                  /*CustomText(
-                    MyStrings.trackedHabitsInfoTitle,
+                  CustomText(
+                    MyStrings.sortInfoTitle,
                     color: MyColors.captionWhite,
                     fontSize: 15,
                   ),
@@ -92,14 +96,14 @@ class Profile extends StatelessWidget {
                   ),
                   ItemPicker(
                     context: context,
-                    newValueAssigned: (value) => print(value),
-                    options: sortingOptions,
-                    buildMainWidget: (index) {
-                      CustomText textWidget = sortingOptions[index];
-                      return buildSortingUI(textWidget.textContent);
+                    newValueAssigned: (String sortBy) {
+                      model.updateSortingMethod(context, sortBy);
                     },
-                    iOSDefault: buildSortingUI("Select Option"),
-                  ),*/
+                    options: sortingOptions,
+                    buildPickerWidget: buildPickerWidget,
+                    buildIOSDefaultWidget: buildIOSDefaultWidget,
+                    defaultValue: model.sortingHabitsByDefaultName,
+                  ),
                   MySpaces.largeGapInBetween,
                   CustomButton(
                     label: MyStrings.reviewButton,

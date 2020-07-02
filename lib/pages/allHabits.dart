@@ -62,6 +62,7 @@ class _AllHabitsState extends State<AllHabits> {
                 }
                 List<MyHabit> _myHabits =
                     model.myHabitsAsList(widget.showOnlyCompleted);
+                _myHabits.sort(model.sortingMethod);
                 return StaggeredGridView.countBuilder(
                   addRepaintBoundaries: true,
                   padding: MySpaces.listViewTopPadding,

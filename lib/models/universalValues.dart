@@ -108,7 +108,7 @@ class MyStrings {
   static const categoriesInfoTitle = "Categories";
   static const activeHabitsInfoTitle = "Active Habits";
   static const trackedHabitsInfoTitle = "Tracked Habits";
-  static const sortInfoTitle = "Sort by (soon)";
+  static const sortInfoTitle = "Sort habits by";
   static const reviewButton = "Review App";
   static const signoutButton = "Sign Out";
   //profile region ends
