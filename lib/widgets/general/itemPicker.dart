@@ -37,6 +37,7 @@ class _ItemPickerState extends State<ItemPicker> {
   @override
   void initState() {
     super.initState();
+    _confirmedIndex = widget.options.indexOf(widget.defaultValue);
     refreshWidget();
   }
 
