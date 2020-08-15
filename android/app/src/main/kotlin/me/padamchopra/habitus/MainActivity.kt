@@ -1,4 +1,4 @@
-package me.padamchopra.habito
+package me.padamchopra.habitus
 
 import io.flutter.embedding.android.FlutterActivity
 
