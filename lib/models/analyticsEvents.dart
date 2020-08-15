@@ -1,6 +1,6 @@
 class AnalyticsEvents {
-  static const String appOpened = "Habito_App_Opened";
-  
+  static const String appOpened = "Habitus_App_Opened";
+
   static const String authSentVerificationEmail =
       "Auth_Verification_Email_Sent";
   static const String authSignIn = "Auth_Sign_in";

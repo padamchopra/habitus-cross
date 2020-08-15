@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="Habito"
+        android:label="Habitus"
         android:icon="@mipmap/ic_habito">
         <activity
             android:name=".MainActivity"

@@ -68,7 +68,7 @@ class MyColors {
 }
 
 class MyStrings {
-  static const appName = "Habito.";
+  static const appName = "Habitus.";
 
   //auth region starts
   static const signInLabel = "Sign In";

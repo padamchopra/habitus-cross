@@ -29,18 +29,16 @@ class DarkTextField extends StatelessWidget {
       textInputAction:
           nextFocusNode == null ? TextInputAction.done : TextInputAction.next,
       onEditingComplete: () {
-        FocusScope.of(context).requestFocus(nextFocusNode != null ? nextFocusNode : FocusNode());
+        FocusScope.of(context)
+            .requestFocus(nextFocusNode != null ? nextFocusNode : FocusNode());
       },
       validator: validator,
       onSaved: onSave,
       autocorrect: false,
       keyboardType: inputType,
       cursorColor: MyColors.white,
-      style: TextStyle(
-        color: MyColors.white,
-        fontSize: 18,
-        fontFamily: 'roboto'
-      ),
+      style:
+          TextStyle(color: MyColors.white, fontSize: 18, fontFamily: 'roboto'),
       decoration: InputDecoration(
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
